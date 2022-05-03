@@ -14,6 +14,7 @@ TagManager:
   - tag
   - trash
   - Red tag
+  - Color tag
   layers:
   - Default
   - TransparentFX

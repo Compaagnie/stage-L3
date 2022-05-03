@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 5882121372034715882}
   - component: {fileID: 2843356822700687864}
   m_Layer: 0
-  m_Name: Cube (2)
-  m_TagString: tag
+  m_Name: CubeBlue
+  m_TagString: Color tag
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1190,8 +1190,8 @@ GameObject:
   - component: {fileID: 919975971928557404}
   - component: {fileID: 4506100738851999984}
   m_Layer: 0
-  m_Name: Cube (4)
-  m_TagString: tag
+  m_Name: CubeTransparent
+  m_TagString: Color tag
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1456,8 +1456,8 @@ GameObject:
   - component: {fileID: 5330490298265342869}
   - component: {fileID: 3356474218222844914}
   m_Layer: 0
-  m_Name: Cube (3)
-  m_TagString: tag
+  m_Name: CubeRed
+  m_TagString: Color tag
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1646,8 +1646,8 @@ GameObject:
   - component: {fileID: 1813665818232318654}
   - component: {fileID: 5405034314022649583}
   m_Layer: 0
-  m_Name: Cube (1)
-  m_TagString: tag
+  m_Name: CubeWhite
+  m_TagString: Color tag
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1890,8 +1890,8 @@ GameObject:
   - component: {fileID: 4859313830028551362}
   - component: {fileID: 4550944007536478882}
   m_Layer: 0
-  m_Name: Cube
-  m_TagString: tag
+  m_Name: CubeGreen
+  m_TagString: Color tag
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

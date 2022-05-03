@@ -95,7 +95,7 @@ public class Network_Player : MonoBehaviourPun
         if (Physics.Raycast(ray, out hit))
         {
             //change tag color of the ray cast
-            if (interactWithUI.GetStateDown(m_pose.inputSource) && hit.transform.tag == "tag")
+            if (interactWithUI.GetStateDown(m_pose.inputSource) && hit.transform.tag == "Color tag")
             {
                 if (synctag)
                 {

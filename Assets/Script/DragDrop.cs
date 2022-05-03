@@ -94,7 +94,7 @@ public class DragDrop : MonoBehaviourPun
                     }
 
                 }
-                photonView.RPC("Desroyempty", Photon.Pun.RpcTarget.All, emptyToMoveCard.GetComponent<PhotonView>().ViewID);
+                photonView.RPC("Destroyempty", Photon.Pun.RpcTarget.All, emptyToMoveCard.GetComponent<PhotonView>().ViewID);
 
                // Destroy(emptyToMoveCard);
                 cardSeletedForGroupMove = false;
@@ -211,7 +211,7 @@ public class DragDrop : MonoBehaviourPun
     }
 
     [PunRPC]
-    void Desroyempty(int OB)
+    void Destroyempty(int OB)
     {
         Destroy(PhotonView.Find(OB).gameObject);
     }

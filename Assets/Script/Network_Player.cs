@@ -69,10 +69,11 @@ public class Network_Player : MonoBehaviourPun
         if (photonView.IsMine)
         {
             //don't show my avatar
+            /*
             leftHand.gameObject.SetActive(false);
             rightHand.gameObject.SetActive(false);
             head.gameObject.SetActive(false);
-            torse.gameObject.SetActive(false);
+            torse.gameObject.SetActive(false);*/
         }
     }
 

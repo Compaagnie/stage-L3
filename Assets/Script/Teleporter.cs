@@ -178,7 +178,10 @@ public class Teleporter : MonoBehaviour
         {
             syncTeleportation = true;
             tryTeleport();
-            expe.curentTrial.incNbSyncTp();
+            if (expe != null)
+            {
+                expe.curentTrial.incNbSyncTp();
+            }
             //syncTeleportation = false;
             longclic = false;
         }
@@ -341,13 +344,19 @@ public class Teleporter : MonoBehaviour
 
             if (!syncTeleportation)
             {
-                expe.curentTrial.incNbAsyncTPGround(translateVector);
+                if (expe != null)
+                {
+                    expe.curentTrial.incNbAsyncTPGround(translateVector);
+                }
                 StartCoroutine(MoveRig(cameraRig, translateVector));
             }
             else {
                 StartCoroutine(MoveRig(cameraRig, translateVector));
-                expe.curentTrial.incNbSyncTpGround(translateVector);
+                if (expe != null)
+                {
+                    expe.curentTrial.incNbSyncTpGround(translateVector);
                 }
+            }
             
         }
 
@@ -480,14 +489,20 @@ public class Teleporter : MonoBehaviour
             //then teleport
             if (!syncTeleportation)
             {
-                expe.curentTrial.incNbAsyncTPWall(translateVector);
+                if (expe != null)
+                {
+                    expe.curentTrial.incNbAsyncTPWall(translateVector);
+                }
                 StartCoroutine(MoveRig(cameraRig, translateVector));
             }
             else
             {
                 StartCoroutine(MoveRig(cameraRig, translateVector));
-                expe.curentTrial.incNbSyncTpWall(translateVector);
+                if (expe != null)
+                {
+                    expe.curentTrial.incNbSyncTpWall(translateVector);
                 }
+            }
         }
     }
 

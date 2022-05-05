@@ -48,6 +48,8 @@ public class DragDrop : MonoBehaviourPun
     GameObject emptyToMoveCard;
     private bool cardSeletedForGroupMove = false;
     private Vector3 loalscaleEmpty;
+    private bool modeMove = true;
+
 
     expe expe;
 
@@ -118,6 +120,12 @@ public class DragDrop : MonoBehaviourPun
                 
             }
            
+            if (hit.transform.tag == "MoveControl")
+            {
+                modeMove = !modeMove;
+                //Debug.Log(modeMove);
+            }
+
             coordClic = hit.transform.position;
             forwardClic = transform.forward;
             //start waiting
@@ -174,7 +182,7 @@ public class DragDrop : MonoBehaviourPun
         }
 
         //long clic -> move cards with tag 
-        if (false && longclic && UpdatePointer() && (hit.transform.tag == "Wall" || hit.transform.tag == "Card"))
+        if (!modeMove && longclic && UpdatePointer() && (hit.transform.tag == "Wall" || hit.transform.tag == "Card"))
         {
             string namewall = "";
             if (hit.transform.tag == "Card")

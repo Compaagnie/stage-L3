@@ -60,7 +60,7 @@ public class Teleporter : MonoBehaviour
     private bool s = false;
     private bool e = false;
     private bool w = false;
-    
+    private bool modeMove = true;
     public bool synctag = true;
    
 
@@ -78,7 +78,6 @@ public class Teleporter : MonoBehaviour
     Transform cameraRig;
     Transform controlerRight;
 
-
     expe expe;
 
 
@@ -87,7 +86,7 @@ public class Teleporter : MonoBehaviour
     {
         m_pose = GetComponent<SteamVR_Behaviour_Pose>();
         photonView = GetComponent<PhotonView>();
-        Menu.SetActive(false);
+        Menu.SetActive(false);        
     }
 
     // Update is called once per frame
@@ -102,6 +101,15 @@ public class Teleporter : MonoBehaviour
         cameraRigPos = cameraRig.position;
         //Pointer
         m_HasPosition = UpdatePointer();
+
+        if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
+        {
+            if (hit.transform.tag == "MoveControl")
+            {
+                modeMove = !modeMove;
+                //Debug.Log(modeMove);
+            }
+        }
 
         if (syncTeleportation == true)
         {
@@ -130,178 +138,179 @@ public class Teleporter : MonoBehaviour
         //Teleport
         position = SteamVR_Actions.default_Pos.GetAxis(SteamVR_Input_Sources.Any);
 
-
-        if (m_TeleportAction.GetStateDown(m_pose.inputSource))
+        if (!modeMove)
         {
-            if (position.x < -0.5)
+            if (m_TeleportAction.GetStateDown(m_pose.inputSource))
             {
-                Debug.Log("W");
-                w = true;
-                tryTeleport();
+                if (position.x < -0.5)
+                {
+                    Debug.Log("W");
+                    w = true;
+                    tryTeleport();
+                }
+                /*
+                else if(position.y > 0.5)
+                {
+                    Debug.Log("N");
+                    n = true;
+                    tryTeleport();
+                }
+                else if (position.y < -0.5)
+                {
+                    Debug.Log("S");
+                    s = true;
+                    tryTeleport();
+                }
+                */
+                else if (position.x > 0.5)
+                {
+                    Debug.Log("E");
+                    e = true;
+                    tryTeleport();
+                }
+
+                else
+                {
+                    nbClick++;
+                    //Debug.Log("C");
+                    coordClic = coordPrev = m_Pointer.transform.position; //hit.transform.position;
+                    forwardClic = transform.forward;
+                    wait = true;
+                    timer = Time.time;
+                }
             }
-            /*
-            else if(position.y > 0.5)
-            {
-                Debug.Log("N");
-                n = true;
-                tryTeleport();
-            }
-            else if (position.y < -0.5)
-            {
-                Debug.Log("S");
-                s = true;
-                tryTeleport();
-            }
-            */
-            else if (position.x > 0.5)
-            {
-                Debug.Log("E");
-                e = true;
-                tryTeleport();
-            }
-            
-            else
-            {
-                nbClick++;
-                //Debug.Log("C");
-                coordClic = coordPrev = m_Pointer.transform.position; //hit.transform.position;
-                forwardClic = transform.forward;
-                wait = true;
-                timer = Time.time;
-            }
-        }
 
 
-        if (wait)
-        {
-            if (Time.time - timer > 0.7) //  after 0.7s it is long clic
-            {
-                longclic = true;
-                wait = false;
-                // Debug.Log("long clic");
-            }
-        }
-        if (longclic)
-        {
-            syncTeleportation = true;
-            tryTeleport();
-            if (expe != null)
-            {
-                expe.curentTrial.incNbSyncTp();
-            }
-            //syncTeleportation = false;
-            longclic = false;
-        }
-       
-        if (m_TeleportAction.GetStateUp(m_pose.inputSource))
-        {
-          
-            //Debug.Log("reset");
-
-            isMoving = false;
-            longclic = false;
-            n = false;
-            s = false;
-            e = false;
-            w = false;
-            
             if (wait)
-            { 
-              tryTeleport();
-            }
-            wait = false;
-            longclic = false;
-        }
-
-        if (isMoving)
-        {
-            //dragTeleport(coordPrev, m_Pointer.transform.position);
-            coordPrev = m_Pointer.transform.position;
-        }
-
-
-        // MENU //
-        if (UpdatePointer() == true && hit.transform.name == "syncro")
-        {
-            // Debug.Log("Syncro");
-            Menu.SetActive(false);
-            photonView.RPC("teleportationMode", Photon.Pun.RpcTarget.All, syncTeleportation);
-        }
-
-        if (UpdatePointer() == true && hit.transform.name == "not syncro")
-        {
-            // Debug.Log("Not Syncro");
-            Menu.SetActive(false);
-            photonView.RPC("teleportationMode", Photon.Pun.RpcTarget.All, syncTeleportation);
-        }
-
-        if (UpdatePointer() == true && hit.transform.name == "syncro tag")
-        {
-            // Debug.Log("Syncro");
-            Menu.SetActive(false);
-            player = GameObject.Find("Network Player(Clone)");
-            synctag = true;
-            photonView.RPC("tagMode", Photon.Pun.RpcTarget.All, synctag);
-        }
-
-        if (UpdatePointer() == true && hit.transform.name == "not syncro tag")
-        {
-            // Debug.Log("Not Syncro");
-            Menu.SetActive(false);
-            player = GameObject.Find("Network Player(Clone)");
-            synctag = false;
-            photonView.RPC("tagMode", Photon.Pun.RpcTarget.All, synctag);
-        }
-
-        if (UpdatePointer() == true && hit.transform.name == "cancel")
-        {
-            // Debug.Log("Cancel");
-            Menu.SetActive(false);
-        }
-
-
-        if (interactWithUI.GetStateDown(m_pose.inputSource))
-        {
-            oldControlerRotation = controlerRight.transform.rotation.eulerAngles;
-            oldControlerPosition = controlerRight.transform.position;
-            oldHitPosition = m_Pointer.transform.position;
-            //Debug.Log("update old"+ oldControlerRotation);
-
-            // head position + camera rig
-        }
-        if (interactWithUI.GetState(m_pose.inputSource))
-        {
-            //Debug.Log(m_HasPosition + hit.transform.tag);
-            if (m_HasPosition && hit.transform.tag == "TpLimit")
             {
-                float b = Mathf.Tan((90-controlerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controlerRight.transform.position.y;
-                Debug.Log("b: " + b);
-                Vector3 camToHit = oldHitPosition-cameraRig.position;
-                Vector3 ctrlToHit = oldHitPosition-controlerRight.position;
-                Debug.Log(camToHit.z);
-                camToHit.y = 0;
-                ctrlToHit.y = 0;
-                float c = camToHit.magnitude * (ctrlToHit.magnitude - b) / ctrlToHit.magnitude;
-                Vector3 translateVect = camToHit.normalized * c;
-                Debug.Log(c);
-                if (cameraRig.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cameraRig.position.x;  }
-                if (cameraRig.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cameraRig.position.x; }
-                if (cameraRig.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cameraRig.position.z; }
-                if (cameraRig.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cameraRig.position.z; }
-                cameraRig.position += translateVect;
-
-                //cameraRig.position += a - a.normalized*b;
+                if (Time.time - timer > 0.7) //  after 0.7s it is long clic
+                {
+                    longclic = true;
+                    wait = false;
+                    // Debug.Log("long clic");
+                }
             }
-            Vector3 headPosition = SteamVR_Render.Top().head.position;
-            //Transform cameraRig = SteamVR_Render.Top().origin;
+            if (longclic)
+            {
+                syncTeleportation = true;
+                tryTeleport();
+                if (expe != null)
+                {
+                    expe.curentTrial.incNbSyncTp();
+                }
+                //syncTeleportation = false;
+                longclic = false;
+            }
 
-            //player possition
-            Vector3 groundPosition = new Vector3(headPosition.x, cameraRig.position.y, headPosition.z);
-            Transform cam = cameraRig.Find("Camera (eye)");
-            //Debug.Log(oldControlerRotation.y + "  " + controlerRight.transform.rotation.eulerAngles.y);
-            cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
-            CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
-            
+            if (m_TeleportAction.GetStateUp(m_pose.inputSource))
+            {
+
+                //Debug.Log("reset");
+
+                isMoving = false;
+                longclic = false;
+                n = false;
+                s = false;
+                e = false;
+                w = false;
+
+                if (wait)
+                {
+                    tryTeleport();
+                }
+                wait = false;
+                longclic = false;
+            }
+
+            if (isMoving)
+            {
+                //dragTeleport(coordPrev, m_Pointer.transform.position);
+                coordPrev = m_Pointer.transform.position;
+            }
+
+
+            // MENU //
+            if (UpdatePointer() == true && hit.transform.name == "syncro")
+            {
+                // Debug.Log("Syncro");
+                Menu.SetActive(false);
+                photonView.RPC("teleportationMode", Photon.Pun.RpcTarget.All, syncTeleportation);
+            }
+
+            if (UpdatePointer() == true && hit.transform.name == "not syncro")
+            {
+                // Debug.Log("Not Syncro");
+                Menu.SetActive(false);
+                photonView.RPC("teleportationMode", Photon.Pun.RpcTarget.All, syncTeleportation);
+            }
+
+            if (UpdatePointer() == true && hit.transform.name == "syncro tag")
+            {
+                // Debug.Log("Syncro");
+                Menu.SetActive(false);
+                player = GameObject.Find("Network Player(Clone)");
+                synctag = true;
+                photonView.RPC("tagMode", Photon.Pun.RpcTarget.All, synctag);
+            }
+
+            if (UpdatePointer() == true && hit.transform.name == "not syncro tag")
+            {
+                // Debug.Log("Not Syncro");
+                Menu.SetActive(false);
+                player = GameObject.Find("Network Player(Clone)");
+                synctag = false;
+                photonView.RPC("tagMode", Photon.Pun.RpcTarget.All, synctag);
+            }
+
+            if (UpdatePointer() == true && hit.transform.name == "cancel")
+            {
+                // Debug.Log("Cancel");
+                Menu.SetActive(false);
+            }
+        }
+
+        if (modeMove)
+        {
+            if (interactWithUI.GetStateDown(m_pose.inputSource))
+            {
+                oldControlerRotation = controlerRight.transform.rotation.eulerAngles;
+                oldControlerPosition = controlerRight.transform.position;
+                oldHitPosition = m_Pointer.transform.position;
+                //Debug.Log("update old"+ oldControlerRotation);
+
+                // head position + camera rig
+            }
+            if (interactWithUI.GetState(m_pose.inputSource))
+            {
+                //Debug.Log(m_HasPosition + hit.transform.tag);
+                if (m_HasPosition && hit.transform.tag == "TpLimit")
+                {
+                    float b = Mathf.Tan((90 - controlerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controlerRight.transform.position.y;
+                    Debug.Log("b: " + b);
+                    Vector3 camToHit = oldHitPosition - cameraRig.position;
+                    Vector3 ctrlToHit = oldHitPosition - controlerRight.position;
+                    Debug.Log(camToHit.z);
+                    camToHit.y = 0;
+                    ctrlToHit.y = 0;
+                    float c = camToHit.magnitude * (ctrlToHit.magnitude - b) / ctrlToHit.magnitude;
+                    Vector3 translateVect = camToHit.normalized * c;
+                    Debug.Log(c);
+                    if (cameraRig.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cameraRig.position.x; }
+                    if (cameraRig.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cameraRig.position.x; }
+                    if (cameraRig.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cameraRig.position.z; }
+                    if (cameraRig.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cameraRig.position.z; }
+                    cameraRig.position += translateVect;
+
+                    //cameraRig.position += a - a.normalized*b;
+                }
+                else if (m_HasPosition && hit.transform.tag == "Wall")
+                {
+                    Transform cam = cameraRig.Find("Camera (eye)");
+                    //Debug.Log(oldControlerRotation.y + "  " + controlerRight.transform.rotation.eulerAngles.y);
+                    cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
+                    CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
+                }
+            }
         }
     }
 
@@ -731,7 +740,7 @@ public class Teleporter : MonoBehaviour
         //check if there is a hit
         if(Physics.Raycast(ray , out hit) )
         {
-            if (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || hit.transform.tag == "Card" || hit.transform.tag == "Wall" || hit.transform.tag == "tag")
+            if (hit.transform.tag == "MoveControl" || hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || hit.transform.tag == "Card" || hit.transform.tag == "Wall" || hit.transform.tag == "tag")
             {
                 m_Pointer.transform.position = hit.point;
                 return true;

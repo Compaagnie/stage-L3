@@ -24,7 +24,7 @@ public class Network_Player : MonoBehaviourPun
 
     //Tag color
     public Material blue;
-    public Material Green;
+    public Material green;
     public Material white;
     public Material red;
     public Material none;
@@ -46,6 +46,7 @@ public class Network_Player : MonoBehaviourPun
     public SteamVR_Action_Boolean interactWithUI = SteamVR_Input.GetBooleanAction("InteractUI");
 
     private bool synctag = true;
+    private bool modeMove = true;
 
 
 
@@ -95,18 +96,19 @@ public class Network_Player : MonoBehaviourPun
         if (Physics.Raycast(ray, out hit))
         {
             //change tag color of the ray cast
-            if (interactWithUI.GetStateDown(m_pose.inputSource) && hit.transform.tag == "Color tag")
+            if (interactWithUI.GetStateDown(m_pose.inputSource))
             {
-                if (synctag)
+
+                if (hit.transform.tag == "Color tag")
                 {
-                    nameR = hit.transform.GetComponent<Renderer>().material.name;
-                    photonView.RPC("ChangeRayColour", Photon.Pun.RpcTarget.All, nameR);
-                    right.GetComponent<PhotonView>().RPC("RayColour", Photon.Pun.RpcTarget.All, nameR);
-                   // Debug.Log("tag sync");
-                }
-                else
-                {
-                    if (photonView.IsMine)
+                    if (synctag)
+                    {
+                        nameR = hit.transform.GetComponent<Renderer>().material.name;
+                        photonView.RPC("ChangeRayColour", Photon.Pun.RpcTarget.All, nameR);
+                        right.GetComponent<PhotonView>().RPC("RayColour", Photon.Pun.RpcTarget.All, nameR);
+                        // Debug.Log("tag sync");
+                    }
+                    else if (photonView.IsMine)
                     {
                         nameR = hit.transform.GetComponent<Renderer>().material.name;
                         photonView.RPC("ChangeRayColour", Photon.Pun.RpcTarget.All, nameR);
@@ -116,6 +118,17 @@ public class Network_Player : MonoBehaviourPun
                             expe.curentTrial.incNbChangeTag(nameR);
                         }
                         // Debug.Log("tag not sync: photonView.IsMine");
+                    }
+                } else if (hit.transform.tag == "MoveControl")
+                {
+                    if (palette.Find("CubeMoveMode").GetComponent<Renderer>().material.name == "green (Instance)")
+                    {
+                        palette.Find("CubeMoveMode").GetComponent<Renderer>().material = red;
+                        modeMove = false;
+                    } else if (palette.Find("CubeMoveMode").GetComponent<Renderer>().material.name == "red (Instance)")
+                    {
+                        palette.Find("CubeMoveMode").GetComponent<Renderer>().material = green;
+                        modeMove = true;
                     }
                 }
             }
@@ -159,7 +172,7 @@ public class Network_Player : MonoBehaviourPun
         }
         else if(nameR == "Green (Instance)")
         {
-            rayCast.GetComponent<Renderer>().material = Green;
+            rayCast.GetComponent<Renderer>().material = green;
         }
         else if(nameR == "Red (Instance)")
         {
@@ -190,7 +203,7 @@ public class Network_Player : MonoBehaviourPun
               }
               else if (nameT == "Green (Instance)")
               {
-                PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = Green;
+                PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = green;
               }
               else if (nameT == "Red (Instance)")
               {

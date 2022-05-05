@@ -174,7 +174,7 @@ public class DragDrop : MonoBehaviourPun
         }
 
         //long clic -> move cards with tag 
-        if (longclic && UpdatePointer() && (hit.transform.tag == "Wall" || hit.transform.tag == "Card"))
+        if (false && longclic && UpdatePointer() && (hit.transform.tag == "Wall" || hit.transform.tag == "Card"))
         {
             string namewall = "";
             if (hit.transform.tag == "Card")

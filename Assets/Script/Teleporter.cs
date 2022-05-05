@@ -26,6 +26,8 @@ public class Teleporter : MonoBehaviour
 
     //clic touchpad
     public SteamVR_Action_Boolean m_TeleportAction;
+    //trigger
+    public SteamVR_Action_Boolean interactWithUI = SteamVR_Input.GetBooleanAction("InteractUI");
     //public SteamVR_Action_Boolean m_up;
     //public SteamVR_Action_Boolean m_down;
 
@@ -44,6 +46,9 @@ public class Teleporter : MonoBehaviour
     private Vector3 coordClic;
     private Vector3 coordPrev;
     private Vector3 forwardClic;
+    private Vector3 oldControlerRotation;
+    private Vector3 oldControlerPosition;
+    private Vector3 oldHitPosition;
     private float timer = 0;
 
     public bool syncTeleportation = false;
@@ -71,6 +76,7 @@ public class Teleporter : MonoBehaviour
     private GameObject player;
     public Vector3 cameraRigPos;
     Transform cameraRig;
+    Transform controlerRight;
 
 
     expe expe;
@@ -92,6 +98,7 @@ public class Teleporter : MonoBehaviour
             expe = GameObject.Find("/Salle").GetComponent<rendering>().expe;
         }
         cameraRig = SteamVR_Render.Top().origin;
+        controlerRight = cameraRig.GetChild(1);
         cameraRigPos = cameraRig.position;
         //Pointer
         m_HasPosition = UpdatePointer();
@@ -252,6 +259,50 @@ public class Teleporter : MonoBehaviour
             Menu.SetActive(false);
         }
 
+
+        if (interactWithUI.GetStateDown(m_pose.inputSource))
+        {
+            oldControlerRotation = controlerRight.transform.rotation.eulerAngles;
+            oldControlerPosition = controlerRight.transform.position;
+            oldHitPosition = m_Pointer.transform.position;
+            //Debug.Log("update old"+ oldControlerRotation);
+
+            // head position + camera rig
+        }
+        if (interactWithUI.GetState(m_pose.inputSource))
+        {
+            //Debug.Log(m_HasPosition + hit.transform.tag);
+            if (m_HasPosition && hit.transform.tag == "TpLimit")
+            {
+                float b = Mathf.Tan((90-controlerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controlerRight.transform.position.y;
+                Debug.Log("b: " + b);
+                Vector3 camToHit = oldHitPosition-cameraRig.position;
+                Vector3 ctrlToHit = oldHitPosition-controlerRight.position;
+                Debug.Log(camToHit.z);
+                camToHit.y = 0;
+                ctrlToHit.y = 0;
+                float c = camToHit.magnitude * (ctrlToHit.magnitude - b) / ctrlToHit.magnitude;
+                Vector3 translateVect = camToHit.normalized * c;
+                Debug.Log(c);
+                if (cameraRig.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cameraRig.position.x;  }
+                if (cameraRig.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cameraRig.position.x; }
+                if (cameraRig.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cameraRig.position.z; }
+                if (cameraRig.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cameraRig.position.z; }
+                cameraRig.position += translateVect;
+
+                //cameraRig.position += a - a.normalized*b;
+            }
+            Vector3 headPosition = SteamVR_Render.Top().head.position;
+            //Transform cameraRig = SteamVR_Render.Top().origin;
+
+            //player possition
+            Vector3 groundPosition = new Vector3(headPosition.x, cameraRig.position.y, headPosition.z);
+            Transform cam = cameraRig.Find("Camera (eye)");
+            //Debug.Log(oldControlerRotation.y + "  " + controlerRight.transform.rotation.eulerAngles.y);
+            cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
+            CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
+            
+        }
     }
 
     private void tryTeleport()
@@ -333,7 +384,7 @@ public class Teleporter : MonoBehaviour
 
         
         
-        else if (hit.transform.tag == "Tp" )
+        else if (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" )
         {
             Vector3 posPointer = m_Pointer.transform.position;
             if (posPointer.x < -3.5) { posPointer.x = -3.5f; }
@@ -680,7 +731,7 @@ public class Teleporter : MonoBehaviour
         //check if there is a hit
         if(Physics.Raycast(ray , out hit) )
         {
-            if (hit.transform.tag == "Tp" || hit.transform.tag == "Card" || hit.transform.tag == "Wall" || hit.transform.tag == "tag")
+            if (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || hit.transform.tag == "Card" || hit.transform.tag == "Wall" || hit.transform.tag == "tag")
             {
                 m_Pointer.transform.position = hit.point;
                 return true;

@@ -15,7 +15,7 @@ namespace ExitGames.Demos.DemoPunVoice {
     public class ThirdPersonController : BaseController {
 
         [SerializeField]
-        private float movingTurnSpeed = 360;
+        private readonly float movingTurnSpeed = 360;
 
         protected override void Move(float h, float v) {
             this.rigidBody.velocity = v * this.speed * this.transform.forward;

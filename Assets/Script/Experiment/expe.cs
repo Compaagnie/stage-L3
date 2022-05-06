@@ -12,15 +12,15 @@ public class expe
     public string participant = "P01";
     public int startTrial = 1;
 
-    private string expeDescriptionFile = "Experiments/expe";
+    private readonly string expeDescriptionFile = "Experiments/expe";
     //static string[] letters = {"H", "N", "K", "R"};
-    static string[] letters = { "evertnone", "ehornone" };
-    private List<Trial> theTrials;
+    static readonly string[] letters = { "evertnone", "ehornone" };
+    private readonly List<Trial> theTrials;
     public Trial curentTrial;
-    private int ctrial = -1;
+    private readonly int ctrial = -1;
     private StreamWriter writer;
     private StreamWriter kineWriter;
-    private bool haveEyesCondition = false;
+    private readonly bool haveEyesCondition = false;
 
     static class ThreadSafeRandom
     {

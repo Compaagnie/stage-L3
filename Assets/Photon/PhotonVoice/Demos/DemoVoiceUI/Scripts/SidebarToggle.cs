@@ -7,13 +7,13 @@
     {
         #pragma warning disable 649
         [SerializeField]
-        private Button sidebarButton;
+        private readonly Button sidebarButton;
         
         [SerializeField]
-        private RectTransform panelsHolder;
+        private readonly RectTransform panelsHolder;
         #pragma warning restore 649
 
-        private float sidebarWidth = 300f; // todo: get width dynamically at runtime
+        private readonly float sidebarWidth = 300f; // todo: get width dynamically at runtime
 
         private bool sidebarOpen = true;
 

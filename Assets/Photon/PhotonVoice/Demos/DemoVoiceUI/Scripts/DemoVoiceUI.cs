@@ -16,118 +16,118 @@ namespace Photon.Voice.Unity.Demos.DemoVoiceUI
     {
         #pragma warning disable 649
         [SerializeField]
-        private Text connectionStatusText;
+        private readonly Text connectionStatusText;
 
         [SerializeField]
-        private Text serverStatusText;
+        private readonly Text serverStatusText;
 
         [SerializeField]
-        private Text roomStatusText;
+        private readonly Text roomStatusText;
 
         [SerializeField]
-        private Text inputWarningText;
+        private readonly Text inputWarningText;
 
         [SerializeField]
-        private Text rttText;
+        private readonly Text rttText;
 
         [SerializeField]
-        private Text rttVariationText;
+        private readonly Text rttVariationText;
 
 		[SerializeField]
-        private Text packetLossWarningText;
+        private readonly Text packetLossWarningText;
 
         [SerializeField]
-        private InputField localNicknameText;
+        private readonly InputField localNicknameText;
 
         [SerializeField]
-        private Toggle debugEchoToggle;
+        private readonly Toggle debugEchoToggle;
 
         [SerializeField]
-        private Toggle reliableTransmissionToggle;
+        private readonly Toggle reliableTransmissionToggle;
 
         [SerializeField]
-        private Toggle encryptionToggle;
+        private readonly Toggle encryptionToggle;
 
         [SerializeField]
-        private GameObject webRtcDspGameObject;
+        private readonly GameObject webRtcDspGameObject;
 
         [SerializeField]
-        private Toggle aecToggle;
+        private readonly Toggle aecToggle;
         
         [SerializeField]
-        private Toggle aecHighPassToggle;
+        private readonly Toggle aecHighPassToggle;
 
         [SerializeField]
-        private InputField reverseStreamDelayInputField;
+        private readonly InputField reverseStreamDelayInputField;
 
         [SerializeField]
-        private Toggle noiseSuppressionToggle;
+        private readonly Toggle noiseSuppressionToggle;
 
         [SerializeField]
-        private Toggle agcToggle;
+        private readonly Toggle agcToggle;
         
         [SerializeField]
-        private Slider agcCompressionGainSlider;
+        private readonly Slider agcCompressionGainSlider;
 
         [SerializeField]
-        private Toggle vadToggle;
+        private readonly Toggle vadToggle;
         
         [SerializeField]
-        private Toggle muteToggle;
+        private readonly Toggle muteToggle;
 
         [SerializeField]
-        private Toggle streamAudioClipToggle;
+        private readonly Toggle streamAudioClipToggle;
 
         [SerializeField]
-        private Toggle audioToneToggle;
+        private readonly Toggle audioToneToggle;
 
         [SerializeField]
-        private Toggle dspToggle;
+        private readonly Toggle dspToggle;
 
         [SerializeField]
-        private Toggle highPassToggle;
+        private readonly Toggle highPassToggle;
 
         [SerializeField]
-        private Toggle photonVadToggle;
+        private readonly Toggle photonVadToggle;
         
         [SerializeField]
-        private GameObject microphoneSetupGameObject;
+        private readonly GameObject microphoneSetupGameObject;
 
         [SerializeField]
-        private bool defaultTransmitEnabled = false;
+        private readonly bool defaultTransmitEnabled = false;
 
         [SerializeField]
-        private int screenWidth = 800;
+        private readonly int screenWidth = 800;
 
         [SerializeField]
-        private int screenHeight = 600;
+        private readonly int screenHeight = 600;
 
         [SerializeField]
-        private bool fullScreen;
+        private readonly bool fullScreen;
 
         [SerializeField]
-        private InputField roomNameInputField;
+        private readonly InputField roomNameInputField;
 
         [SerializeField]
-        private InputField globalMinDelaySoftInputField;
+        private readonly InputField globalMinDelaySoftInputField;
         
         [SerializeField]
-        private InputField globalMaxDelaySoftInputField;
+        private readonly InputField globalMaxDelaySoftInputField;
         
         [SerializeField]
-        private InputField globalMaxDelayHardInputField;
+        private readonly InputField globalMaxDelayHardInputField;
 
         [SerializeField]
-        private int rttYellowThreshold = 100;
+        private readonly int rttYellowThreshold = 100;
 
         [SerializeField]
-        private int rttRedThreshold = 160;
+        private readonly int rttRedThreshold = 160;
 
         [SerializeField]
-        private int rttVariationYellowThreshold = 25;
+        private readonly int rttVariationYellowThreshold = 25;
 
         [SerializeField]
-        private int rttVariationRedThreshold = 50;
+        private readonly int rttVariationRedThreshold = 50;
         #pragma warning restore 649
 
         private GameObject compressionGainGameObject;

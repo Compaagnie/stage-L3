@@ -31,7 +31,7 @@ namespace ExitGames.Demos.DemoPunVoice
         protected float speed = 5f;
 
         [SerializeField]
-        private float cameraDistance = 0f;
+        private readonly float cameraDistance = 0f;
 
         protected virtual void OnEnable()
         {

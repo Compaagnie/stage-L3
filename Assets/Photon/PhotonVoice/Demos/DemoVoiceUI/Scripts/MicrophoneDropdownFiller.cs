@@ -61,18 +61,18 @@ namespace Photon.Voice.Unity.Demos.DemoVoiceUI
 
         #pragma warning disable 649
         [SerializeField]
-        private Dropdown micDropdown;
+        private readonly Dropdown micDropdown;
 
         [SerializeField]
-        private Recorder recorder;
+        private readonly Recorder recorder;
 
         [SerializeField]
         [FormerlySerializedAs("RefreshButton")]
-        private GameObject refreshButton;
+        private readonly GameObject refreshButton;
 
         [SerializeField]
         [FormerlySerializedAs("ToggleButton")]
-        private GameObject toggleButton;
+        private readonly GameObject toggleButton;
         #pragma warning restore 649
 
         private Toggle photonToggle;

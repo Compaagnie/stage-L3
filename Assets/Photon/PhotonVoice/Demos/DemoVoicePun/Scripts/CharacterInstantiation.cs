@@ -37,19 +37,19 @@ namespace ExitGames.Demos.DemoPunVoice
         public static event OnCharacterInstantiated CharacterInstantiated;
 
         [SerializeField] 
-        private byte manualInstantiationEventCode = 1;
+        private readonly byte manualInstantiationEventCode = 1;
 
         protected int lastUsedSpawnPointIndex = -1;
 
         #pragma warning disable 649
         [SerializeField]
-        private bool manualInstantiation;
+        private readonly bool manualInstantiation;
 
         [SerializeField] 
-        private bool differentPrefabs;
+        private readonly bool differentPrefabs;
 
-        [SerializeField] private string localPrefabSuffix;
-        [SerializeField] private string remotePrefabSuffix;
+        [SerializeField] private readonly string localPrefabSuffix;
+        [SerializeField] private readonly string remotePrefabSuffix;
         #pragma warning restore 649
 
         public override void OnJoinedRoom()

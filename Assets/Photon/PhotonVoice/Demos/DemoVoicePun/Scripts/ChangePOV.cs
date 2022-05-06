@@ -27,16 +27,16 @@ namespace ExitGames.Demos.DemoPunVoice {
         private Camera defaultCamera;
 
         [SerializeField]
-        private GameObject ButtonsHolder;
+        private readonly GameObject ButtonsHolder;
 
         [SerializeField]
-        private Button FirstPersonCamActivator;
+        private readonly Button FirstPersonCamActivator;
 
         [SerializeField]
-        private Button ThirdPersonCamActivator;
+        private readonly Button ThirdPersonCamActivator;
 
         [SerializeField]
-        private Button OrthographicCamActivator;
+        private readonly Button OrthographicCamActivator;
 
         public delegate void OnCameraChanged(Camera newCamera);
 

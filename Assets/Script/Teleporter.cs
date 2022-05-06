@@ -36,28 +36,29 @@ public class Teleporter : MonoBehaviour
 
     //Teleportation parameters 
     private bool m_IsTeleportoting = false;
-    private float m_FadeTime = 0.5f;
+    private readonly float m_FadeTime = 0.5f;
     
     // State machine
     private bool wait = false;
     private bool isMoving = false;
     private bool longclic = false;
-    private bool doubleclick = false;
+    private readonly bool doubleclick = false;
     private Vector3 coordClic;
     private Vector3 coordPrev;
     private Vector3 forwardClic;
     private Vector3 oldControlerRotation;
     private Vector3 oldHitPosition;
-    Vector3 plusX = new Vector3(0.1f, 0f, 0f);
-    Vector3 minusX = new Vector3(-0.1f, 0f, 0f);
-    Vector3 plusZ = new Vector3(0f, 0f, 0.1f);
-    Vector3 minusZ = new Vector3(0f, 0f, -0.1f);
+    private const float moveSpeed = 0.05f;
+    Vector3 plusX = new Vector3(moveSpeed, 0f, 0f);
+    Vector3 minusX = new Vector3(-moveSpeed, 0f, 0f);
+    Vector3 plusZ = new Vector3(0f, 0f, moveSpeed);
+    Vector3 minusZ = new Vector3(0f, 0f, -moveSpeed);
 
     private float timer = 0;
 
     public bool syncTeleportation = false;
     private string teleporationMode = "Not syncro";
-    float desiredDistance = 1;
+    readonly float desiredDistance = 1;
 
 
     private bool n = false;

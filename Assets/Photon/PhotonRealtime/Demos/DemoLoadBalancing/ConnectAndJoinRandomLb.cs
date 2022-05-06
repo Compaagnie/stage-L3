@@ -14,7 +14,7 @@ namespace Photon.Realtime.Demo
     public class ConnectAndJoinRandomLb : MonoBehaviour, IConnectionCallbacks, IMatchmakingCallbacks, ILobbyCallbacks
     {
         [SerializeField]
-        private AppSettings appSettings = new AppSettings();
+        private readonly AppSettings appSettings = new AppSettings();
         private LoadBalancingClient lbc;
 
         private ConnectionHandler ch;

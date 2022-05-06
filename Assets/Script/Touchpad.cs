@@ -11,7 +11,7 @@ public class Touchpad : MonoBehaviour
     private SteamVR_Behaviour_Pose m_pose = null;
     private bool m_HasPosition = false;
     private bool m_IsTeleportoting = false;
-    private float m_FadeTime = 0.5f;
+    private readonly float m_FadeTime = 0.5f;
     RaycastHit hit;
 
     // Start is called before the first frame update

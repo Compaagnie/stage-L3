@@ -7,13 +7,13 @@
     {
         #pragma warning disable 649
         [SerializeField]
-        private Text volumeText;
+        private readonly Text volumeText;
         [SerializeField]
-        private Slider volumeSlider;
+        private readonly Slider volumeSlider;
         [SerializeField]
-        private AudioSource audioSource;
+        private readonly AudioSource audioSource;
         [SerializeField]
-        private float initialVolume = 0.125f;
+        private readonly float initialVolume = 0.125f;
         #pragma warning restore 649
 
         private void Awake()

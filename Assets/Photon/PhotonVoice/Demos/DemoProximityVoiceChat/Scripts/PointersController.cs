@@ -6,9 +6,9 @@ public class PointersController : MonoBehaviour
 {
     #pragma warning disable 649
     [SerializeField]
-    private GameObject pointerDown;
+    private readonly GameObject pointerDown;
     [SerializeField]
-    private GameObject pointerUp;
+    private readonly GameObject pointerUp;
     #pragma warning restore 649
 
     private PhotonVoiceView photonVoiceView;

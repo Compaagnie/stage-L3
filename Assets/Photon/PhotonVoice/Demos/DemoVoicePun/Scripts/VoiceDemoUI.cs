@@ -34,37 +34,37 @@ namespace ExitGames.Demos.DemoPunVoice
     private static extern int egpvgetLocalUserID(); // returns the user ID of the user at index 0 in the list of local users
 #endif
         [SerializeField]
-        private Text punState;
+        private readonly Text punState;
         [SerializeField]
-        private Text voiceState;
+        private readonly Text voiceState;
         
         private PhotonVoiceNetwork punVoiceNetwork;
 
         private Canvas canvas;
 
         [SerializeField]
-        private Button punSwitch;
+        private readonly Button punSwitch;
         private Text punSwitchText;
         [SerializeField]
-        private Button voiceSwitch;
+        private readonly Button voiceSwitch;
         private Text voiceSwitchText;
         [SerializeField]
-        private Button calibrateButton;
+        private readonly Button calibrateButton;
         private Text calibrateText;
 
         [SerializeField]
-        private Text voiceDebugText;
+        private readonly Text voiceDebugText;
 
         public Recorder recorder;
 
         [SerializeField]
-        private GameObject inGameSettings;
+        private readonly GameObject inGameSettings;
 
         [SerializeField]
-        private GameObject globalSettings;
+        private readonly GameObject globalSettings;
 
         [SerializeField]
-        private Text devicesInfoText;
+        private readonly Text devicesInfoText;
 
         private GameObject debugGO;
 
@@ -106,7 +106,7 @@ namespace ExitGames.Demos.DemoPunVoice
         public static event OnDebugToggle DebugToggled;
 
         [SerializeField]
-        private int calibrationMilliSeconds = 2000;
+        private readonly int calibrationMilliSeconds = 2000;
 
         private void Awake()
         {

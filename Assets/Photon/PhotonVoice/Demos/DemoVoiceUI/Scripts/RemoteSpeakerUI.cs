@@ -11,19 +11,19 @@
     {
         #pragma warning disable 649
         [SerializeField]
-        private Text nameText;
+        private readonly Text nameText;
         [SerializeField]
         protected Image remoteIsMuting;
         [SerializeField]
-        private Image remoteIsTalking;
+        private readonly Image remoteIsTalking;
         [SerializeField]
-        private InputField minDelaySoftInputField;
+        private readonly InputField minDelaySoftInputField;
         [SerializeField]
-        private InputField maxDelaySoftInputField;
+        private readonly InputField maxDelaySoftInputField;
         [SerializeField]
-        private InputField maxDelayHardInputField;
+        private readonly InputField maxDelayHardInputField;
         [SerializeField]
-        private Text bufferLagText;
+        private readonly Text bufferLagText;
         #pragma warning restore 649
         protected Speaker speaker;
 

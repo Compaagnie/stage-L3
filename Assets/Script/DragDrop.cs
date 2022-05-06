@@ -41,7 +41,7 @@ public class DragDrop : MonoBehaviourPun
     public Texture tex;
    
     private string nameM = "";
-    private string nameR = "";
+    private readonly string nameR = "";
     //player
     public GameObject player;
 

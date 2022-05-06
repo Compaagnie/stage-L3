@@ -9,13 +9,13 @@
     {
         #pragma warning disable 649
         [SerializeField]
-        private Dropdown frameDurationDropdown;
+        private readonly Dropdown frameDurationDropdown;
         [SerializeField]
-        private Dropdown samplingRateDropdown;
+        private readonly Dropdown samplingRateDropdown;
         [SerializeField]
-        private InputField bitrateInputField;
+        private readonly InputField bitrateInputField;
         [SerializeField]
-        private Recorder recorder;
+        private readonly Recorder recorder;
         #pragma warning restore 649
 
         private static readonly List<string> frameDurationOptions = new List<string>

@@ -27,13 +27,13 @@ namespace ExitGames.Demos.DemoPunVoice
         private PhotonVoiceView photonVoiceView;
 
         [SerializeField]
-        private Image recorderSprite;
+        private readonly Image recorderSprite;
 
         [SerializeField]
-        private Image speakerSprite;
+        private readonly Image speakerSprite;
 
         [SerializeField]
-        private Text bufferLagText;
+        private readonly Text bufferLagText;
 
         private bool showSpeakerLag;
 

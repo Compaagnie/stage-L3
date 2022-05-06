@@ -43,7 +43,7 @@ public class Trial
 
     public string pathLog = "";
     public StreamWriter kineWriter;
-    private float timer = 0;
+    private readonly float timer = 0;
 
 
     public Trial(

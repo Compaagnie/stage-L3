@@ -8,8 +8,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class ProximityVoiceTrigger : VoiceComponent
 {
-    private List<byte> groupsToAdd = new List<byte>();
-    private List<byte> groupsToRemove = new List<byte>();
+    private readonly List<byte> groupsToAdd = new List<byte>();
+    private readonly List<byte> groupsToRemove = new List<byte>();
 
     [SerializeField] // TODO: make it readonly
     private byte[] subscribedGroups;

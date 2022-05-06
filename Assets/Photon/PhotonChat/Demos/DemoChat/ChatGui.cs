@@ -80,7 +80,7 @@ namespace Photon.Chat.Demo
         public Text UserIdText; // set in inspector
 
         // private static string WelcomeText = "Welcome to chat. Type \\help to list commands.";
-        private static string HelpText = "\n    -- HELP --\n" +
+        private static readonly string HelpText = "\n    -- HELP --\n" +
             "To subscribe to channel(s) (channelnames are case sensitive) :  \n" +
                 "\t<color=#E07B00>\\subscribe</color> <color=green><list of channelnames></color>\n" +
                 "\tor\n" +

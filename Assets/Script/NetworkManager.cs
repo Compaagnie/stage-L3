@@ -13,10 +13,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         base.OnConnectedToMaster();
 
         // Create the room
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = 3;
-        roomOptions.IsVisible = true;
-        roomOptions.IsOpen = true;
+        RoomOptions roomOptions = new RoomOptions
+        {
+            MaxPlayers = 3,
+            IsVisible = true,
+            IsOpen = true
+        };
         PhotonNetwork.JoinOrCreateRoom("Room 1", roomOptions, TypedLobby.Default);
     }
     private void Awake()

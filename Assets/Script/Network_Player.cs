@@ -30,6 +30,7 @@ public class Network_Player : MonoBehaviourPun
     public Material none;
 
     //camera tracker
+    private GameObject cameraRig;
     private GameObject headset;
     private GameObject right;
     private GameObject left;
@@ -57,6 +58,7 @@ public class Network_Player : MonoBehaviourPun
         //photonView = GetComponent<PhotonView>();
 
         //room + wall + camera
+        cameraRig = GameObject.Find("/[CameraRig]");
         headset = GameObject.Find("Camera (eye)");
         right = GameObject.Find("/[CameraRig]/Controller (right)");
         left = GameObject.Find("/[CameraRig]/Controller (left)");
@@ -170,11 +172,11 @@ public class Network_Player : MonoBehaviourPun
         {
             rayCast.GetComponent<Renderer>().material = blue;
         }
-        else if(nameR == "Green (Instance)")
+        else if(nameR == "green (Instance)")
         {
             rayCast.GetComponent<Renderer>().material = green;
         }
-        else if(nameR == "Red (Instance)")
+        else if(nameR == "red (Instance)")
         {
             rayCast.GetComponent<Renderer>().material = red;
         }
@@ -201,11 +203,11 @@ public class Network_Player : MonoBehaviourPun
               {
                 PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = blue;
               }
-              else if (nameT == "Green (Instance)")
+              else if (nameT == "green (Instance)")
               {
                 PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = green;
               }
-              else if (nameT == "Red (Instance)")
+              else if (nameT == "red (Instance)")
               {
                 PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = red;
               }

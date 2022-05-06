@@ -47,8 +47,12 @@ public class Teleporter : MonoBehaviour
     private Vector3 coordPrev;
     private Vector3 forwardClic;
     private Vector3 oldControlerRotation;
-    private Vector3 oldControlerPosition;
     private Vector3 oldHitPosition;
+    Vector3 plusX = new Vector3(0.1f, 0f, 0f);
+    Vector3 minusX = new Vector3(-0.1f, 0f, 0f);
+    Vector3 plusZ = new Vector3(0f, 0f, 0.1f);
+    Vector3 minusZ = new Vector3(0f, 0f, -0.1f);
+
     private float timer = 0;
 
     public bool syncTeleportation = false;
@@ -268,13 +272,13 @@ public class Teleporter : MonoBehaviour
                 Menu.SetActive(false);
             }
         }
-
-        if (modeMove)
+        else
         {
+            Transform cam = cameraRig.Find("Camera (eye)");
+
             if (interactWithUI.GetStateDown(m_pose.inputSource))
             {
                 oldControlerRotation = controlerRight.transform.rotation.eulerAngles;
-                oldControlerPosition = controlerRight.transform.position;
                 oldHitPosition = m_Pointer.transform.position;
                 //Debug.Log("update old"+ oldControlerRotation);
 
@@ -295,21 +299,70 @@ public class Teleporter : MonoBehaviour
                     float c = camToHit.magnitude * (ctrlToHit.magnitude - b) / ctrlToHit.magnitude;
                     Vector3 translateVect = camToHit.normalized * c;
                     Debug.Log(c);
-                    if (cameraRig.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cameraRig.position.x; }
-                    if (cameraRig.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cameraRig.position.x; }
-                    if (cameraRig.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cameraRig.position.z; }
-                    if (cameraRig.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cameraRig.position.z; }
+                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
+                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
+                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
+                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                     cameraRig.position += translateVect;
 
                     //cameraRig.position += a - a.normalized*b;
                 }
                 else if (m_HasPosition && hit.transform.tag == "Wall")
                 {
-                    Transform cam = cameraRig.Find("Camera (eye)");
                     //Debug.Log(oldControlerRotation.y + "  " + controlerRight.transform.rotation.eulerAngles.y);
                     cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
                     CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
+                } else
+                {
+                    oldControlerRotation = controlerRight.transform.rotation.eulerAngles;
+                    oldHitPosition = m_Pointer.transform.position;
                 }
+            }
+
+            if (m_TeleportAction.GetState(m_pose.inputSource))
+            {
+                Quaternion rotation = Quaternion.Euler(cam.rotation.eulerAngles);
+                Matrix4x4 m = Matrix4x4.Rotate(rotation);
+                Vector3 translateVect;
+                if (position.x < -0.5)
+                {
+                    translateVect = m.MultiplyPoint3x4(minusX);
+                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
+                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
+                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
+                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
+                }
+                else if(position.y > 0.5)
+                {
+                    translateVect = m.MultiplyPoint3x4(plusZ);
+                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
+                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
+                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
+                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
+                }
+                else if (position.y < -0.5)
+                {
+                    translateVect = m.MultiplyPoint3x4(minusZ);
+                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
+                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
+                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
+                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
+                }
+                else if (position.x > 0.5)
+                {
+                    translateVect = m.MultiplyPoint3x4(plusX);
+                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
+                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
+                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
+                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
+                }
+                else
+                {
+                    translateVect = new Vector3(0, 0, 0);
+                }
+                translateVect.y = 0;
+                cameraRig.position += translateVect;
+
             }
         }
     }

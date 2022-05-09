@@ -110,7 +110,7 @@ public class DragDrop : MonoBehaviourPun
             timer = 0;
         }
 
-        if (interactWithUI.GetStateDown(m_pose.inputSource))
+        if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
         {
             if (hit.transform.tag == "Card") {
                 //request multi user
@@ -119,11 +119,10 @@ public class DragDrop : MonoBehaviourPun
                 ob = hit.transform.gameObject;
                 
             }
-           
-            if (hit.transform.tag == "MoveControl")
+            else if (hit.transform.tag == "MoveControl")
             {
                 modeMove = !modeMove;
-                //Debug.Log(modeMove);
+                Debug.Log(modeMove);
             }
 
             coordClic = hit.transform.position;
@@ -145,7 +144,7 @@ public class DragDrop : MonoBehaviourPun
         if (ob != null && UpdatePointer()  &&  hit.transform.tag == "trash")
         {
             //Debug.Log("destroy");
-            photonView.GetComponent<PhotonView>().RPC("AddobUndo", Photon.Pun.RpcTarget.All, ob.GetComponent<PhotonView>().ViewID);
+            photonView.GetComponent<PhotonView>().RPC("AddObUndo", Photon.Pun.RpcTarget.All, ob.GetComponent<PhotonView>().ViewID);
             player = GameObject.Find("Network Player(Clone)");
             player.GetComponent<PhotonView>().RPC("removeTag", Photon.Pun.RpcTarget.AllBuffered, ob.GetComponent<PhotonView>().ViewID);
 
@@ -165,7 +164,7 @@ public class DragDrop : MonoBehaviourPun
             GameObject temp = obUndo[obUndo.Count-1];
             salle = GameObject.Find("Salle");
             salle.GetComponent<PhotonView>().RPC("UndoCard", Photon.Pun.RpcTarget.All, temp.GetComponent<PhotonView>().ViewID , obUndo.Count);
-            photonView.GetComponent<PhotonView>().RPC("RemoveobUndo", Photon.Pun.RpcTarget.All, temp.GetComponent<PhotonView>().ViewID);
+            photonView.GetComponent<PhotonView>().RPC("RemoveObUndo", Photon.Pun.RpcTarget.All, temp.GetComponent<PhotonView>().ViewID);
 
             expe.curentTrial.incNbUndoCard();
         }
@@ -177,11 +176,12 @@ public class DragDrop : MonoBehaviourPun
             {
                longclic = true;
                wait = false;
-              // Debug.Log("long clic");
+              Debug.Log("long clic");
             }
         }
 
         //long clic -> move cards with tag 
+        //Debug.Log(!modeMove && longclic && UpdatePointer() && (hit.transform.tag == "Wall" || hit.transform.tag == "Card") );
         if (!modeMove && longclic && UpdatePointer() && (hit.transform.tag == "Wall" || hit.transform.tag == "Card"))
         {
             string namewall = "";
@@ -228,10 +228,11 @@ public class DragDrop : MonoBehaviourPun
     void Initempty(string nameR, string murName, int OB)
     {
         Transform mur;
+        
         if (murName == "MUR B") { mur = MurB; }
         else if (murName == "MUR L") { mur = MurL; }
         else { mur = MurR; }
-
+        
 
         PhotonView.Find(OB).transform.parent = mur;
         PhotonView.Find(OB).transform.rotation = mur.rotation;
@@ -239,7 +240,7 @@ public class DragDrop : MonoBehaviourPun
         PhotonView.Find(OB).transform.localScale = new Vector3(1, 1, 1);
 
         Vector3 v = MurB.localScale;
-        float w,h;
+        float w, h;
         float div = 2 * 1000f;
         h = tex.height / div;
         w = tex.width / div;
@@ -286,7 +287,7 @@ public class DragDrop : MonoBehaviourPun
     [PunRPC]
     void TeleportCard(string nameR, string murName)
     {
-        //Debug.Log("name wall " + murName);
+        Debug.Log("name wall " + murName);
         if (nameR == "transparent (Instance)") { return; }
         salle = GameObject.Find("Salle");
         List<GameObject> cardList = salle.GetComponent<rendering>().cardList;
@@ -299,10 +300,11 @@ public class DragDrop : MonoBehaviourPun
         Transform mur;
 
         //Check the walls
+        
         if (murName == "MUR B") { mur = MurB; }
         else if (murName == "MUR L") { mur = MurL; }
         else { mur = MurR; }
-
+        
      
 
         Vector3 v = MurB.localScale;
@@ -417,33 +419,34 @@ public class DragDrop : MonoBehaviourPun
     {
         float w, h;
         float div = 2 * 1000f;
-        Transform Mur;
+        Transform mur;
 
 
         //what wall
+        
         if (nameT == "MUR L")
         {
-            Mur = MurL;
+            mur = MurL;
         }
         else if (nameT == "MUR B")
         {
-            Mur = MurB;
+            mur = MurB;
         }
         else// if (nameT == "MUR R")
         {
-            Mur = MurR;
+            mur = MurR;
 
         }
 
         //teleport the card
-        Vector3 v = Mur.localScale;
+        Vector3 v = mur.localScale;
         h = tex.height / div;
         w = tex.width / div;
 
         w = w * (v.y / v.x);
         Debug.Log("Changement de mur ");
-        PhotonView.Find(OB).gameObject.transform.parent = Mur;
-        PhotonView.Find(OB).gameObject.transform.rotation = Mur.rotation;
+        PhotonView.Find(OB).gameObject.transform.parent = mur;
+        PhotonView.Find(OB).gameObject.transform.rotation = mur.rotation;
 
         PhotonView.Find(OB).gameObject.transform.localScale = new Vector3(w, h, 1.0f);
     }
@@ -454,7 +457,7 @@ public class DragDrop : MonoBehaviourPun
         float div = 2 * 1000f;
         Transform Mur;
 
-
+        
         //what wall
         if (nameT == "MUR L")
         {
@@ -492,13 +495,13 @@ public class DragDrop : MonoBehaviourPun
     }
 
     [PunRPC]
-    void AddobUndo(int OB)
+    void AddObUndo(int OB)
     {
         obUndo.Add(PhotonView.Find(OB).gameObject);
     }
 
     [PunRPC]
-    void RemoveobUndo(int OB)
+    void RemoveObUndo(int OB)
     {
         obUndo.Remove(PhotonView.Find(OB).gameObject);
     }

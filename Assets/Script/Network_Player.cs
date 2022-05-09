@@ -77,6 +77,7 @@ public class Network_Player : MonoBehaviourPun
             head.gameObject.SetActive(false);
             torse.gameObject.SetActive(false);
         }
+        nameR = rayCast.GetComponent<Renderer>().material.name.ToString();
     }
 
     // Update is called once per frame

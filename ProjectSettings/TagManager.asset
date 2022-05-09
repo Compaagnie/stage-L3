@@ -16,6 +16,9 @@ TagManager:
   - Red tag
   - Color tag
   - TpLimit
+  - MoveControlTP
+  - MoveControlJoy
+  - MoveControlDrag
   - MoveControl
   layers:
   - Default

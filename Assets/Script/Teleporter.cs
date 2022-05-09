@@ -65,7 +65,7 @@ public class Teleporter : MonoBehaviour
     private bool s = false;
     private bool e = false;
     private bool w = false;
-    private bool modeMove = true;
+    private string moveMode = "drag";
     public bool synctag = true;
    
 
@@ -109,10 +109,17 @@ public class Teleporter : MonoBehaviour
 
         if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
         {
-            if (hit.transform.tag == "MoveControl")
+            if (hit.transform.tag == "MoveControlTP")
             {
-                modeMove = !modeMove;
-                //Debug.Log(modeMove);
+                moveMode = "TP";
+            }
+            else if (hit.transform.tag == "MoveControlJoy")
+            {
+                moveMode = "joy";
+            }
+            else if (hit.transform.tag == "MoveControlDrag")
+            {
+                moveMode = "drag";
             }
         }
 
@@ -142,8 +149,9 @@ public class Teleporter : MonoBehaviour
 
         //Teleport
         position = SteamVR_Actions.default_Pos.GetAxis(SteamVR_Input_Sources.Any);
+        Transform cam = cameraRig.Find("Camera (eye)");
 
-        if (!modeMove)
+        if (moveMode=="TP")
         {
             if (m_TeleportAction.GetStateDown(m_pose.inputSource))
             {
@@ -273,10 +281,56 @@ public class Teleporter : MonoBehaviour
                 Menu.SetActive(false);
             }
         }
+        else if (moveMode == "joy")
+        {
+            if (m_TeleportAction.GetState(m_pose.inputSource))
+            {
+                Quaternion rotation = Quaternion.Euler(controlerRight.rotation.eulerAngles);
+                Matrix4x4 m = Matrix4x4.Rotate(rotation);
+                Vector3 translateVect;
+                if (position.x < -0.5)
+                {
+                    translateVect = m.MultiplyPoint3x4(minusX);
+                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
+                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
+                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
+                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
+                }
+                else if (position.y > 0.5)
+                {
+                    translateVect = m.MultiplyPoint3x4(plusZ);
+                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
+                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
+                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
+                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
+                }
+                else if (position.y < -0.5)
+                {
+                    translateVect = m.MultiplyPoint3x4(minusZ);
+                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
+                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
+                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
+                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
+                }
+                else if (position.x > 0.5)
+                {
+                    translateVect = m.MultiplyPoint3x4(plusX);
+                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
+                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
+                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
+                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
+                }
+                else
+                {
+                    translateVect = new Vector3(0, 0, 0);
+                }
+                translateVect.y = 0;
+                cameraRig.position += translateVect;
+
+            }
+        }
         else
         {
-            Transform cam = cameraRig.Find("Camera (eye)");
-
             if (interactWithUI.GetStateDown(m_pose.inputSource))
             {
                 oldControlerRotation = controlerRight.transform.rotation.eulerAngles;
@@ -320,51 +374,6 @@ public class Teleporter : MonoBehaviour
                 }
             }
 
-            if (m_TeleportAction.GetState(m_pose.inputSource))
-            {
-                Quaternion rotation = Quaternion.Euler(cam.rotation.eulerAngles);
-                Matrix4x4 m = Matrix4x4.Rotate(rotation);
-                Vector3 translateVect;
-                if (position.x < -0.5)
-                {
-                    translateVect = m.MultiplyPoint3x4(minusX);
-                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
-                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
-                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
-                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
-                }
-                else if(position.y > 0.5)
-                {
-                    translateVect = m.MultiplyPoint3x4(plusZ);
-                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
-                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
-                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
-                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
-                }
-                else if (position.y < -0.5)
-                {
-                    translateVect = m.MultiplyPoint3x4(minusZ);
-                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
-                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
-                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
-                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
-                }
-                else if (position.x > 0.5)
-                {
-                    translateVect = m.MultiplyPoint3x4(plusX);
-                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
-                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
-                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
-                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
-                }
-                else
-                {
-                    translateVect = new Vector3(0, 0, 0);
-                }
-                translateVect.y = 0;
-                cameraRig.position += translateVect;
-
-            }
         }
     }
 
@@ -696,7 +705,6 @@ public class Teleporter : MonoBehaviour
             Cube.transform.position += translation; // teleportation
         }
 
-        SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen
 
         if (syncTeleportation)
         {
@@ -762,6 +770,8 @@ public class Teleporter : MonoBehaviour
             syncTeleportation = false;
         }
 
+        SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen
+
         m_IsTeleportoting = false;
 
     }
@@ -794,7 +804,7 @@ public class Teleporter : MonoBehaviour
         //check if there is a hit
         if(Physics.Raycast(ray , out hit) )
         {
-            if (hit.transform.tag == "MoveControl" || hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || hit.transform.tag == "Card" || hit.transform.tag == "Wall" || hit.transform.tag == "tag")
+            if (hit.transform.tag == "MoveControlJoy" || hit.transform.tag == "MoveControlDrag" || hit.transform.tag == "MoveControlTP" || hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || hit.transform.tag == "Card" || hit.transform.tag == "Wall" || hit.transform.tag == "tag")
             {
                 m_Pointer.transform.position = hit.point;
                 return true;

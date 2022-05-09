@@ -48,7 +48,7 @@ public class DragDrop : MonoBehaviourPun
     GameObject emptyToMoveCard;
     private bool cardSeletedForGroupMove = false;
     private Vector3 loalscaleEmpty;
-    private bool modeMove = true;
+    private string moveMode = "drag";
 
 
     expe expe;
@@ -119,10 +119,17 @@ public class DragDrop : MonoBehaviourPun
                 ob = hit.transform.gameObject;
                 
             }
-            else if (hit.transform.tag == "MoveControl")
+            else if (hit.transform.tag == "MoveControlTP")
             {
-                modeMove = !modeMove;
-                Debug.Log(modeMove);
+                moveMode = "TP";
+            }
+            else if (hit.transform.tag == "MoveControlJoy")
+            {
+                moveMode = "joy";
+            }
+            else if (hit.transform.tag == "MoveControlDrag")
+            {
+                moveMode = "drag";
             }
 
             coordClic = hit.transform.position;
@@ -182,7 +189,7 @@ public class DragDrop : MonoBehaviourPun
 
         //long clic -> move cards with tag 
         //Debug.Log(!modeMove && longclic && UpdatePointer() && (hit.transform.tag == "Wall" || hit.transform.tag == "Card") );
-        if (!modeMove && longclic && UpdatePointer() && (hit.transform.tag == "Wall" || hit.transform.tag == "Card"))
+        if (longclic && UpdatePointer() && (hit.transform.tag == "Wall" || hit.transform.tag == "Card"))
         {
             string namewall = "";
             if (hit.transform.tag == "Card")
@@ -405,10 +412,11 @@ public class DragDrop : MonoBehaviourPun
         //check if there is a hit
         if (Physics.Raycast(ray, out hit))
         {
-            if (hit.transform.tag == "Card" || hit.transform.tag == "Wall" || hit.transform.tag == "trash")
+            if (hit.transform.tag == "MoveControlJoy" || hit.transform.tag == "MoveControlDrag" || hit.transform.tag == "MoveControlTP" || hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || hit.transform.tag == "Card" || hit.transform.tag == "Wall" || hit.transform.tag == "tag")
             {
                 m_Pointer.transform.position = hit.point;
                 return true;
+
             }
         }
         return false;

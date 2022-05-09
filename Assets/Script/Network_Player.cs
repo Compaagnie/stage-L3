@@ -47,7 +47,7 @@ public class Network_Player : MonoBehaviourPun
     public SteamVR_Action_Boolean interactWithUI = SteamVR_Input.GetBooleanAction("InteractUI");
 
     private bool synctag = true;
-    private bool modeMove = true;
+    private string moveMode = "drag";
 
 
 
@@ -122,17 +122,27 @@ public class Network_Player : MonoBehaviourPun
                         }
                         // Debug.Log("tag not sync: photonView.IsMine");
                     }
-                } else if (hit.transform.tag == "MoveControl")
+                }
+                else if (hit.transform.tag == "MoveControlTP")
                 {
-                    if (palette.Find("CubeMoveMode").GetComponent<Renderer>().material.name == "green (Instance)")
-                    {
-                        palette.Find("CubeMoveMode").GetComponent<Renderer>().material = red;
-                        modeMove = false;
-                    } else if (palette.Find("CubeMoveMode").GetComponent<Renderer>().material.name == "red (Instance)")
-                    {
-                        palette.Find("CubeMoveMode").GetComponent<Renderer>().material = green;
-                        modeMove = true;
-                    }
+                    palette.Find("CubeMoveModeJoy").GetComponent<Renderer>().material = red;
+                    palette.Find("CubeMoveModeDrag").GetComponent<Renderer>().material = red;
+                    palette.Find("CubeMoveModeTP").GetComponent<Renderer>().material = green;
+                    moveMode = "TP";
+                }
+                else if (hit.transform.tag == "MoveControlJoy")
+                {
+                    palette.Find("CubeMoveModeJoy").GetComponent<Renderer>().material = green;
+                    palette.Find("CubeMoveModeDrag").GetComponent<Renderer>().material = red;
+                    palette.Find("CubeMoveModeTP").GetComponent<Renderer>().material = red;
+                    moveMode = "joy";
+                }
+                else if (hit.transform.tag == "MoveControlDrag")
+                {
+                    palette.Find("CubeMoveModeJoy").GetComponent<Renderer>().material = red;
+                    palette.Find("CubeMoveModeDrag").GetComponent<Renderer>().material = green;
+                    palette.Find("CubeMoveModeTP").GetComponent<Renderer>().material = red;
+                    moveMode = "drag";
                 }
             }
 

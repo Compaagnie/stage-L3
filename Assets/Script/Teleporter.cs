@@ -81,6 +81,7 @@ public class Teleporter : MonoBehaviour
     private GameObject player;
     public Vector3 cameraRigPos;
     Transform cameraRig;
+    public Transform cam;
     Transform controlerRight;
 
     expe expe;
@@ -149,7 +150,13 @@ public class Teleporter : MonoBehaviour
 
         //Teleport
         position = SteamVR_Actions.default_Pos.GetAxis(SteamVR_Input_Sources.Any);
-        Transform cam = cameraRig.Find("Camera (eye)");
+        if (m_TeleportAction.GetStateDown(m_pose.inputSource))
+        {
+            oldControlerRotation = controlerRight.transform.rotation.eulerAngles;
+            oldHitPosition = m_Pointer.transform.position;
+            //Debug.Log("update old"+ oldControlerRotation
+            // head position + camera rig
+        }
 
         if (moveMode=="TP")
         {
@@ -287,62 +294,48 @@ public class Teleporter : MonoBehaviour
             {
                 Quaternion rotation = Quaternion.Euler(controlerRight.rotation.eulerAngles);
                 Matrix4x4 m = Matrix4x4.Rotate(rotation);
-                Vector3 translateVect;
+                Vector3 translateVect = new Vector3(0, 0, 0);
                 if (position.x < -0.5)
                 {
                     translateVect = m.MultiplyPoint3x4(minusX);
-                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
-                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
-                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
-                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                 }
-                else if (position.y > 0.5)
+                if (position.y > 0.5)
                 {
                     translateVect = m.MultiplyPoint3x4(plusZ);
-                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
-                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
-                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
-                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
+                    if (cam.rotation.eulerAngles.y > rotation.eulerAngles.y + 5)
+                    {
+                        //cameraRig.RotateAround(cam.transform.position, Vector3.up, -0.5f);
+                        cam.Rotate(Vector3.up, -0.5f);
+                    }
+                    else if (cam.rotation.eulerAngles.y < rotation.eulerAngles.y - 5)
+                    {
+                        //cameraRig.RotateAround(cam.transform.position, Vector3.up, 0.5f);
+                        cam.Rotate(Vector3.up, 0.5f);
+                    }
                 }
-                else if (position.y < -0.5)
+                if (position.y < -0.5)
                 {
                     translateVect = m.MultiplyPoint3x4(minusZ);
-                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
-                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
-                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
-                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                 }
-                else if (position.x > 0.5)
+                if (position.x > 0.5)
                 {
                     translateVect = m.MultiplyPoint3x4(plusX);
-                    if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
-                    if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
-                    if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
-                    if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
-                }
-                else
-                {
-                    translateVect = new Vector3(0, 0, 0);
                 }
                 translateVect.y = 0;
+                if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
+                if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
+                if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
+                if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                 cameraRig.position += translateVect;
 
             }
         }
         else
         {
-            if (interactWithUI.GetStateDown(m_pose.inputSource))
-            {
-                oldControlerRotation = controlerRight.transform.rotation.eulerAngles;
-                oldHitPosition = m_Pointer.transform.position;
-                //Debug.Log("update old"+ oldControlerRotation);
-
-                // head position + camera rig
-            }
-            if (interactWithUI.GetState(m_pose.inputSource))
+            if (m_TeleportAction.GetState(m_pose.inputSource))
             {
                 //Debug.Log(m_HasPosition + hit.transform.tag);
-                if (m_HasPosition && hit.transform.tag == "TpLimit")
+                if (m_HasPosition && hit.transform.tag == "TpLimit" && position.y < -0.5)
                 {
                     float b = Mathf.Tan((90 - controlerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controlerRight.transform.position.y;
                     Debug.Log("b: " + b);
@@ -362,7 +355,7 @@ public class Teleporter : MonoBehaviour
 
                     //cameraRig.position += a - a.normalized*b;
                 }
-                else if (m_HasPosition && hit.transform.tag == "Wall")
+                else if (m_HasPosition && hit.transform.tag == "Wall" && position.y > 0.5)
                 {
                     //Debug.Log(oldControlerRotation.y + "  " + controlerRight.transform.rotation.eulerAngles.y);
                     cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);

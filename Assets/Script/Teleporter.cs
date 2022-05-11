@@ -339,7 +339,7 @@ public class Teleporter : MonoBehaviour
                 {
                     float b = Mathf.Tan((90 - controlerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controlerRight.transform.position.y;
                     Debug.Log("b: " + b);
-                    Vector3 camToHit = oldHitPosition - cameraRig.position;
+                    Vector3 camToHit = oldHitPosition - cam.position;
                     Vector3 ctrlToHit = oldHitPosition - controlerRight.position;
                     Debug.Log(camToHit.z);
                     camToHit.y = 0;
@@ -360,7 +360,21 @@ public class Teleporter : MonoBehaviour
                     //Debug.Log(oldControlerRotation.y + "  " + controlerRight.transform.rotation.eulerAngles.y);
                     cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
                     CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
-                } else
+                    if (hit.transform.name == "MUR B" || hit.transform.parent.name == "MUR B")
+                    {
+
+                    }
+                    else if (hit.transform.name == "MUR R" || hit.transform.parent.name == "MUR R")
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
+
+                }
+                else
                 {
                     oldControlerRotation = controlerRight.transform.rotation.eulerAngles;
                     oldHitPosition = m_Pointer.transform.position;

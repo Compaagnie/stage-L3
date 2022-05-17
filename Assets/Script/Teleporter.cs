@@ -333,7 +333,7 @@ public class Teleporter : MonoBehaviour
             if (m_TeleportAction.GetState(m_pose.inputSource))
             {
                 //Debug.Log(m_HasPosition + hit.transform.tag);
-                if (m_HasPosition && hit.transform.tag == "TpLimit" && position.y < -0.5)
+                if (m_HasPosition && hit.transform.tag == "TpLimit")
                 {
                     float b = Mathf.Tan((90 - controlerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controlerRight.transform.position.y;
                     Debug.Log("b: " + b);
@@ -351,14 +351,16 @@ public class Teleporter : MonoBehaviour
                     if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                     cameraRig.position += translateVect;
 
+                    cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
+                    CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
+
                     //cameraRig.position += a - a.normalized*b;
                 }
-                else if (m_HasPosition && hit.transform.tag == "Wall" && position.y > 0.5)
+                else if (m_HasPosition && hit.transform.tag == "Wall")
                 {
                     //Debug.Log(oldControlerRotation.y + "  " + controlerRight.transform.rotation.eulerAngles.y);
                     /*
-                    cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
-                    CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
+                    
                     */
                     Transform mur;
                     float camToHitOnWall, ctrlToHit, b, distMur;
@@ -367,8 +369,8 @@ public class Teleporter : MonoBehaviour
                     if (hit.transform.name == "MUR B" || hit.transform.parent.name == "MUR B")
                     {
                         mur = MurB;
-                        distMur = mur.position.z - controlerRight.position.z;
-                        b = Mathf.Tan((cameraRig.rotation.eulerAngles.y + controlerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
+                        distMur = Mathf.Abs(mur.position.z - controlerRight.position.z);
+                        b = Mathf.Tan((controlerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
                         camToHitOnWall = oldHitPosition.x - cam.position.x;
                         ctrlToHit = oldHitPosition.x - controlerRight.position.x;
                         translateVect = new Vector3(1.0f, 0f, 0f);
@@ -378,7 +380,7 @@ public class Teleporter : MonoBehaviour
                     {
                         mur = MurR;
                         distMur = Mathf.Abs(mur.position.x - controlerRight.position.x);
-                        b = Mathf.Tan((cameraRig.rotation.eulerAngles.y + controlerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
+                        b = - Mathf.Tan((controlerRight.rotation.eulerAngles.y + mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
                         camToHitOnWall = oldHitPosition.z - cam.position.z;
                         ctrlToHit = oldHitPosition.z - controlerRight.position.z;
                         translateVect = new Vector3(0f, 0f, 1.0f);
@@ -388,7 +390,7 @@ public class Teleporter : MonoBehaviour
                     {
                         mur = MurL;
                         distMur = Mathf.Abs(mur.position.x - controlerRight.position.x);
-                        b = Mathf.Tan((cameraRig.rotation.eulerAngles.y + controlerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
+                        b = Mathf.Tan((controlerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
                         camToHitOnWall = oldHitPosition.z - cam.position.z;
                         ctrlToHit = oldHitPosition.z - controlerRight.position.z;
                         translateVect = new Vector3(0f, 0f, 1.0f);

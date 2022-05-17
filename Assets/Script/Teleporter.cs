@@ -52,7 +52,7 @@ public class Teleporter : MonoBehaviour
     private Vector3 forwardClic;
     private Vector3 oldControlerRotation;
     private Vector3 oldHitPosition;
-    private const float moveSpeed = 0.05f;
+    private const float moveSpeed = 0.01f;
     Vector3 plusX = new Vector3(moveSpeed, 0f, 0f);
     Vector3 minusX = new Vector3(-moveSpeed, 0f, 0f);
     Vector3 plusZ = new Vector3(0f, 0f, moveSpeed);
@@ -83,6 +83,7 @@ public class Teleporter : MonoBehaviour
     private GameObject player;
     public Transform cameraRig;
     public Transform cam;
+    public Transform CameraRotator;
     public Transform controlerRight;
 
     expe expe;
@@ -122,25 +123,25 @@ public class Teleporter : MonoBehaviour
             }
         }
 
-        if (syncTeleportation == true)
+        if (syncTeleportation)
         {
             tpsync.SetActive(false);
             tpNotsync.SetActive(true);
            // Cube.SetActive(true);
         }
-        if (syncTeleportation == false)
+        if (!syncTeleportation)
         {
             tpNotsync.SetActive(false);
             tpsync.SetActive(true);
             Cube.SetActive(false);
 
         }
-        if (synctag == true)
+        if (synctag)
         {
             tagsync.SetActive(false);
             tagNotsync.SetActive(true);
         }
-        if (synctag == false)
+        if (!synctag)
         {
             tagNotsync.SetActive(false);
             tagsync.SetActive(true);
@@ -295,21 +296,23 @@ public class Teleporter : MonoBehaviour
                 Vector3 translateVect = new Vector3(0, 0, 0);
                 if (position.x < -0.5)
                 {
-                    translateVect = m.MultiplyPoint3x4(minusX);
+                    //translateVect = m.MultiplyPoint3x4(minusX);
+                    cameraRig.RotateAround(cam.transform.position, Vector3.up, -0.25f);
+
                 }
                 if (position.y > 0.5)
                 {
                     translateVect = m.MultiplyPoint3x4(plusZ);
+                    
                     if (cam.rotation.eulerAngles.y > rotation.eulerAngles.y + 5)
                     {
-                        //cameraRig.RotateAround(cam.transform.position, Vector3.up, -0.5f);
-                        cam.Rotate(Vector3.up, -0.5f);
+                        CameraRotator.RotateAround(cam.transform.position, Vector3.up, -0.25f);
                     }
                     else if (cam.rotation.eulerAngles.y < rotation.eulerAngles.y - 5)
                     {
-                        //cameraRig.RotateAround(cam.transform.position, Vector3.up, 0.5f);
-                        cam.Rotate(Vector3.up, 0.5f);
+                        CameraRotator.RotateAround(cam.transform.position, Vector3.up, 0.25f);
                     }
+                    
                 }
                 if (position.y < -0.5)
                 {
@@ -317,7 +320,8 @@ public class Teleporter : MonoBehaviour
                 }
                 if (position.x > 0.5)
                 {
-                    translateVect = m.MultiplyPoint3x4(plusX);
+                    //translateVect = m.MultiplyPoint3x4(plusX);
+                    cameraRig.RotateAround(cam.transform.position, Vector3.up, 0.25f);
                 }
                 translateVect.y = 0;
                 if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
@@ -325,6 +329,14 @@ public class Teleporter : MonoBehaviour
                 if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                 if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                 cameraRig.position += translateVect;
+
+            }
+            if (m_TeleportAction.GetStateUp(m_pose.inputSource) && position.y > 0.5)
+            {
+                float tmp = CameraRotator.rotation.eulerAngles.y;
+                CameraRotator.RotateAround(cam.transform.position, Vector3.up, -CameraRotator.rotation.eulerAngles.y);
+
+                cameraRig.RotateAround(cam.transform.position, Vector3.up, tmp - cameraRig.rotation.eulerAngles.y);
 
             }
         }
@@ -434,7 +446,6 @@ public class Teleporter : MonoBehaviour
         Vector3 groundPosition = new Vector3(headPosition.x, cameraRig.position.y, headPosition.z);
         if (e)
         {
-            Transform cam = cameraRig.Find("Camera (eye)");
             if (!syncTeleportation)
             {
                 cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
@@ -448,8 +459,6 @@ public class Teleporter : MonoBehaviour
         }
         else if (w)
         {
-            Transform cam = cameraRig.Find("Camera (eye)");
-
             if (!syncTeleportation)
             {
                 cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
@@ -614,7 +623,6 @@ public class Teleporter : MonoBehaviour
                     objectHit = Physics.RaycastAll(cameraRig.transform.position, cameraRig.transform.forward, 100.0F);
                     float x = -cameraRig.transform.position.x;
                     float z = -cameraRig.transform.position.z;
-                    Transform cam = cameraRig.Find("Camera (eye)");
 
                     for (int i = 0; i < objectHit.Length; i++)
                     {

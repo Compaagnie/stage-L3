@@ -4,6 +4,7 @@ using UnityEngine;
 using Valve.VR;
 using Photon.Pun;
 using UnityEngine.UI;
+using System.Windows;
 
 public class Teleporter : MonoBehaviour
 {
@@ -303,12 +304,16 @@ public class Teleporter : MonoBehaviour
                 if (position.y > 0.5)
                 {
                     translateVect = m.MultiplyPoint3x4(plusZ);
-                    
-                    if (cam.rotation.eulerAngles.y > rotation.eulerAngles.y + 5)
+                    float angleDiff = cam.rotation.eulerAngles.y - controlerRight.rotation.eulerAngles.y;
+                    float b = 360 -(cam.rotation.eulerAngles.y - controlerRight.rotation.eulerAngles.y);
+                    double angle = Vector3.Angle(cam.transform.forward, controlerRight.transform.forward);
+                    Debug.Log(angle);
+                    if (angle > 0)
                     {
                         CameraRotator.RotateAround(cam.transform.position, Vector3.up, -0.25f);
+                        
                     }
-                    else if (cam.rotation.eulerAngles.y < rotation.eulerAngles.y - 5)
+                    else if (angle < 0)
                     {
                         CameraRotator.RotateAround(cam.transform.position, Vector3.up, 0.25f);
                     }
@@ -331,14 +336,18 @@ public class Teleporter : MonoBehaviour
                 cameraRig.position += translateVect;
 
             }
+            
             if (m_TeleportAction.GetStateUp(m_pose.inputSource) && position.y > 0.5)
             {
                 float tmp = CameraRotator.rotation.eulerAngles.y;
-                CameraRotator.RotateAround(cam.transform.position, Vector3.up, -CameraRotator.rotation.eulerAngles.y);
+                Debug.Log("Avant annulation :\n"+tmp);
+                CameraRotator.RotateAround(cam.transform.position, Vector3.up, -tmp);
 
                 cameraRig.RotateAround(cam.transform.position, Vector3.up, tmp - cameraRig.rotation.eulerAngles.y);
+                Debug.Log("Après annulation :\n" + CameraRotator.rotation.eulerAngles.y);
 
             }
+            
         }
         else
         {
@@ -363,10 +372,11 @@ public class Teleporter : MonoBehaviour
                     if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                     cameraRig.position += translateVect;
 
-                    cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
-                    CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
 
                     //cameraRig.position += a - a.normalized*b;
+                }
+                else if (m_HasPosition && hit.transform.tag == "Tp")
+                {
                 }
                 else if (m_HasPosition && hit.transform.tag == "Wall")
                 {
@@ -423,6 +433,8 @@ public class Teleporter : MonoBehaviour
                 }
                 else
                 {
+                    cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
+                    CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
                     oldControlerRotation = controlerRight.transform.rotation.eulerAngles;
                     oldHitPosition = m_Pointer.transform.position;
                 }
@@ -580,7 +592,6 @@ public class Teleporter : MonoBehaviour
             {
                 
                     objectHit = Physics.RaycastAll(cameraRig.transform.position, cameraRig.transform.forward, 100.0F);
-                    Transform cam = cameraRig.Find("Camera (eye)");
                     float x = -cameraRig.transform.position.x;
                     float z = -cameraRig.transform.position.z;
 

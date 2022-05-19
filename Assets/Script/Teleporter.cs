@@ -554,117 +554,124 @@ public class Teleporter : MonoBehaviour
         {
             translateVector = new Vector3(0, 0, 0);
             Vector3 camLookDirection = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z);
-            objectHit = Physics.RaycastAll(cam.transform.position, camLookDirection, 100.0F);
+            objectHit = Physics.RaycastAll(cameraRig.transform.position, cameraRig.transform.forward, 100.0F);
             float x = -cameraRig.transform.position.x;
             float z = -cameraRig.transform.position.z;
             //check the wall
             if (hit.transform.name == "MUR B" || hit.transform.parent.name == "MUR B")
             {
-                    
-
-                    for (int i = 0; i < objectHit.Length; i++)
+                for (int i = 0; i < objectHit.Length; i++)
+                {
+                    //Debug.Log("objHit : " + objectHit[i].transform.name);
+                    if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
                     {
-                        //Debug.Log("objHit : " + objectHit[i].transform.name);
-                        if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
-                        {
-                            translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, 0);
-                        }
-                        else if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
-                        {
-                            //Debug.Log("need to rotate w 1 time");
-                            cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
-                            translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, z + Mathf.Abs(x));
-                        }
-                        else if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
-                        {
-                           // Debug.Log("need to rotate w 1 times");
-                            cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
-                            translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, z + Mathf.Abs(x));
-                        }
+                        translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, 0);
                     }
-                    //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
-                    /*
-                    for (int i = 0; i < objectHit.Length; i++)
+                    else if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
                     {
-                        if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
-                        {
-                            cameraRig.RotateAround(cam.transform.position, Vector3.up, -180);
-                        }
+                        //Debug.Log("need to rotate w 1 time");
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
+                        translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, z + Mathf.Abs(x));
                     }
-                    */
-                
-                
+                    else if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
+                    {
+                        // Debug.Log("need to rotate w 1 times");
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
+                        translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, z + Mathf.Abs(x));
+                    }
+                    else
+                    {
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 180);
+                    }
+                }
+                //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
+                /*
+                for (int i = 0; i < objectHit.Length; i++)
+                {
+                    if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
+                    {
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, -180);
+                    }
+                }
+                */
             }
             else if (hit.transform.name == "MUR R" || hit.transform.parent.name == "MUR R")
             {
-                    for (int i = 0; i < objectHit.Length; i++)
-                    { 
-                        //Debug.Log("objHit : " + objectHit[i].transform.name);
+                for (int i = 0; i < objectHit.Length; i++)
+                { 
+                    //Debug.Log("objHit : " + objectHit[i].transform.name);
                    
-                        if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
-                        {
-                            translateVector = new Vector3(0, 0, m_Pointer.transform.position.z- groundPosition.z);
-                        }
-                        else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
-                        {
-                            //Debug.Log("need to rotate e 1 time");
-                            cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
-                            translateVector = new Vector3(x + Mathf.Abs(z), 0, m_Pointer.transform.position.z - groundPosition.z);
-                        }
-                        else if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
-                        {
-                            //Debug.Log("need to rotate w 2 times");
-                            cameraRig.RotateAround(cam.transform.position, Vector3.up, 180);
-                            translateVector = new Vector3(-2 * groundPosition.x, 0, m_Pointer.transform.position.z - groundPosition.z);
-                        }
-                    }
-                    //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
-                    /*
-                    for (int i = 0; i < objectHit.Length; i++)
+                    if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
                     {
-                        if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
-                        {
-                            cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
-                        }
+                        translateVector = new Vector3(0, 0, m_Pointer.transform.position.z- groundPosition.z);
                     }
-                    */
-                
+                    else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
+                    {
+                        //Debug.Log("need to rotate e 1 time");
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
+                        translateVector = new Vector3(x + Mathf.Abs(z), 0, m_Pointer.transform.position.z - groundPosition.z);
+                    }
+                    else if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
+                    {
+                        //Debug.Log("need to rotate w 2 times");
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 180);
+                        translateVector = new Vector3(-2 * groundPosition.x, 0, m_Pointer.transform.position.z - groundPosition.z);
+                    }
+                    else
+                    {
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
+                    }
+                }
+                //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
+                /*
+                for (int i = 0; i < objectHit.Length; i++)
+                {
+                    if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
+                    {
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
+                    }
+                }
+                */
             }
             else //(hit.transform.name == "MUR L" || hit.transform.parent.name == "MUR L")
             {
-                    for (int i = 0; i < objectHit.Length; i++)
-                    {
-                        //cameraRig.rotation = new Quaternion(0.0f, -0.7f, 0.0f, 0.7f);
-                        //Debug.Log("objHit : " + objectHit[i].transform.name);
+                for (int i = 0; i < objectHit.Length; i++)
+                {
+                    //cameraRig.rotation = new Quaternion(0.0f, -0.7f, 0.0f, 0.7f);
+                    //Debug.Log("objHit : " + objectHit[i].transform.name);
 
-                        if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
-                        {
-                            translateVector = new Vector3(0, 0, m_Pointer.transform.position.z - groundPosition.z);
-                        }
-                        else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
-                        {
-                            //Debug.Log("need to rotate w 1 time");
-                            
-                            cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
-                            translateVector = new Vector3(x - Mathf.Abs(z), 0, m_Pointer.transform.position.z - groundPosition.z);
-                        }
-                        else if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
-                        {
-                            //Debug.Log("need to rotate w 2 times");
-                            cameraRig.RotateAround(cam.transform.position, Vector3.up, 180);
-                            translateVector = new Vector3(-2 * groundPosition.x, 0, m_Pointer.transform.position.z - groundPosition.z);
-                        }
-                    }
-                    //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
-                    /*
-                    for (int i = 0; i < objectHit.Length; i++)
+                    if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
                     {
-                        if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
-                        {
-                            cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
-                        }
+                        translateVector = new Vector3(0, 0, m_Pointer.transform.position.z - groundPosition.z);
                     }
-                    */
+                    else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
+                    {
+                        //Debug.Log("need to rotate w 1 time");
+                            
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
+                        translateVector = new Vector3(x - Mathf.Abs(z), 0, m_Pointer.transform.position.z - groundPosition.z);
+                    }
+                    else if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
+                    {
+                        //Debug.Log("need to rotate w 2 times");
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 180);
+                        translateVector = new Vector3(-2 * groundPosition.x, 0, m_Pointer.transform.position.z - groundPosition.z);
+                    }
+                    else
+                    {
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
+                    }
+                }
+                //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
+                /*
+                for (int i = 0; i < objectHit.Length; i++)
+                {
+                    if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
+                    {
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
+                    }
+                }
+                */
 
             }
 

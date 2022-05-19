@@ -304,19 +304,23 @@ public class Teleporter : MonoBehaviour
                 if (position.y > 0.5)
                 {
                     translateVect = m.MultiplyPoint3x4(plusZ);
-                    float angleDiff = cam.rotation.eulerAngles.y - controlerRight.rotation.eulerAngles.y;
-                    float b = 360 -(cam.rotation.eulerAngles.y - controlerRight.rotation.eulerAngles.y);
-                    double angle = Vector3.Angle(cam.transform.forward, controlerRight.transform.forward);
-                    Debug.Log(angle);
-                    if (angle > 0)
-                    {
-                        CameraRotator.RotateAround(cam.transform.position, Vector3.up, -0.25f);
-                        
-                    }
-                    else if (angle < 0)
+
+                    Vector3 camAngle = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z);
+                    Vector3 ctrlAngle = new Vector3(controlerRight.transform.forward.x, 0, controlerRight.transform.forward.z);
+
+                    double crossProduct = Vector3.Cross(camAngle, ctrlAngle).y;
+                    Debug.Log(crossProduct);
+                    
+                    if (crossProduct > 0)
                     {
                         CameraRotator.RotateAround(cam.transform.position, Vector3.up, 0.25f);
+                        
                     }
+                    else if (crossProduct < 0)
+                    {
+                        CameraRotator.RotateAround(cam.transform.position, Vector3.up, -0.25f);
+                    }
+                    
                     
                 }
                 if (position.y < -0.5)
@@ -339,12 +343,12 @@ public class Teleporter : MonoBehaviour
             
             if (m_TeleportAction.GetStateUp(m_pose.inputSource) && position.y > 0.5)
             {
-                float tmp = CameraRotator.rotation.eulerAngles.y;
+                float tmp = CameraRotator.localEulerAngles.y;
                 Debug.Log("Avant annulation :\n"+tmp);
                 CameraRotator.RotateAround(cam.transform.position, Vector3.up, -tmp);
 
-                cameraRig.RotateAround(cam.transform.position, Vector3.up, tmp - cameraRig.rotation.eulerAngles.y);
-                Debug.Log("Après annulation :\n" + CameraRotator.rotation.eulerAngles.y);
+                cameraRig.RotateAround(cam.transform.position, Vector3.up, tmp);
+                Debug.Log("Après annulation :\n" + CameraRotator.localEulerAngles.y);
 
             }
             
@@ -549,13 +553,14 @@ public class Teleporter : MonoBehaviour
         else if (hit.transform.tag == "Wall" || hit.transform.tag == "Card")
         {
             translateVector = new Vector3(0, 0, 0);
+            Vector3 camLookDirection = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z);
+            objectHit = Physics.RaycastAll(cam.transform.position, camLookDirection, 100.0F);
+            float x = -cameraRig.transform.position.x;
+            float z = -cameraRig.transform.position.z;
             //check the wall
             if (hit.transform.name == "MUR B" || hit.transform.parent.name == "MUR B")
             {
-                    objectHit = Physics.RaycastAll(cameraRig.transform.position, cameraRig.transform.forward, 100.0F);
-                    float x = -cameraRig.transform.position.x;
-                    float z = -cameraRig.transform.position.z;
-                    Transform cam = cameraRig.Find("Camera (eye)");
+                    
 
                     for (int i = 0; i < objectHit.Length; i++)
                     {
@@ -577,7 +582,8 @@ public class Teleporter : MonoBehaviour
                             translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, z + Mathf.Abs(x));
                         }
                     }
-                    objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
+                    //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
+                    /*
                     for (int i = 0; i < objectHit.Length; i++)
                     {
                         if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
@@ -585,16 +591,12 @@ public class Teleporter : MonoBehaviour
                             cameraRig.RotateAround(cam.transform.position, Vector3.up, -180);
                         }
                     }
+                    */
                 
                 
             }
             else if (hit.transform.name == "MUR R" || hit.transform.parent.name == "MUR R")
             {
-                
-                    objectHit = Physics.RaycastAll(cameraRig.transform.position, cameraRig.transform.forward, 100.0F);
-                    float x = -cameraRig.transform.position.x;
-                    float z = -cameraRig.transform.position.z;
-
                     for (int i = 0; i < objectHit.Length; i++)
                     { 
                         //Debug.Log("objHit : " + objectHit[i].transform.name);
@@ -603,8 +605,7 @@ public class Teleporter : MonoBehaviour
                         {
                             translateVector = new Vector3(0, 0, m_Pointer.transform.position.z- groundPosition.z);
                         }
-
-                        if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
+                        else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
                         {
                             //Debug.Log("need to rotate e 1 time");
                             cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
@@ -617,7 +618,8 @@ public class Teleporter : MonoBehaviour
                             translateVector = new Vector3(-2 * groundPosition.x, 0, m_Pointer.transform.position.z - groundPosition.z);
                         }
                     }
-                    objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
+                    //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
+                    /*
                     for (int i = 0; i < objectHit.Length; i++)
                     {
                         if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
@@ -625,16 +627,11 @@ public class Teleporter : MonoBehaviour
                             cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
                         }
                     }
+                    */
                 
             }
             else //(hit.transform.name == "MUR L" || hit.transform.parent.name == "MUR L")
             {
-                
-               
-                    objectHit = Physics.RaycastAll(cameraRig.transform.position, cameraRig.transform.forward, 100.0F);
-                    float x = -cameraRig.transform.position.x;
-                    float z = -cameraRig.transform.position.z;
-
                     for (int i = 0; i < objectHit.Length; i++)
                     {
                         //cameraRig.rotation = new Quaternion(0.0f, -0.7f, 0.0f, 0.7f);
@@ -644,8 +641,7 @@ public class Teleporter : MonoBehaviour
                         {
                             translateVector = new Vector3(0, 0, m_Pointer.transform.position.z - groundPosition.z);
                         }
-
-                        if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
+                        else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
                         {
                             //Debug.Log("need to rotate w 1 time");
                             
@@ -659,7 +655,8 @@ public class Teleporter : MonoBehaviour
                             translateVector = new Vector3(-2 * groundPosition.x, 0, m_Pointer.transform.position.z - groundPosition.z);
                         }
                     }
-                    objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
+                    //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
+                    /*
                     for (int i = 0; i < objectHit.Length; i++)
                     {
                         if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
@@ -667,26 +664,24 @@ public class Teleporter : MonoBehaviour
                             cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
                         }
                     }
+                    */
 
             }
 
             //then teleport
-            if (!syncTeleportation)
+            if (expe != null)
             {
-                if (expe != null)
+                if (!syncTeleportation)
                 {
                     expe.curentTrial.incNbAsyncTPWall(translateVector);
                 }
-                StartCoroutine(MoveRig(cameraRig, translateVector));
-            }
-            else
-            {
-                StartCoroutine(MoveRig(cameraRig, translateVector));
-                if (expe != null)
+                else
                 {
                     expe.curentTrial.incNbSyncTpWall(translateVector);
                 }
             }
+            StartCoroutine(MoveRig(cameraRig, translateVector));
+
         }
     }
 
@@ -704,7 +699,6 @@ public class Teleporter : MonoBehaviour
     {
         Transform cameraRig2 = SteamVR_Render.Top().origin;
 
-        Transform cam = cameraRig2.Find("Camera (eye)");
         Debug.Log("test ");
         if (s == "e")
         {
@@ -775,7 +769,7 @@ public class Teleporter : MonoBehaviour
             Vector3 playerPos = new Vector3(headPosition.x, cameraRig.position.y, headPosition.z);
             Debug.Log(playerPos);
             //R
-            if (rotat.y == 90)
+            if (rotat.y >= 45 && rotat.y <= 135)
             {
                 if (PhotonNetwork.IsMasterClient)
                 {
@@ -788,7 +782,7 @@ public class Teleporter : MonoBehaviour
 
             }
             //B
-            else if (rotat.y== 0 && rotat.x==0 && rotat.z == 0)
+            else if (rotat.y >= -45 && rotat.y <= 45 && rotat.x==0 && rotat.z == 0)
             {
                 if (PhotonNetwork.IsMasterClient)
                 {
@@ -801,7 +795,7 @@ public class Teleporter : MonoBehaviour
 
             }
             //L
-            else if (rotat.y == -90)
+            else if (rotat.y <= -45 && rotat.y >= -135)
             {
                 if (PhotonNetwork.IsMasterClient)
                 {
@@ -865,7 +859,7 @@ public class Teleporter : MonoBehaviour
         //check if there is a hit
         if(Physics.Raycast(ray , out hit) )
         {
-            if (hit.transform.tag == "MoveControlJoy" || hit.transform.tag == "MoveControlDrag" || hit.transform.tag == "MoveControlTP" || hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || hit.transform.tag == "Card" || hit.transform.tag == "Wall" || hit.transform.tag == "tag")
+            if (hit.transform.tag == "Player" || hit.transform.tag == "MoveControlJoy" || hit.transform.tag == "MoveControlDrag" || hit.transform.tag == "MoveControlTP" || hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || hit.transform.tag == "Card" || hit.transform.tag == "Wall" || hit.transform.tag == "tag")
             {
                 m_Pointer.transform.position = hit.point;
                 return true;

@@ -112,7 +112,8 @@ public class MoveObject : MonoBehaviourPun
         else if(hit.transform.tag == "Wall" || hit.transform.tag == "Card")
         {
             
-            if(ob != null){
+            if(ob != null)
+            {
                 if(ob.transform.parent.name == "MUR L")
                 {
                     ob.transform.localPosition = new Vector3(m_Pointer.transform.position.z / v.x, y, z);
@@ -127,9 +128,8 @@ public class MoveObject : MonoBehaviourPun
                 {
                     ob.transform.localPosition = new Vector3(-m_Pointer.transform.position.z / v.x, y, z);
                 }
-     
-                    ob = null;
-          }
+                ob = null;
+            }
         }
     }
 

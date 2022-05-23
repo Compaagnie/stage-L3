@@ -172,6 +172,7 @@ public class Network_Player : MonoBehaviourPun
 
         // circle
         pos.position = new Vector3(headset.transform.position.x, 0 , headset.transform.position.z);
+        circle.rotation = new Quaternion(0, headset.transform.rotation.y, 0, headset.transform.rotation.w);
 
         // body
         torse.position = headset.transform.position;

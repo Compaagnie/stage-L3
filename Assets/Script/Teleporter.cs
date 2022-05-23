@@ -330,7 +330,8 @@ public class Teleporter : MonoBehaviour
 
                     double crossProduct = Vector3.Cross(camAngle, ctrlAngle).y;
                     Debug.Log(crossProduct);
-                    
+                    /*
+                    //Rotation de la camera dans la direction du pointeur, à décommenter avec le if getStateUp
                     if (crossProduct > 0)
                     {
                         CameraRotator.RotateAround(cam.transform.position, Vector3.up, 0.25f);
@@ -339,7 +340,7 @@ public class Teleporter : MonoBehaviour
                     else if (crossProduct < 0)
                     {
                         CameraRotator.RotateAround(cam.transform.position, Vector3.up, -0.25f);
-                    }
+                    }*/
                     
                     
                 }
@@ -360,7 +361,8 @@ public class Teleporter : MonoBehaviour
                 cameraRig.position += translateVect;
 
             }
-            
+            /*
+            // if getStateUp,  "Annulation" de la rotation de la caméra pour repositionner les controllers au bon endroit
             if (m_TeleportAction.GetStateUp(m_pose.inputSource) && position.y > 0.5)
             {
                 float tmp = CameraRotator.localEulerAngles.y + initialCamRotationY;
@@ -371,6 +373,7 @@ public class Teleporter : MonoBehaviour
                 Debug.Log("Après annulation :\n" + CameraRotator.localEulerAngles.y);
 
             }
+            */
             
         }
         else
@@ -381,15 +384,15 @@ public class Teleporter : MonoBehaviour
                 if (m_HasPosition && hit.transform.tag == "TpLimit")
                 {
                     float b = Mathf.Tan((90 - controllerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
-                    Debug.Log("b: " + b);
+                    //Debug.Log("b: " + b);
                     Vector3 camToHit = oldHitPosition - cam.position;
                     Vector3 ctrlToHit = oldHitPosition - controllerRight.position;
-                    Debug.Log(camToHit.z);
+                    //Debug.Log(camToHit.z);
                     camToHit.y = 0;
                     ctrlToHit.y = 0;
                     float c = camToHit.magnitude * (ctrlToHit.magnitude - b) / ctrlToHit.magnitude;
                     Vector3 translateVect = camToHit.normalized * c;
-                    Debug.Log(c);
+                    //Debug.Log(c);
                     if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
                     if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
                     if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
@@ -398,9 +401,6 @@ public class Teleporter : MonoBehaviour
 
 
                     //cameraRig.position += a - a.normalized*b;
-                }
-                else if (m_HasPosition && hit.transform.tag == "Tp")
-                {
                 }
                 else if (m_HasPosition && hit.transform.tag == "Wall")
                 {
@@ -443,11 +443,12 @@ public class Teleporter : MonoBehaviour
 
                     }
                     Debug.Log("b: " + b);
-                    Debug.Log(camToHitOnWall);
+                    Debug.Log("Tan : " + Mathf.Tan((controllerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) );
+                    //Debug.Log(camToHitOnWall);
 
                     float c = camToHitOnWall * (ctrlToHit - b) / ctrlToHit;
                     translateVect *= c;
-                    Debug.Log(translateVect);
+                    //Debug.Log(translateVect);
                     if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
                     if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
                     if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
@@ -710,6 +711,62 @@ public class Teleporter : MonoBehaviour
             StartCoroutine(MoveRig(cameraRig, translateVector));
 
         }
+        else if (hit.transform.tag == "Player")
+        {
+            Vector3 otherPlayerPos = hit.collider.transform.position;
+            Quaternion otherPlayerRotation = hit.collider.transform.rotation;
+            if (cameraRig.rotation.eulerAngles.y >= 45 && cameraRig.rotation.eulerAngles.y <= 135)
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    otherPlayerPos.x += 1;
+                }
+                else
+                {
+                    otherPlayerPos.x -= 1;
+                }
+
+            }
+            //B
+            else if (cameraRig.rotation.eulerAngles.y >= -45 && cameraRig.rotation.eulerAngles.y <= 45 && cameraRig.rotation.eulerAngles.x == 0 && cameraRig.rotation.eulerAngles.z == 0)
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    otherPlayerPos.z += 1;
+                }
+                else
+                {
+                    otherPlayerPos.z -= 1;
+                }
+
+            }
+            //L
+            else if (cameraRig.rotation.eulerAngles.y <= -45 && cameraRig.rotation.eulerAngles.y >= -135)
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    otherPlayerPos.x -= 1;
+                }
+                else
+                {
+                    otherPlayerPos.x += 1;
+                }
+
+            }
+            //no wall
+            else //if (Physics.RaycastAll(player.transform.position, player.transform.forward, 100.0F)[0].transform.name == "MUR R")
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    otherPlayerPos.z -= 1;
+                }
+                else
+                {
+                    otherPlayerPos.z += 1;
+                }
+
+            }
+        }
     }
 
     [PunRPC]
@@ -863,11 +920,11 @@ public class Teleporter : MonoBehaviour
         m_IsTeleportoting = true;
 
         SteamVR_Fade.Start(Color.black, m_FadeTime, true); // black screen
+        yield return new WaitForSeconds(m_FadeTime); // fade time
         // Rotation
         {
             cameraRig.rotation = rotat;
         }
-        yield return new WaitForSeconds(m_FadeTime); // fade time
 
         cameraRig.position = pos; // teleportation
         if (syncTeleportation)
@@ -894,5 +951,12 @@ public class Teleporter : MonoBehaviour
             }
         }
         return false;
+    }
+
+    private Vector3 checkAndCorrectColisionBox()
+    {
+        Vector3 translateVector = new Vector3(0, 0, 0);
+
+        return translateVector;
     }
 }

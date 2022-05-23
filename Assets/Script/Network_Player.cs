@@ -60,8 +60,8 @@ public class Network_Player : MonoBehaviourPun
         //room + wall + camera
         cameraRig = GameObject.Find("/[CameraRig]");
         headset = GameObject.Find("Camera (eye)");
-        right = GameObject.Find("/[CameraRig]/Controller (right)");
-        left = GameObject.Find("/[CameraRig]/Controller (left)");
+        right = GameObject.Find("/[CameraRig]/ControllerRotator/Controller (right)");
+        left = GameObject.Find("/[CameraRig]/ControllerRotator/Controller (left)");
 
         salle = GameObject.Find("Salle");
 
@@ -78,6 +78,8 @@ public class Network_Player : MonoBehaviourPun
             torse.gameObject.SetActive(false);
         }
         nameR = rayCast.GetComponent<Renderer>().material.name.ToString();
+
+        
     }
 
     // Update is called once per frame
@@ -88,7 +90,7 @@ public class Network_Player : MonoBehaviourPun
             expe = GameObject.Find("/Salle").GetComponent<rendering>().expe;
         }
 
-        synctag = GameObject.Find("/[CameraRig]/Controller (right)").GetComponent<Teleporter>().synctag;
+        synctag = GameObject.Find("/[CameraRig]/ControllerRotator/Controller (right)").GetComponent<Teleporter>().synctag;
         Ray ray = new Ray(right.transform.position, right.transform.forward);
         if (photonView.IsMine)
         {

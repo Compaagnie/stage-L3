@@ -85,8 +85,10 @@ public class Teleporter : MonoBehaviour
     public Transform cameraRig;
     public Transform cam;
     public Transform CameraRotator;
-    public Transform controlerRight;
-
+    public Transform ControllerRotator;
+    public Transform controllerRight;
+    public Transform controllerLeft;
+    private float initialCamRotationY;
     expe expe;
 
 
@@ -95,12 +97,29 @@ public class Teleporter : MonoBehaviour
     {
         m_pose = GetComponent<SteamVR_Behaviour_Pose>();
         photonView = GetComponent<PhotonView>();
-        Menu.SetActive(false);        
+        Menu.SetActive(false);
+       
+
+        
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        /*
+        Debug.Log("Cam rotation" + cam.eulerAngles.y);
+        Debug.Log("Frame num " + Time.frameCount);*/
+
+        if (Time.frameCount == 3 && (cam.rotation.eulerAngles.y < 315 || cam.rotation.eulerAngles.y > 45))
+        {
+            initialCamRotationY = cam.rotation.eulerAngles.y;
+            Debug.Log("Camera initial rotation");
+            CameraRotator.RotateAround(cameraRig.position, Vector3.up, initialCamRotationY);
+            ControllerRotator.RotateAround(cameraRig.position, Vector3.up, initialCamRotationY);
+            Debug.Log("Camera:"+CameraRotator.rotation.eulerAngles.y+" Ctrl:"+ControllerRotator.rotation.eulerAngles.y);
+        }
+
         if (expe == null)
         {
             expe = GameObject.Find("/Salle").GetComponent<rendering>().expe;
@@ -152,7 +171,7 @@ public class Teleporter : MonoBehaviour
         position = SteamVR_Actions.default_Pos.GetAxis(SteamVR_Input_Sources.Any);
         if (m_TeleportAction.GetStateDown(m_pose.inputSource))
         {
-            oldControlerRotation = controlerRight.transform.rotation.eulerAngles;
+            oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
             oldHitPosition = m_Pointer.transform.position;
             //Debug.Log("update old"+ oldControlerRotation
             // head position + camera rig
@@ -292,7 +311,7 @@ public class Teleporter : MonoBehaviour
         {
             if (m_TeleportAction.GetState(m_pose.inputSource))
             {
-                Quaternion rotation = Quaternion.Euler(controlerRight.rotation.eulerAngles);
+                Quaternion rotation = Quaternion.Euler(controllerRight.rotation.eulerAngles);
                 Matrix4x4 m = Matrix4x4.Rotate(rotation);
                 Vector3 translateVect = new Vector3(0, 0, 0);
                 if (position.x < -0.5)
@@ -306,7 +325,7 @@ public class Teleporter : MonoBehaviour
                     translateVect = m.MultiplyPoint3x4(plusZ);
 
                     Vector3 camAngle = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z);
-                    Vector3 ctrlAngle = new Vector3(controlerRight.transform.forward.x, 0, controlerRight.transform.forward.z);
+                    Vector3 ctrlAngle = new Vector3(controllerRight.transform.forward.x, 0, controllerRight.transform.forward.z);
 
                     double crossProduct = Vector3.Cross(camAngle, ctrlAngle).y;
                     Debug.Log(crossProduct);
@@ -343,7 +362,7 @@ public class Teleporter : MonoBehaviour
             
             if (m_TeleportAction.GetStateUp(m_pose.inputSource) && position.y > 0.5)
             {
-                float tmp = CameraRotator.localEulerAngles.y;
+                float tmp = CameraRotator.localEulerAngles.y + initialCamRotationY;
                 Debug.Log("Avant annulation :\n"+tmp);
                 CameraRotator.RotateAround(cam.transform.position, Vector3.up, -tmp);
 
@@ -360,10 +379,10 @@ public class Teleporter : MonoBehaviour
                 //Debug.Log(m_HasPosition + hit.transform.tag);
                 if (m_HasPosition && hit.transform.tag == "TpLimit")
                 {
-                    float b = Mathf.Tan((90 - controlerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controlerRight.transform.position.y;
+                    float b = Mathf.Tan((90 - controllerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
                     Debug.Log("b: " + b);
                     Vector3 camToHit = oldHitPosition - cam.position;
-                    Vector3 ctrlToHit = oldHitPosition - controlerRight.position;
+                    Vector3 ctrlToHit = oldHitPosition - controllerRight.position;
                     Debug.Log(camToHit.z);
                     camToHit.y = 0;
                     ctrlToHit.y = 0;
@@ -395,30 +414,30 @@ public class Teleporter : MonoBehaviour
                     if (hit.transform.name == "MUR B" || hit.transform.parent.name == "MUR B")
                     {
                         mur = MurB;
-                        distMur = Mathf.Abs(mur.position.z - controlerRight.position.z);
-                        b = Mathf.Tan((controlerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
+                        distMur = Mathf.Abs(mur.position.z - controllerRight.position.z);
+                        b = Mathf.Tan((controllerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
                         camToHitOnWall = oldHitPosition.x - cam.position.x;
-                        ctrlToHit = oldHitPosition.x - controlerRight.position.x;
+                        ctrlToHit = oldHitPosition.x - controllerRight.position.x;
                         translateVect = new Vector3(1.0f, 0f, 0f);
 
                     }
                     else if (hit.transform.name == "MUR R" || hit.transform.parent.name == "MUR R")
                     {
                         mur = MurR;
-                        distMur = Mathf.Abs(mur.position.x - controlerRight.position.x);
-                        b = - Mathf.Tan((controlerRight.rotation.eulerAngles.y + mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
+                        distMur = Mathf.Abs(mur.position.x - controllerRight.position.x);
+                        b = - Mathf.Tan((controllerRight.rotation.eulerAngles.y + mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
                         camToHitOnWall = oldHitPosition.z - cam.position.z;
-                        ctrlToHit = oldHitPosition.z - controlerRight.position.z;
+                        ctrlToHit = oldHitPosition.z - controllerRight.position.z;
                         translateVect = new Vector3(0f, 0f, 1.0f);
 
                     }
                     else
                     {
                         mur = MurL;
-                        distMur = Mathf.Abs(mur.position.x - controlerRight.position.x);
-                        b = Mathf.Tan((controlerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
+                        distMur = Mathf.Abs(mur.position.x - controllerRight.position.x);
+                        b = Mathf.Tan((controllerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
                         camToHitOnWall = oldHitPosition.z - cam.position.z;
-                        ctrlToHit = oldHitPosition.z - controlerRight.position.z;
+                        ctrlToHit = oldHitPosition.z - controllerRight.position.z;
                         translateVect = new Vector3(0f, 0f, 1.0f);
 
                     }
@@ -437,9 +456,9 @@ public class Teleporter : MonoBehaviour
                 }
                 else
                 {
-                    cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
-                    CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, oldControlerRotation.y - controlerRight.transform.rotation.eulerAngles.y);
-                    oldControlerRotation = controlerRight.transform.rotation.eulerAngles;
+                    cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controllerRight.transform.rotation.eulerAngles.y);
+                    CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, oldControlerRotation.y - controllerRight.transform.rotation.eulerAngles.y);
+                    oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
                     oldHitPosition = m_Pointer.transform.position;
                 }
             }

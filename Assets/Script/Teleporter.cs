@@ -5,6 +5,7 @@ using Valve.VR;
 using Photon.Pun;
 using UnityEngine.UI;
 using System.Windows;
+using System;
 
 public class Teleporter : MonoBehaviour
 {
@@ -713,59 +714,66 @@ public class Teleporter : MonoBehaviour
         }
         else if (hit.transform.tag == "Player")
         {
-            Vector3 otherPlayerPos = hit.collider.transform.position;
-            Quaternion otherPlayerRotation = hit.collider.transform.rotation;
-            if (cameraRig.rotation.eulerAngles.y >= 45 && cameraRig.rotation.eulerAngles.y <= 135)
+            Debug.Log(hit.collider.transform.parent.parent);
+            Vector3 otherPlayerPos = hit.collider.transform.parent.transform.position;
+            Vector3 otherPlayerRotation = hit.collider.transform.parent.parent.Find("Head").rotation.eulerAngles;
+            if (Math.Round(otherPlayerPos.x,3) != Math.Round(cam.localPosition.x+cameraRig.position.x,3) && Math.Round(otherPlayerPos.z,3) != Math.Round(cam.localPosition.z+cameraRig.position.z,3))
             {
-                if (PhotonNetwork.IsMasterClient)
+
+                if (otherPlayerRotation.y >= 225 && otherPlayerRotation.y <= 315)
                 {
-                    otherPlayerPos.x += 1;
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        otherPlayerPos.z += 1;
+                    }
+                    else
+                    {
+                        otherPlayerPos.z -= 1;
+                    }
                 }
+                //B
+                else if (otherPlayerRotation.y >= 135 && otherPlayerRotation.y <= 225 && otherPlayerRotation.x == 0 && otherPlayerRotation.z == 0)
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        otherPlayerPos.x -= 1;
+                    }
+                    else
+                    {
+                        otherPlayerPos.x += 1;
+                    }
+
+                }
+                //L
+                else if (otherPlayerRotation.y <= 135 && otherPlayerRotation.y >= 45)
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        otherPlayerPos.z -= 1;
+                    }
+                    else
+                    {
+                        otherPlayerPos.z += 1;
+                    }
+
+                }
+                //no wall
                 else
                 {
-                    otherPlayerPos.x -= 1;
-                }
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        otherPlayerPos.x += 1;
+                    }
+                    else
+                    {
+                        otherPlayerPos.x -= 1;
+                    }
 
+                    }
+                StartCoroutine(MoveRigForSyncTP(cameraRig, otherPlayerPos, hit.collider.transform.rotation));
+                Debug.Log(otherPlayerRotation);
             }
-            //B
-            else if (cameraRig.rotation.eulerAngles.y >= -45 && cameraRig.rotation.eulerAngles.y <= 45 && cameraRig.rotation.eulerAngles.x == 0 && cameraRig.rotation.eulerAngles.z == 0)
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    otherPlayerPos.z += 1;
-                }
-                else
-                {
-                    otherPlayerPos.z -= 1;
-                }
 
-            }
-            //L
-            else if (cameraRig.rotation.eulerAngles.y <= -45 && cameraRig.rotation.eulerAngles.y >= -135)
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    otherPlayerPos.x -= 1;
-                }
-                else
-                {
-                    otherPlayerPos.x += 1;
-                }
-
-            }
-            //no wall
-            else //if (Physics.RaycastAll(player.transform.position, player.transform.forward, 100.0F)[0].transform.name == "MUR R")
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    otherPlayerPos.z -= 1;
-                }
-                else
-                {
-                    otherPlayerPos.z += 1;
-                }
-
-            }
         }
     }
 
@@ -830,13 +838,11 @@ public class Teleporter : MonoBehaviour
 
         yield return new WaitForSeconds( m_FadeTime); // fade time
 
-        
-        cameraRig.position += translation; // teleportation
-
-        if (cameraRig.position.x < -3.5) { cameraRig.position = new Vector3(-3.5f, cameraRig.position.y, cameraRig.position.z); }
-        if (cameraRig.position.x > 3.5)  { cameraRig.position = new Vector3( 3.5f, cameraRig.position.y, cameraRig.position.z); }
-        if (cameraRig.position.z < -3.5) { cameraRig.position = new Vector3(cameraRig.position.x, cameraRig.position.y, -3.5f); }
-        if (cameraRig.position.z > 3.5)  { cameraRig.position = new Vector3(cameraRig.position.x, cameraRig.position.y,  3.5f); }
+        if (cam.position.x + translation.x < -3.5) { translation.x = -3.5f - cam.position.x; }
+        if (cam.position.x + translation.x > 3.5) { translation.x = 3.5f - cam.position.x; }
+        if (cam.position.z + translation.z < -3.5) { translation.z = -3.5f - cam.position.z; }
+        if (cam.position.z + translation.z > 3.5) { translation.z = 3.5f - cam.position.z; }
+        cameraRig.position += translation;
 
         Debug.Log("camera rig pos tp :" +cameraRig.position);
         if (syncTeleportation)
@@ -934,6 +940,7 @@ public class Teleporter : MonoBehaviour
 
         SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen
         m_IsTeleportoting = false;
+
     }
 
     private bool UpdatePointer()

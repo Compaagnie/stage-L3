@@ -417,7 +417,14 @@ public class Teleporter : MonoBehaviour
                     {
                         mur = MurB;
                         distMur = Mathf.Abs(mur.position.z - controllerRight.position.z);
-                        b = Mathf.Tan((controllerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
+                        if (Mathf.Round(controllerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) != 0)
+                        {
+                            b = Mathf.Tan((controllerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
+                        }
+                        else
+                        {
+                            b = 0;
+                        }
                         camToHitOnWall = oldHitPosition.x - cam.position.x;
                         ctrlToHit = oldHitPosition.x - controllerRight.position.x;
                         translateVect = new Vector3(1.0f, 0f, 0f);

@@ -127,24 +127,35 @@ public class Network_Player : MonoBehaviourPun
                 }
                 else if (hit.transform.tag == "MoveControlTP")
                 {
-                    palette.Find("CubeMoveModeJoy").GetComponent<Renderer>().material = red;
-                    palette.Find("CubeMoveModeDrag").GetComponent<Renderer>().material = red;
-                    palette.Find("CubeMoveModeTP").GetComponent<Renderer>().material = green;
+                    palette.Find("GameObjectMoveJoy/CubeMoveModeJoy").GetComponent<Renderer>().material = red;
+                    palette.Find("GameObjectMoveDrag/CubeMoveModeDrag").GetComponent<Renderer>().material = red;
+                    palette.Find("GameObjectMoveSync/CubeMoveModeSync").GetComponent<Renderer>().material = red;
+                    palette.Find("GameObjectMoveTP/CubeMoveModeTP").GetComponent<Renderer>().material = green;
                     moveMode = "TP";
                 }
                 else if (hit.transform.tag == "MoveControlJoy")
                 {
-                    palette.Find("CubeMoveModeJoy").GetComponent<Renderer>().material = green;
-                    palette.Find("CubeMoveModeDrag").GetComponent<Renderer>().material = red;
-                    palette.Find("CubeMoveModeTP").GetComponent<Renderer>().material = red;
+                    palette.Find("GameObjectMoveJoy/CubeMoveModeJoy").GetComponent<Renderer>().material = green;
+                    palette.Find("GameObjectMoveDrag/CubeMoveModeDrag").GetComponent<Renderer>().material = red;
+                    palette.Find("GameObjectMoveSync/CubeMoveModeSync").GetComponent<Renderer>().material = red;
+                    palette.Find("GameObjectMoveTP/CubeMoveModeTP").GetComponent<Renderer>().material = red;
                     moveMode = "joy";
                 }
                 else if (hit.transform.tag == "MoveControlDrag")
                 {
-                    palette.Find("CubeMoveModeJoy").GetComponent<Renderer>().material = red;
-                    palette.Find("CubeMoveModeDrag").GetComponent<Renderer>().material = green;
-                    palette.Find("CubeMoveModeTP").GetComponent<Renderer>().material = red;
+                    palette.Find("GameObjectMoveJoy/CubeMoveModeJoy").GetComponent<Renderer>().material = red;
+                    palette.Find("GameObjectMoveDrag/CubeMoveModeDrag").GetComponent<Renderer>().material = green;
+                    palette.Find("GameObjectMoveSync/CubeMoveModeSync").GetComponent<Renderer>().material = red;
+                    palette.Find("GameObjectMoveTP/CubeMoveModeTP").GetComponent<Renderer>().material = red;
                     moveMode = "drag";
+                }
+                else if (hit.transform.tag == "MoveControlSync")
+                {
+                    palette.Find("GameObjectMoveJoy/CubeMoveModeJoy").GetComponent<Renderer>().material = red;
+                    palette.Find("GameObjectMoveDrag/CubeMoveModeDrag").GetComponent<Renderer>().material = red;
+                    palette.Find("GameObjectMoveSync/CubeMoveModeSync").GetComponent<Renderer>().material = green;
+                    palette.Find("GameObjectMoveTP/CubeMoveModeTP").GetComponent<Renderer>().material = red;
+                    moveMode = "sync";
                 }
             }
 

@@ -20,6 +20,7 @@ TagManager:
   - MoveControlJoy
   - MoveControlDrag
   - MoveControl
+  - MoveControlSync
   layers:
   - Default
   - TransparentFX

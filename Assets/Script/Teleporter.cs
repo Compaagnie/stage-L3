@@ -319,7 +319,7 @@ public class Teleporter : MonoBehaviour
                 if (position.x < -0.5)
                 {
                     //translateVect = m.MultiplyPoint3x4(minusX);
-                    cameraRig.RotateAround(cam.transform.position, Vector3.up, -0.25f);
+                    cameraRig.RotateAround(cam.transform.position, Vector3.up, -0.35f);
 
                 }
                 if (position.y > 0.5)
@@ -352,7 +352,7 @@ public class Teleporter : MonoBehaviour
                 if (position.x > 0.5)
                 {
                     //translateVect = m.MultiplyPoint3x4(plusX);
-                    cameraRig.RotateAround(cam.transform.position, Vector3.up, 0.25f);
+                    cameraRig.RotateAround(cam.transform.position, Vector3.up, 0.35f);
                 }
                 translateVect.y = 0;
                 if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
@@ -719,7 +719,6 @@ public class Teleporter : MonoBehaviour
             Vector3 otherPlayerRotation = hit.collider.transform.parent.parent.Find("Head").rotation.eulerAngles;
             if (Math.Round(otherPlayerPos.x,3) != Math.Round(cam.localPosition.x+cameraRig.position.x,3) && Math.Round(otherPlayerPos.z,3) != Math.Round(cam.localPosition.z+cameraRig.position.z,3))
             {
-
                 if (otherPlayerRotation.y >= 225 && otherPlayerRotation.y <= 315)
                 {
                     if (PhotonNetwork.IsMasterClient)
@@ -742,7 +741,6 @@ public class Teleporter : MonoBehaviour
                     {
                         otherPlayerPos.x += 1;
                     }
-
                 }
                 //L
                 else if (otherPlayerRotation.y <= 135 && otherPlayerRotation.y >= 45)
@@ -755,7 +753,6 @@ public class Teleporter : MonoBehaviour
                     {
                         otherPlayerPos.z += 1;
                     }
-
                 }
                 //no wall
                 else
@@ -768,8 +765,7 @@ public class Teleporter : MonoBehaviour
                     {
                         otherPlayerPos.x -= 1;
                     }
-
-                    }
+                }
                 StartCoroutine(MoveRigForSyncTP(cameraRig, otherPlayerPos, hit.collider.transform.rotation));
                 Debug.Log(otherPlayerRotation);
             }

@@ -717,6 +717,7 @@ public class Teleporter : MonoBehaviour
             Debug.Log(hit.collider.transform.parent.parent);
             Vector3 otherPlayerPos = hit.collider.transform.parent.transform.position;
             Vector3 otherPlayerRotation = hit.collider.transform.parent.parent.Find("Head").rotation.eulerAngles;
+            Debug.Log(otherPlayerRotation);
             if (Math.Round(otherPlayerPos.x,3) != Math.Round(cam.localPosition.x+cameraRig.position.x,3) && Math.Round(otherPlayerPos.z,3) != Math.Round(cam.localPosition.z+cameraRig.position.z,3))
             {
                 if (otherPlayerRotation.y >= 225 && otherPlayerRotation.y <= 315)
@@ -731,7 +732,7 @@ public class Teleporter : MonoBehaviour
                     }
                 }
                 //B
-                else if (otherPlayerRotation.y >= 135 && otherPlayerRotation.y <= 225 && otherPlayerRotation.x == 0 && otherPlayerRotation.z == 0)
+                else if (otherPlayerRotation.y >= 135 && otherPlayerRotation.y <= 225)
                 {
                     if (PhotonNetwork.IsMasterClient)
                     {
@@ -766,15 +767,14 @@ public class Teleporter : MonoBehaviour
                         otherPlayerPos.x -= 1;
                     }
                 }
-                StartCoroutine(MoveRigForSyncTP(cameraRig, otherPlayerPos, hit.collider.transform.rotation));
-                Debug.Log(otherPlayerRotation);
+                StartCoroutine(MoveRigForSyncTP(cameraRig, otherPlayerPos, otherPlayerRotation));
             }
 
         }
     }
 
     [PunRPC]
-    void MoveRigRPC(int cameraRig, Vector3 pos, Quaternion rotat)
+    void MoveRigRPC(int cameraRig, Vector3 pos, Vector3 rotat)
     {
         // StartCoroutine(MoveRig(PhotonView.Find(cameraRig).transform, translation));
 
@@ -849,26 +849,13 @@ public class Teleporter : MonoBehaviour
 
         if (syncTeleportation)
         {
-            Quaternion rotat = SteamVR_Render.Top().origin.rotation;
+            Vector3 rotat = SteamVR_Render.Top().origin.rotation.eulerAngles;
             Debug.Log("rotation" +rotat);
             Vector3 headPosition = SteamVR_Render.Top().head.position;
             Vector3 playerPos = new Vector3(headPosition.x, cameraRig.position.y, headPosition.z);
             Debug.Log(playerPos);
             //R
-            if (rotat.y >= 45 && rotat.y <= 135)
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    playerPos.x += 1;
-                }
-                else
-                {
-                    playerPos.x -= 1;
-                }
-
-            }
-            //B
-            else if (rotat.y >= -45 && rotat.y <= 45 && rotat.x==0 && rotat.z == 0)
+            if (rotat.y >= 225 && rotat.y <= 315)
             {
                 if (PhotonNetwork.IsMasterClient)
                 {
@@ -878,33 +865,42 @@ public class Teleporter : MonoBehaviour
                 {
                     playerPos.z -= 1;
                 }
-
             }
-            //L
-            else if (rotat.y <= -45 && rotat.y >= -135)
+            //B
+            else if (rotat.y >= 135 && rotat.y <= 225)
             {
                 if (PhotonNetwork.IsMasterClient)
                 {
-                    playerPos.x -= 1;
+                    playerPos.x += 1;
                 }
                 else
                 {
-                    playerPos.x += 1;
+                    playerPos.x -= 1;
                 }
-
+            }
+            //L
+            else if (rotat.y <= 135 && rotat.y >= 45)
+            {
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    playerPos.z -= 1;
+                }
+                else
+                {
+                    playerPos.z += 1;
+                }
             }
             //no wall
             else //if (Physics.RaycastAll(player.transform.position, player.transform.forward, 100.0F)[0].transform.name == "MUR R")
             {
                 if (PhotonNetwork.IsMasterClient)
                 {
-                    playerPos.z -= 1;
+                    playerPos.x -= 1;
                 }
                 else
                 {
-                    playerPos.z += 1;
+                    playerPos.x += 1;
                 }
-
             }
             Debug.Log(playerPos);
             photonView.RPC("MoveRigRPC", Photon.Pun.RpcTarget.Others, cameraRig.gameObject.GetComponent<PhotonView>().ViewID, cameraRig.position, rotat);
@@ -917,17 +913,15 @@ public class Teleporter : MonoBehaviour
 
     }
 
-    private IEnumerator MoveRigForSyncTP(Transform cameraRig, Vector3 pos, Quaternion rotat)
+    private IEnumerator MoveRigForSyncTP(Transform cameraRig, Vector3 pos, Vector3 rotat)
     {
         m_IsTeleportoting = true;
 
         SteamVR_Fade.Start(Color.black, m_FadeTime, true); // black screen
         yield return new WaitForSeconds(m_FadeTime); // fade time
         // Rotation
-        {
-            cameraRig.rotation = rotat;
-        }
-
+        
+        cameraRig.RotateAround(cam.position, Vector3.up, rotat.y - cameraRig.rotation.eulerAngles.y);
         cameraRig.position = pos; // teleportation
         if (syncTeleportation)
         {

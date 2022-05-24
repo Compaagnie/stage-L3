@@ -161,7 +161,6 @@ public class Teleporter : MonoBehaviour
                 moveMode = "sync";
                 photonView.RPC("toggleOtherSync", Photon.Pun.RpcTarget.Others);
             }
-            Debug.Log(moveMode);
         }
 
         if (syncTeleportation)
@@ -981,7 +980,7 @@ public class Teleporter : MonoBehaviour
     private Vector3 checkAndCorrectColisionBox()
     {
         Vector3 translateVector = new Vector3(0, 0, 0);
-
+        //to do, to avoid colision beetween players
         return translateVector;
     }
 }

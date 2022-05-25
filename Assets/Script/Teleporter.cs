@@ -339,19 +339,22 @@ public class Teleporter : MonoBehaviour
                     {
                         //translateVect = m.MultiplyPoint3x4(minusX);
                         cameraRig.RotateAround(cam.transform.position, Vector3.up, -0.35f);
-
+                        if (isOtherSynced)
+                        {
+                            photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, -0.35f);
+                        }
                     }
                     if (position.y > 0.5)
                     {
                         translateVect = m.MultiplyPoint3x4(plusZ);
-
+                        /* Rotation de la camera dans la direction du pointeur, à décommenter avec le if getStateUp
+                        
                         Vector3 camAngle = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z);
                         Vector3 ctrlAngle = new Vector3(controllerRight.transform.forward.x, 0, controllerRight.transform.forward.z);
 
                         double crossProduct = Vector3.Cross(camAngle, ctrlAngle).y;
                         Debug.Log(crossProduct);
-                        /*
-                        //Rotation de la camera dans la direction du pointeur, à décommenter avec le if getStateUp
+                        
                         if (crossProduct > 0)
                         {
                             CameraRotator.RotateAround(cam.transform.position, Vector3.up, 0.25f);
@@ -361,8 +364,6 @@ public class Teleporter : MonoBehaviour
                         {
                             CameraRotator.RotateAround(cam.transform.position, Vector3.up, -0.25f);
                         }*/
-
-
                     }
                     if (position.y < -0.5)
                     {
@@ -372,6 +373,10 @@ public class Teleporter : MonoBehaviour
                     {
                         //translateVect = m.MultiplyPoint3x4(plusX);
                         cameraRig.RotateAround(cam.transform.position, Vector3.up, 0.35f);
+                        if (isOtherSynced)
+                        {
+                            photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0.35f);
+                        }
                     }
                     translateVect.y = 0;
                     if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
@@ -379,7 +384,10 @@ public class Teleporter : MonoBehaviour
                     if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                     if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                     cameraRig.position += translateVect;
-
+                    if (isOtherSynced)
+                    {
+                        photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
+                    }
                 }
                 /*
                 // if getStateUp,  "Annulation" de la rotation de la caméra pour repositionner les controllers au bon endroit
@@ -400,6 +408,7 @@ public class Teleporter : MonoBehaviour
             {
                 if (m_TeleportAction.GetState(m_pose.inputSource))
                 {
+                    Vector3 translateVect = new Vector3(0, 0, 0);
                     //Debug.Log(m_HasPosition + hit.transform.tag);
                     if (m_HasPosition && hit.transform.tag == "TpLimit")
                     {
@@ -411,14 +420,17 @@ public class Teleporter : MonoBehaviour
                         camToHit.y = 0;
                         ctrlToHit.y = 0;
                         float c = camToHit.magnitude * (ctrlToHit.magnitude - b) / ctrlToHit.magnitude;
-                        Vector3 translateVect = camToHit.normalized * c;
+                        translateVect = camToHit.normalized * c;
                         //Debug.Log(c);
                         if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
                         if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
                         if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                         if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                         cameraRig.position += translateVect;
-
+                        if (isOtherSynced)
+                        {
+                            photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
+                        }
 
                         //cameraRig.position += a - a.normalized*b;
                     }
@@ -430,7 +442,6 @@ public class Teleporter : MonoBehaviour
                         */
                         Transform mur;
                         float camToHitOnWall, ctrlToHit, b, distMur;
-                        Vector3 translateVect;
 
                         if (hit.transform.name == "MUR B" || hit.transform.parent.name == "MUR B")
                         {
@@ -446,7 +457,7 @@ public class Teleporter : MonoBehaviour
                             }
                             camToHitOnWall = oldHitPosition.x - cam.position.x;
                             ctrlToHit = oldHitPosition.x - controllerRight.position.x;
-                            translateVect = new Vector3(1.0f, 0f, 0f);
+                            translateVect.x = 1.0f;
 
                         }
                         else if (hit.transform.name == "MUR R" || hit.transform.parent.name == "MUR R")
@@ -456,7 +467,7 @@ public class Teleporter : MonoBehaviour
                             b = -Mathf.Tan((controllerRight.rotation.eulerAngles.y + mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
                             camToHitOnWall = oldHitPosition.z - cam.position.z;
                             ctrlToHit = oldHitPosition.z - controllerRight.position.z;
-                            translateVect = new Vector3(0f, 0f, 1.0f);
+                            translateVect.z = 1.0f;
 
                         }
                         else
@@ -466,7 +477,7 @@ public class Teleporter : MonoBehaviour
                             b = Mathf.Tan((controllerRight.rotation.eulerAngles.y - mur.rotation.eulerAngles.y) * Mathf.PI / 180) * distMur;
                             camToHitOnWall = oldHitPosition.z - cam.position.z;
                             ctrlToHit = oldHitPosition.z - controllerRight.position.z;
-                            translateVect = new Vector3(0f, 0f, 1.0f);
+                            translateVect.z = 1.0f;
 
                         }
                         Debug.Log("b: " + b);
@@ -481,12 +492,20 @@ public class Teleporter : MonoBehaviour
                         if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                         if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                         cameraRig.position += translateVect;
-
+                        if (isOtherSynced)
+                        {
+                            photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
+                        }
                     }
                     else
                     {
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, oldControlerRotation.y - controllerRight.transform.rotation.eulerAngles.y);
-                        CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, oldControlerRotation.y - controllerRight.transform.rotation.eulerAngles.y);
+                        float angle = oldControlerRotation.y - controllerRight.transform.rotation.eulerAngles.y;
+                        cameraRig.RotateAround(cam.transform.position, Vector3.up, angle);
+                        CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, angle);
+                        if (isOtherSynced)
+                        {
+                            photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, angle);
+                        }
                         oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
                         oldHitPosition = m_Pointer.transform.position;
                     }
@@ -805,6 +824,13 @@ public class Teleporter : MonoBehaviour
 
         StartCoroutine(MoveRigForSyncTP(PhotonView.Find(cameraRig).transform, pos , rotat));
         
+    }
+
+    [PunRPC]
+    void MoveRigFromTransform(Vector3 translation, float rotation)
+    {
+        cameraRig.position += translation;
+        cameraRig.RotateAround(cameraRig.position, Vector3.up, rotation);
     }
 
     [PunRPC]

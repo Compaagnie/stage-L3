@@ -159,6 +159,7 @@ public class Network_Player : MonoBehaviourPun
                         palette.Find("GameObjectMoveTP/CubeMoveModeTP").GetComponent<Renderer>().material = red;
                         moveMode = "sync";
                     }
+                    photonView.RPC("ChangeMovement", Photon.Pun.RpcTarget.All, moveMode);
                 }
             }
 
@@ -190,6 +191,42 @@ public class Network_Player : MonoBehaviourPun
 
         // body
         torse.position = headset.transform.position;
+    }
+
+    [PunRPC]
+    void ChangeMovement(string moveMode)
+    {
+        if (moveMode == "TP")
+        {
+            palette.Find("GameObjectMoveJoy/CubeMoveModeJoy").GetComponent<Renderer>().material = red;
+            palette.Find("GameObjectMoveDrag/CubeMoveModeDrag").GetComponent<Renderer>().material = red;
+            palette.Find("GameObjectMoveSync/CubeMoveModeSync").GetComponent<Renderer>().material = red;
+            palette.Find("GameObjectMoveTP/CubeMoveModeTP").GetComponent<Renderer>().material = green;
+        }
+        else if (moveMode == "joy")
+        {
+            palette.Find("GameObjectMoveJoy/CubeMoveModeJoy").GetComponent<Renderer>().material = green;
+            palette.Find("GameObjectMoveDrag/CubeMoveModeDrag").GetComponent<Renderer>().material = red;
+            palette.Find("GameObjectMoveSync/CubeMoveModeSync").GetComponent<Renderer>().material = red;
+            palette.Find("GameObjectMoveTP/CubeMoveModeTP").GetComponent<Renderer>().material = red;
+            moveMode = "joy";
+        }
+        else if (moveMode == "drag")
+        {
+            palette.Find("GameObjectMoveJoy/CubeMoveModeJoy").GetComponent<Renderer>().material = red;
+            palette.Find("GameObjectMoveDrag/CubeMoveModeDrag").GetComponent<Renderer>().material = green;
+            palette.Find("GameObjectMoveSync/CubeMoveModeSync").GetComponent<Renderer>().material = red;
+            palette.Find("GameObjectMoveTP/CubeMoveModeTP").GetComponent<Renderer>().material = red;
+            moveMode = "drag";
+        }
+        else if (moveMode == "sync")
+        {
+            palette.Find("GameObjectMoveJoy/CubeMoveModeJoy").GetComponent<Renderer>().material = red;
+            palette.Find("GameObjectMoveDrag/CubeMoveModeDrag").GetComponent<Renderer>().material = red;
+            palette.Find("GameObjectMoveSync/CubeMoveModeSync").GetComponent<Renderer>().material = green;
+            palette.Find("GameObjectMoveTP/CubeMoveModeTP").GetComponent<Renderer>().material = red;
+            moveMode = "sync";
+        }
     }
 
     [PunRPC]

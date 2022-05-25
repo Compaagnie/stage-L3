@@ -830,7 +830,7 @@ public class Teleporter : MonoBehaviour
     void MoveRigFromTransform(Vector3 translation, float rotation)
     {
         cameraRig.position += translation;
-        cameraRig.RotateAround(cameraRig.position, Vector3.up, rotation);
+        cameraRig.RotateAround(cam.position, Vector3.up, rotation);
     }
 
     [PunRPC]

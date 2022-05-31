@@ -342,6 +342,8 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, -0.35f);
+                            cameraRig.RotateAround(Cube.transform.position, Vector3.up, rotation);
+
                         }
                     }
                     if (position.y > 0.5)
@@ -376,6 +378,8 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0.35f);
+                            cameraRig.RotateAround(Cube.transform.position, Vector3.up, rotation);
+
                         }
                     }
                     translateVect.y = 0;
@@ -508,6 +512,7 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, angle);
+                            cameraRig.RotateAround(Cube.transform.position, Vector3.up, angle);
                         }
                         oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
                         oldHitPosition = m_Pointer.transform.position;
@@ -834,6 +839,7 @@ public class Teleporter : MonoBehaviour
     {
         cameraRig.position += translation;
         cameraRig.RotateAround(cam.position, Vector3.up, rotation);
+        cameraRig.RotateAround(Cube.transform.position, Vector3.up, rotation);
     }
 
     [PunRPC]

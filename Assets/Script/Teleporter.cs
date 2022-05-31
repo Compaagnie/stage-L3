@@ -861,6 +861,7 @@ public class Teleporter : MonoBehaviour
     void updateCenter()
     {
         centerBetweenPlayers = (otherPlayerPosition + cam.position) / 2f;
+        centerBetweenPlayers.y = 0;
 
     }
 

@@ -896,7 +896,14 @@ public class Teleporter : MonoBehaviour
     void moveCenterCube(Vector3 translateVector)
     {
         Debug.Log("try move cube " + translateVector);
-        Cube.transform.position += translateVector/2f;
+        if (isOtherSynced)
+        {
+            Cube.transform.position += translateVector;
+        }
+        else
+        {
+            Cube.transform.position += translateVector/2f;
+        }
     }
 
     private IEnumerator MoveRig(Transform cameraRig , Vector3 translation)

@@ -769,7 +769,7 @@ public class Teleporter : MonoBehaviour
             Debug.Log(hit.collider.transform.parent.parent);
             Vector3 otherPlayerPos = hit.collider.transform.parent.transform.position;
             Vector3 otherPlayerRotation = hit.collider.transform.parent.parent.Find("Head").rotation.eulerAngles;
-            Debug.Log(otherPlayerRotation);
+            //Debug.Log(otherPlayerRotation);
             if (Math.Round(otherPlayerPos.x,3) != Math.Round(cam.localPosition.x+cameraRig.position.x,3) && Math.Round(otherPlayerPos.z,3) != Math.Round(cam.localPosition.z+cameraRig.position.z,3))
             {
                 if (otherPlayerRotation.y >= 225 && otherPlayerRotation.y <= 315)
@@ -820,6 +820,7 @@ public class Teleporter : MonoBehaviour
                     }
                 }
                 StartCoroutine(MoveRigForSyncTP(cameraRig, otherPlayerPos, otherPlayerRotation));
+
             }
 
         }
@@ -991,9 +992,10 @@ public class Teleporter : MonoBehaviour
         // Rotation
         
         cameraRig.RotateAround(cam.position, Vector3.up, rotat.y - cameraRig.rotation.eulerAngles.y);
+        Vector3 translateVect = pos - cameraRig.position;
+
         cameraRig.position = pos; // teleportation
 
-        Vector3 translateVect = cameraRig.position - pos;
         photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
 
         if (syncTeleportation || isOtherSynced)

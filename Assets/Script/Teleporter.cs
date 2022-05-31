@@ -906,6 +906,7 @@ public class Teleporter : MonoBehaviour
     void receiveOtherPosition(Vector3 position, Vector3 rotation)
     {
         otherPlayerPosition = position;
+        otherPlayerPosition.y = 0;
         otherPlayerRotation = rotation;
         updateCenter();
         Cube.transform.position = centerBetweenPlayers;

@@ -91,7 +91,7 @@ public class Teleporter : MonoBehaviour
     public Transform controllerRight;
     public Transform controllerLeft;
     private float initialCamRotationY;
-    private Vector3 otherPlayerPosition;
+    private Vector3 otherPlayerTransform;
     private Vector3 centerBetweenPlayers;
     expe expe;
 
@@ -162,7 +162,7 @@ public class Teleporter : MonoBehaviour
             {
                 moveMode = "sync";
                 photonView.RPC("toggleOtherSync", Photon.Pun.RpcTarget.Others);
-                Vector3 posToMove = otherPlayerPosition;
+                Vector3 posToMove = otherPlayerTransform;
                 Vector3 otherPlayerRotation = hit.collider.transform.parent.parent.Find("Head").rotation.eulerAngles;
                 //Debug.Log(otherPlayerRotation);
                 if (otherPlayerRotation.y >= 225 && otherPlayerRotation.y <= 315)
@@ -904,14 +904,14 @@ public class Teleporter : MonoBehaviour
     [PunRPC]
     void receiveOtherPosition(Vector3 position)
     {
-        otherPlayerPosition = position;
+        otherPlayerTransform = position;
         updateCenter();
         Cube.transform.position = centerBetweenPlayers;
     }
 
     void updateCenter()
     {
-        centerBetweenPlayers = (otherPlayerPosition + cam.position) / 2f;
+        centerBetweenPlayers = (otherPlayerTransform + cam.position) / 2f;
         centerBetweenPlayers.y = 0;
 
     }

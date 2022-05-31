@@ -131,7 +131,7 @@ public class Teleporter : MonoBehaviour
         }
         //Pointer
         m_HasPosition = UpdatePointer();
-        photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cameraRig.position);
+        photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cam.position);
         if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
         {
             if (hit.transform.tag == "MoveControlTP" && moveMode != "TP")
@@ -860,7 +860,7 @@ public class Teleporter : MonoBehaviour
 
     void updateCenter()
     {
-        centerBetweenPlayers = (otherPlayerPosition + cameraRig.position) / 2f;
+        centerBetweenPlayers = (otherPlayerPosition + cam.position) / 2f;
 
     }
 

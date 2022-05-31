@@ -342,7 +342,7 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, -0.35f);
-                            cameraRig.RotateAround(Cube.transform.position, Vector3.up, rotation);
+                            cameraRig.RotateAround(Cube.transform.position, Vector3.up, -0.35f);
 
                         }
                     }
@@ -378,7 +378,7 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0.35f);
-                            cameraRig.RotateAround(Cube.transform.position, Vector3.up, rotation);
+                            cameraRig.RotateAround(Cube.transform.position, Vector3.up, 0.35f);
 
                         }
                     }

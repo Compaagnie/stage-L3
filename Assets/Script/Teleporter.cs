@@ -91,7 +91,7 @@ public class Teleporter : MonoBehaviour
     public Transform controllerRight;
     public Transform controllerLeft;
     private float initialCamRotationY;
-    private Vector3 otherPlayerTransform;
+    private Transform otherPlayerTransform;
     private Vector3 centerBetweenPlayers;
     expe expe;
 
@@ -131,7 +131,7 @@ public class Teleporter : MonoBehaviour
         }
         //Pointer
         m_HasPosition = UpdatePointer();
-        photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cam.position);
+        photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cam.transform);
         if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
         {
             if (hit.transform.tag == "MoveControlTP" && moveMode != "TP")
@@ -162,8 +162,8 @@ public class Teleporter : MonoBehaviour
             {
                 moveMode = "sync";
                 photonView.RPC("toggleOtherSync", Photon.Pun.RpcTarget.Others);
-                Vector3 posToMove = otherPlayerTransform;
-                Vector3 otherPlayerRotation = hit.collider.transform.parent.parent.Find("Head").rotation.eulerAngles;
+                Vector3 posToMove = otherPlayerTransform.position;
+                Vector3 otherPlayerRotation = otherPlayerTransform.rotation.eulerAngles;
                 //Debug.Log(otherPlayerRotation);
                 if (otherPlayerRotation.y >= 225 && otherPlayerRotation.y <= 315)
                 {
@@ -902,16 +902,16 @@ public class Teleporter : MonoBehaviour
     }
 
     [PunRPC]
-    void receiveOtherPosition(Vector3 position)
+    void receiveOtherPosition(Transform player)
     {
-        otherPlayerTransform = position;
+        otherPlayerTransform = player;
         updateCenter();
         Cube.transform.position = centerBetweenPlayers;
     }
 
     void updateCenter()
     {
-        centerBetweenPlayers = (otherPlayerTransform + cam.position) / 2f;
+        centerBetweenPlayers = (otherPlayerTransform.position + cam.position) / 2f;
         centerBetweenPlayers.y = 0;
 
     }

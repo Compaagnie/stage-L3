@@ -508,7 +508,6 @@ public class Teleporter : MonoBehaviour
                     {
                         float angle = oldControlerRotation.y - controllerRight.transform.rotation.eulerAngles.y;
                         cameraRig.RotateAround(cam.transform.position, Vector3.up, angle);
-                        Cube.transform.RotateAround(Cube.transform.position, Vector3.up, angle);
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, angle);
@@ -541,7 +540,6 @@ public class Teleporter : MonoBehaviour
             if (!syncTeleportation)
             {
                 cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
-                CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, 90);
             }
             else
             {
@@ -554,7 +552,6 @@ public class Teleporter : MonoBehaviour
             if (!syncTeleportation)
             {
                 cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
-                CubePlayer.transform.RotateAround(CubePlayer.transform.position, Vector3.up, -90);
             }
             else
             {
@@ -839,6 +836,7 @@ public class Teleporter : MonoBehaviour
     void MoveRigFromTransform(Vector3 translation, float rotation)
     {
         cameraRig.position += translation;
+        photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translation);
         cameraRig.RotateAround(cam.position, Vector3.up, rotation);
         cameraRig.RotateAround(Cube.transform.position, Vector3.up, rotation);
     }

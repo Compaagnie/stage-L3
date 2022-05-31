@@ -162,6 +162,57 @@ public class Teleporter : MonoBehaviour
             {
                 moveMode = "sync";
                 photonView.RPC("toggleOtherSync", Photon.Pun.RpcTarget.Others);
+                Vector3 posToMove = otherPlayerPosition;
+                Vector3 otherPlayerRotation = hit.collider.transform.parent.parent.Find("Head").rotation.eulerAngles;
+                //Debug.Log(otherPlayerRotation);
+                if (otherPlayerRotation.y >= 225 && otherPlayerRotation.y <= 315)
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        posToMove.z += 1;
+                    }
+                    else
+                    {
+                        posToMove.z -= 1;
+                    }
+                }
+                //B
+                else if (otherPlayerRotation.y >= 135 && otherPlayerRotation.y <= 225)
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        posToMove.x -= 1;
+                    }
+                    else
+                    {
+                        posToMove.x += 1;
+                    }
+                }
+                //L
+                else if (otherPlayerRotation.y <= 135 && otherPlayerRotation.y >= 45)
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        posToMove.z -= 1;
+                    }
+                    else
+                    {
+                        posToMove.z += 1;
+                    }
+                }
+                //no wall
+                else
+                {
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        posToMove.x += 1;
+                    }
+                    else
+                    {
+                        posToMove.x -= 1;
+                    }
+                }
+                StartCoroutine(MoveRigForSyncTP(cameraRig, posToMove, otherPlayerRotation));
             }
         }
 
@@ -539,25 +590,25 @@ public class Teleporter : MonoBehaviour
         Vector3 groundPosition = new Vector3(headPosition.x, cameraRig.position.y, headPosition.z);
         if (e)
         {
-            if (!syncTeleportation)
+            if (syncTeleportation || isOtherSynced)
             {
-                cameraRig.RotateAround(cam.position, Vector3.up, 90);
+                photonView.RPC("RotationRigRPC", Photon.Pun.RpcTarget.All, "e");
             }
             else
             {
-                photonView.RPC("RotationRigRPC", Photon.Pun.RpcTarget.All, "e");
+                cameraRig.RotateAround(cam.position, Vector3.up, 90);
             }
             return;
         }
         else if (w)
         {
-            if (!syncTeleportation)
+            if (syncTeleportation || isOtherSynced)
             {
-                cameraRig.RotateAround(cam.position, Vector3.up, -90);
+                photonView.RPC("RotationRigRPC", Photon.Pun.RpcTarget.All, "w");
             }
             else
             {
-                photonView.RPC("RotationRigRPC", Photon.Pun.RpcTarget.All, "w");
+                cameraRig.RotateAround(cam.position, Vector3.up, -90);
             }
             return;
         }

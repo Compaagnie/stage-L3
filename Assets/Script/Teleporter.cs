@@ -91,6 +91,8 @@ public class Teleporter : MonoBehaviour
     public Transform controllerRight;
     public Transform controllerLeft;
     private float initialCamRotationY;
+    private Vector3 otherPlayerPosition;
+    private Vector3 centerBetweenPlayers;
     expe expe;
 
 
@@ -117,9 +119,9 @@ public class Teleporter : MonoBehaviour
         {
             initialCamRotationY = cam.rotation.eulerAngles.y;
             Debug.Log("Camera initial rotation");
-            cameraRig.RotateAround(cameraRig.position, Vector3.up, initialCamRotationY);
-            CameraRotator.RotateAround(cameraRig.position, Vector3.up, -initialCamRotationY);
-            ControllerRotator.RotateAround(cameraRig.position, Vector3.up, -initialCamRotationY);
+            cameraRig.RotateAround(cam.position, Vector3.up, initialCamRotationY);
+            CameraRotator.RotateAround(cam.position, Vector3.up, -initialCamRotationY);
+            ControllerRotator.RotateAround(cam.position, Vector3.up, -initialCamRotationY);
             Debug.Log("Camera:"+CameraRotator.rotation.eulerAngles.y+" Ctrl:"+ControllerRotator.rotation.eulerAngles.y);
         }
 
@@ -129,7 +131,7 @@ public class Teleporter : MonoBehaviour
         }
         //Pointer
         m_HasPosition = UpdatePointer();
-
+        photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cameraRig.position);
         if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
         {
             if (hit.transform.tag == "MoveControlTP" && moveMode != "TP")
@@ -341,10 +343,10 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, -0.35f);
-                            cameraRig.RotateAround(Cube.transform.position, Vector3.up, -0.7f);
+                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, -0.35f);
 
                         }
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, -0.35f);
+                        cameraRig.RotateAround(cam.position, Vector3.up, -0.35f);
                     }
                     if (position.y > 0.5)
                     {
@@ -359,12 +361,12 @@ public class Teleporter : MonoBehaviour
                         
                         if (crossProduct > 0)
                         {
-                            CameraRotator.RotateAround(cam.transform.position, Vector3.up, 0.25f);
+                            CameraRotator.RotateAround(cam.position, Vector3.up, 0.25f);
 
                         }
                         else if (crossProduct < 0)
                         {
-                            CameraRotator.RotateAround(cam.transform.position, Vector3.up, -0.25f);
+                            CameraRotator.RotateAround(cam.position, Vector3.up, -0.25f);
                         }*/
                     }
                     if (position.y < -0.5)
@@ -377,10 +379,10 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0.35f);
-                            cameraRig.RotateAround(Cube.transform.position, Vector3.up, 0.7f);
+                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, 0.35f);
 
                         }
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 0.35f);
+                        cameraRig.RotateAround(cam.position, Vector3.up, 0.35f);
                     }
                     translateVect.y = 0;
                     if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
@@ -388,7 +390,7 @@ public class Teleporter : MonoBehaviour
                     if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                     if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                     cameraRig.position += translateVect;
-                    photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
+                    //photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
                     if (isOtherSynced)
                     {
                         photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
@@ -400,9 +402,9 @@ public class Teleporter : MonoBehaviour
                 {
                     float tmp = CameraRotator.localEulerAngles.y + initialCamRotationY;
                     Debug.Log("Avant annulation :\n"+tmp);
-                    CameraRotator.RotateAround(cam.transform.position, Vector3.up, -tmp);
+                    CameraRotator.RotateAround(cam.position, Vector3.up, -tmp);
 
-                    cameraRig.RotateAround(cam.transform.position, Vector3.up, tmp);
+                    cameraRig.RotateAround(cam.position, Vector3.up, tmp);
                     Debug.Log("Après annulation :\n" + CameraRotator.localEulerAngles.y);
 
                 }
@@ -432,7 +434,7 @@ public class Teleporter : MonoBehaviour
                         if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                         if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                         cameraRig.position += translateVect;
-                        photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
+                        //photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
@@ -498,7 +500,7 @@ public class Teleporter : MonoBehaviour
                         if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                         if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                         cameraRig.position += translateVect;
-                        photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
+                        //photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
@@ -510,9 +512,9 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, angle);
-                            cameraRig.RotateAround(Cube.transform.position, Vector3.up, 2f*angle);
+                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, angle);
                         }
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, angle);
+                        cameraRig.RotateAround(cam.position, Vector3.up, angle);
                         oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
                         oldHitPosition = m_Pointer.transform.position;
                     }
@@ -539,7 +541,7 @@ public class Teleporter : MonoBehaviour
         {
             if (!syncTeleportation)
             {
-                cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
+                cameraRig.RotateAround(cam.position, Vector3.up, 90);
             }
             else
             {
@@ -551,7 +553,7 @@ public class Teleporter : MonoBehaviour
         {
             if (!syncTeleportation)
             {
-                cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
+                cameraRig.RotateAround(cam.position, Vector3.up, -90);
             }
             else
             {
@@ -641,18 +643,18 @@ public class Teleporter : MonoBehaviour
                     else if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
                     {
                         //Debug.Log("need to rotate w 1 time");
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
+                        cameraRig.RotateAround(cam.position, Vector3.up, 90);
                         translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, z + Mathf.Abs(x));
                     }
                     else if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
                     {
                         // Debug.Log("need to rotate w 1 times");
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
+                        cameraRig.RotateAround(cam.position, Vector3.up, -90);
                         translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, z + Mathf.Abs(x));
                     }
                     else
                     {
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 180);
+                        cameraRig.RotateAround(cam.position, Vector3.up, 180);
                     }
                 }
                 //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
@@ -661,7 +663,7 @@ public class Teleporter : MonoBehaviour
                 {
                     if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
                     {
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, -180);
+                        cameraRig.RotateAround(cam.position, Vector3.up, -180);
                     }
                 }
                 */
@@ -679,18 +681,18 @@ public class Teleporter : MonoBehaviour
                     else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
                     {
                         //Debug.Log("need to rotate e 1 time");
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
+                        cameraRig.RotateAround(cam.position, Vector3.up, 90);
                         translateVector = new Vector3(x + Mathf.Abs(z), 0, m_Pointer.transform.position.z - groundPosition.z);
                     }
                     else if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
                     {
                         //Debug.Log("need to rotate w 2 times");
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 180);
+                        cameraRig.RotateAround(cam.position, Vector3.up, 180);
                         translateVector = new Vector3(-2 * groundPosition.x, 0, m_Pointer.transform.position.z - groundPosition.z);
                     }
                     else
                     {
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
+                        cameraRig.RotateAround(cam.position, Vector3.up, -90);
                     }
                 }
                 //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
@@ -699,7 +701,7 @@ public class Teleporter : MonoBehaviour
                 {
                     if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
                     {
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
+                        cameraRig.RotateAround(cam.position, Vector3.up, -90);
                     }
                 }
                 */
@@ -719,18 +721,18 @@ public class Teleporter : MonoBehaviour
                     {
                         //Debug.Log("need to rotate w 1 time");
                             
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, -90);
+                        cameraRig.RotateAround(cam.position, Vector3.up, -90);
                         translateVector = new Vector3(x - Mathf.Abs(z), 0, m_Pointer.transform.position.z - groundPosition.z);
                     }
                     else if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
                     {
                         //Debug.Log("need to rotate w 2 times");
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 180);
+                        cameraRig.RotateAround(cam.position, Vector3.up, 180);
                         translateVector = new Vector3(-2 * groundPosition.x, 0, m_Pointer.transform.position.z - groundPosition.z);
                     }
                     else
                     {
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
+                        cameraRig.RotateAround(cam.position, Vector3.up, 90);
                     }
                 }
                 //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
@@ -739,7 +741,7 @@ public class Teleporter : MonoBehaviour
                 {
                     if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
                     {
-                        cameraRig.RotateAround(cam.transform.position, Vector3.up, 90);
+                        cameraRig.RotateAround(cam.position, Vector3.up, 90);
                     }
                 }
                 */
@@ -836,9 +838,9 @@ public class Teleporter : MonoBehaviour
     void MoveRigFromTransform(Vector3 translation, float rotation)
     {
         cameraRig.position += translation;
-        moveCenterCube(translation);
+        //moveCenterCube(translation);
 
-        cameraRig.RotateAround(Cube.transform.position, Vector3.up, 2f*rotation);
+        cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, rotation);
         cameraRig.RotateAround(cam.position, Vector3.up, rotation);
     }
 
@@ -846,6 +848,20 @@ public class Teleporter : MonoBehaviour
     void toggleOtherSync()
     {
         isOtherSynced = !isOtherSynced;
+    }
+
+    [PunRPC]
+    void receiveOtherPosition(Vector3 position)
+    {
+        otherPlayerPosition = position;
+        updateCenter();
+        Cube.transform.position = centerBetweenPlayers;
+    }
+
+    void updateCenter()
+    {
+        centerBetweenPlayers = (otherPlayerPosition + cameraRig.position) / 2f;
+
     }
 
     [PunRPC]
@@ -896,14 +912,7 @@ public class Teleporter : MonoBehaviour
     void moveCenterCube(Vector3 translateVector)
     {
         Debug.Log("try move cube " + translateVector);
-        if (isOtherSynced)
-        {
-            Cube.transform.position += translateVector;
-        }
-        else
-        {
-            Cube.transform.position += translateVector/2f;
-        }
+        Cube.transform.position += translateVector/2f;
     }
 
     private IEnumerator MoveRig(Transform cameraRig , Vector3 translation)
@@ -919,7 +928,7 @@ public class Teleporter : MonoBehaviour
         if (cam.position.z + translation.z < -3.5) { translation.z = -3.5f - cam.position.z; }
         if (cam.position.z + translation.z > 3.5) { translation.z = 3.5f - cam.position.z; }
         cameraRig.position += translation;
-        photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translation);
+        //photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translation);
         Debug.Log("camera rig pos tp :" +cameraRig.position);
         if (syncTeleportation || isOtherSynced)
         {
@@ -1002,7 +1011,7 @@ public class Teleporter : MonoBehaviour
 
         cameraRig.position = pos; // teleportation
 
-        photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
+        //photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
 
         if (syncTeleportation || isOtherSynced)
         {

@@ -392,13 +392,13 @@ public class Teleporter : MonoBehaviour
                     if (position.x < -0.5)
                     {
                         //translateVect = m.MultiplyPoint3x4(minusX);
+                        cameraRig.RotateAround(cam.position, Vector3.up, -0.35f);
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, -0.35f);
                             cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, -0.35f);
 
                         }
-                        cameraRig.RotateAround(cam.position, Vector3.up, -0.35f);
                     }
                     if (position.y > 0.5)
                     {
@@ -428,13 +428,13 @@ public class Teleporter : MonoBehaviour
                     if (position.x > 0.5)
                     {
                         //translateVect = m.MultiplyPoint3x4(plusX);
+                        cameraRig.RotateAround(cam.position, Vector3.up, 0.35f);
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0.35f);
                             cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, 0.35f);
 
                         }
-                        cameraRig.RotateAround(cam.position, Vector3.up, 0.35f);
                     }
                     translateVect.y = 0;
                     if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
@@ -561,12 +561,12 @@ public class Teleporter : MonoBehaviour
                     else
                     {
                         float angle = oldControlerRotation.y - controllerRight.transform.rotation.eulerAngles.y;
+                        cameraRig.RotateAround(cam.position, Vector3.up, angle);
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, angle);
                             cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, angle);
                         }
-                        cameraRig.RotateAround(cam.position, Vector3.up, angle);
                         oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
                         oldHitPosition = m_Pointer.transform.position;
                     }
@@ -892,8 +892,8 @@ public class Teleporter : MonoBehaviour
         cameraRig.position += translation;
         //moveCenterCube(translation);
 
-        cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, rotation);
         cameraRig.RotateAround(cam.position, Vector3.up, rotation);
+        cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, rotation);
     }
 
     [PunRPC]

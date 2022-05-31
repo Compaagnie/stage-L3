@@ -395,7 +395,7 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, -0.35f);
-                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, -0.35f*2f);
+                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, -0.35f);
 
                         }
                         cameraRig.RotateAround(cam.position, Vector3.up, -0.35f);
@@ -431,7 +431,7 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0.35f);
-                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, 0.35f*2f);
+                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, 0.35f);
 
                         }
                         cameraRig.RotateAround(cam.position, Vector3.up, 0.35f);
@@ -564,7 +564,7 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, angle);
-                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, angle*2f);
+                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, angle);
                         }
                         cameraRig.RotateAround(cam.position, Vector3.up, angle);
                         oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
@@ -892,7 +892,7 @@ public class Teleporter : MonoBehaviour
         cameraRig.position += translation;
         //moveCenterCube(translation);
 
-        cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, rotation*2f);
+        cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, rotation);
         cameraRig.RotateAround(cam.position, Vector3.up, rotation);
     }
 

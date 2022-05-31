@@ -447,7 +447,6 @@ public class Teleporter : MonoBehaviour
                     if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                     if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                     cameraRig.position += translateVect;
-                    //photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
                     if (isOtherSynced)
                     {
                         photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
@@ -491,7 +490,6 @@ public class Teleporter : MonoBehaviour
                         if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                         if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                         cameraRig.position += translateVect;
-                        //photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
@@ -557,7 +555,6 @@ public class Teleporter : MonoBehaviour
                         if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                         if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                         cameraRig.position += translateVect;
-                        //photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
@@ -898,9 +895,6 @@ public class Teleporter : MonoBehaviour
     void MoveRigFromTransform(Vector3 translation, float rotation)
     {
         cameraRig.position += translation;
-        //moveCenterCube(translation);
-
-        //cameraRig.RotateAround(cam.position, Vector3.up, rotation);
         cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, rotation);
     }
 
@@ -971,13 +965,6 @@ public class Teleporter : MonoBehaviour
         synctag = tag;
     }
 
-    [PunRPC]
-    void moveCenterCube(Vector3 translateVector)
-    {
-        Debug.Log("try move cube " + translateVector);
-        Cube.transform.position += translateVector/2f;
-    }
-
     private IEnumerator MoveRig(Transform cameraRig , Vector3 translation)
     {
         m_IsTeleportoting = true;
@@ -991,7 +978,6 @@ public class Teleporter : MonoBehaviour
         if (cam.position.z + translation.z < -3.5) { translation.z = -3.5f - cam.position.z; }
         if (cam.position.z + translation.z > 3.5) { translation.z = 3.5f - cam.position.z; }
         cameraRig.position += translation;
-        //photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translation);
         Debug.Log("camera rig pos tp :" +cameraRig.position);
         if (syncTeleportation || isOtherSynced)
         {
@@ -1073,8 +1059,6 @@ public class Teleporter : MonoBehaviour
         Vector3 translateVect = pos - cameraRig.position;
 
         cameraRig.position = pos; // teleportation
-
-        //photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translateVect);
 
         if (syncTeleportation || isOtherSynced)
         {

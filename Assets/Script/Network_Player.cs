@@ -47,6 +47,7 @@ public class Network_Player : MonoBehaviourPun
     public SteamVR_Action_Boolean interactWithUI = SteamVR_Input.GetBooleanAction("InteractUI");
 
     private bool synctag = true;
+    private bool isOtherSynced;
     private string moveMode = "drag";
 
 
@@ -91,6 +92,7 @@ public class Network_Player : MonoBehaviourPun
         }
 
         synctag = GameObject.Find("/[CameraRig]/ControllerRotator/Controller (right)").GetComponent<Teleporter>().synctag;
+        isOtherSynced = GameObject.Find("/[CameraRig]/ControllerRotator/Controller (right)").GetComponent<Teleporter>().isOtherSynced;
         Ray ray = new Ray(right.transform.position, right.transform.forward);
         if (photonView.IsMine)
         {
@@ -151,7 +153,7 @@ public class Network_Player : MonoBehaviourPun
                         palette.Find("GameObjectMoveTP/CubeMoveModeTP").GetComponent<Renderer>().material = red;
                         moveMode = "drag";
                     }
-                    else if (hit.transform.tag == "MoveControlSync")
+                    else if (hit.transform.tag == "MoveControlSync" && !isOtherSynced)
                     {
                         palette.Find("GameObjectMoveJoy/CubeMoveModeJoy").GetComponent<Renderer>().material = red;
                         palette.Find("GameObjectMoveDrag/CubeMoveModeDrag").GetComponent<Renderer>().material = red;

@@ -72,7 +72,7 @@ public class Teleporter : MonoBehaviour
     private bool e = false;
     private bool w = false;
     private string moveMode = "drag";
-    private bool isOtherSynced = false;
+    public bool isOtherSynced = false;
     public bool synctag = true;
    
 

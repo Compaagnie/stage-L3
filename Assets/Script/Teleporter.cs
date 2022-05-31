@@ -836,7 +836,7 @@ public class Teleporter : MonoBehaviour
     void MoveRigFromTransform(Vector3 translation, float rotation)
     {
         cameraRig.position += translation;
-        photonView.RPC("moveCenterCube", Photon.Pun.RpcTarget.All, translation);
+        moveCenterCube(translation);
 
         cameraRig.RotateAround(Cube.transform.position, Vector3.up, 2f*rotation);
         cameraRig.RotateAround(cam.position, Vector3.up, rotation);

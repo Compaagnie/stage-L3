@@ -133,6 +133,7 @@ public class Teleporter : MonoBehaviour
         //Pointer
         m_HasPosition = UpdatePointer();
         photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cam.position, cam.rotation.eulerAngles);
+
         if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
         {
             if (hit.transform.tag == "MoveControlTP" && moveMode != "TP")
@@ -905,7 +906,7 @@ public class Teleporter : MonoBehaviour
     void receiveOtherPosition(Vector3 position, Vector3 rotation)
     {
         otherPlayerPosition = position;
-        otherPlayerPosition = rotation;
+        otherPlayerRotation = rotation;
         updateCenter();
         Cube.transform.position = centerBetweenPlayers;
     }

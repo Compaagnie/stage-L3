@@ -132,7 +132,7 @@ public class Teleporter : MonoBehaviour
         }
         //Pointer
         m_HasPosition = UpdatePointer();
-        photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cam.position, cam.rotation.eulerAngles);
+        photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cam.position, cameraRig.rotation.eulerAngles);
 
         if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
         {
@@ -164,56 +164,7 @@ public class Teleporter : MonoBehaviour
             {
                 moveMode = "sync";
                 photonView.RPC("toggleOtherSync", Photon.Pun.RpcTarget.Others);
-                Vector3 posToMove = otherPlayerPosition;
-                //Debug.Log(otherPlayerRotation);
-                if (otherPlayerRotation.y >= 225 && otherPlayerRotation.y <= 315)
-                {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        posToMove.z += 1;
-                    }
-                    else
-                    {
-                        posToMove.z -= 1;
-                    }
-                }
-                //B
-                else if (otherPlayerRotation.y >= 135 && otherPlayerRotation.y <= 225)
-                {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        posToMove.x -= 1;
-                    }
-                    else
-                    {
-                        posToMove.x += 1;
-                    }
-                }
-                //L
-                else if (otherPlayerRotation.y <= 135 && otherPlayerRotation.y >= 45)
-                {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        posToMove.z -= 1;
-                    }
-                    else
-                    {
-                        posToMove.z += 1;
-                    }
-                }
-                //no wall
-                else
-                {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        posToMove.x += 1;
-                    }
-                    else
-                    {
-                        posToMove.x -= 1;
-                    }
-                }
-                StartCoroutine(MoveRigForSyncTP(cameraRig, posToMove, otherPlayerRotation));
+                tpToOther();
             }
         }
 
@@ -822,6 +773,7 @@ public class Teleporter : MonoBehaviour
         }
         else if (hit.transform.tag == "Player")
         {
+            /*
             Debug.Log(hit.collider.transform.parent.parent);
             Vector3 otherPlayerPos = hit.collider.transform.parent.transform.position;
             Vector3 otherPlayerRotation = hit.collider.transform.parent.parent.Find("Head").rotation.eulerAngles;
@@ -876,9 +828,10 @@ public class Teleporter : MonoBehaviour
                     }
                 }
                 StartCoroutine(MoveRigForSyncTP(cameraRig, otherPlayerPos, otherPlayerRotation));
-
-            }
-
+                
+                
+            }*/
+            tpToOther();
         }
     }
 
@@ -959,6 +912,61 @@ public class Teleporter : MonoBehaviour
     }
 
     [PunRPC]
+    void tpToOther()
+    {
+        Vector3 posToMove = otherPlayerPosition;
+        //Debug.Log(otherPlayerRotation);
+        if (otherPlayerRotation.y >= 225 && otherPlayerRotation.y <= 315)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                posToMove.z += 1;
+            }
+            else
+            {
+                posToMove.z -= 1;
+            }
+        }
+        //B
+        else if (otherPlayerRotation.y >= 135 && otherPlayerRotation.y <= 225)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                posToMove.x -= 1;
+            }
+            else
+            {
+                posToMove.x += 1;
+            }
+        }
+        //L
+        else if (otherPlayerRotation.y <= 135 && otherPlayerRotation.y >= 45)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                posToMove.z -= 1;
+            }
+            else
+            {
+                posToMove.z += 1;
+            }
+        }
+        //no wall
+        else
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                posToMove.x += 1;
+            }
+            else
+            {
+                posToMove.x -= 1;
+            }
+        }
+        StartCoroutine(MoveRigForSyncTP(cameraRig, posToMove, otherPlayerRotation));
+    }
+
+[PunRPC]
     void tagMode(bool tag)
     {
        // Debug.Log("Change tag mode");
@@ -984,7 +992,7 @@ public class Teleporter : MonoBehaviour
             Cube.transform.position += translation; // teleportation
 
             Vector3 rotat = SteamVR_Render.Top().origin.rotation.eulerAngles;
-            Debug.Log("rotation" +rotat);
+            Debug.Log("rotation" + rotat);
             Vector3 headPosition = SteamVR_Render.Top().head.position;
             Vector3 playerPos = new Vector3(headPosition.x, 0, headPosition.z);
             Debug.Log(playerPos);

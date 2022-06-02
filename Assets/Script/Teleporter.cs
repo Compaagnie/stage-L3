@@ -93,7 +93,7 @@ public class Teleporter : MonoBehaviour
     private float initialCamRotationY;
     private Vector3 otherPlayerPosition;
     private Vector3 otherPlayerRotation;
-    private Transform otherPlayerTransform;
+    private Vector3 otherPlayerCameraRigPos;
     private Vector3 centerBetweenPlayers;
     expe expe;
 
@@ -133,7 +133,7 @@ public class Teleporter : MonoBehaviour
         }
         //Pointer
         m_HasPosition = UpdatePointer();
-        photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cam.position, cameraRig.rotation.eulerAngles, cameraRig.gameObject.GetPhotonView().ViewID);
+        photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cam.position, cameraRig.rotation.eulerAngles, cameraRig.position);
 
         if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
         {
@@ -859,9 +859,9 @@ public class Teleporter : MonoBehaviour
     }
 
     [PunRPC]
-    void receiveOtherPosition(Vector3 position, Vector3 rotation, int viewID)
+    void receiveOtherPosition(Vector3 position, Vector3 rotation, Vector3 cameraRigPosition)
     {
-        otherPlayerTransform = PhotonView.Find(viewID).transform;
+        otherPlayerCameraRigPos = cameraRigPosition;
         otherPlayerPosition = position;
         otherPlayerPosition.y = 0;
         otherPlayerRotation = rotation;
@@ -937,10 +937,9 @@ public class Teleporter : MonoBehaviour
         Debug.Log(specificPos.magnitude);
 
         posToMove += specificPos;
-        StartCoroutine(MoveRigForSyncTP(cameraRig, posToMove, otherPlayerRotation));
         */
-        cameraRig.position = otherPlayerTransform.position;
-        cameraRig.rotation = otherPlayerTransform.rotation;
+        StartCoroutine(MoveRigForSyncTP(cameraRig, otherPlayerCameraRigPos, otherPlayerRotation));
+        
     }
 
 [PunRPC]

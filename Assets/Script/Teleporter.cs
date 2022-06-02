@@ -93,6 +93,7 @@ public class Teleporter : MonoBehaviour
     private float initialCamRotationY;
     private Vector3 otherPlayerPosition;
     private Vector3 otherPlayerRotation;
+    private Transform otherPlayerTransform;
     private Vector3 centerBetweenPlayers;
     expe expe;
 
@@ -132,7 +133,7 @@ public class Teleporter : MonoBehaviour
         }
         //Pointer
         m_HasPosition = UpdatePointer();
-        photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cam.position, cameraRig.rotation.eulerAngles);
+        photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cam.position, cameraRig.rotation.eulerAngles, cameraRig.gameObject.GetPhotonView().ViewID);
 
         if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
         {
@@ -858,8 +859,9 @@ public class Teleporter : MonoBehaviour
     }
 
     [PunRPC]
-    void receiveOtherPosition(Vector3 position, Vector3 rotation)
+    void receiveOtherPosition(Vector3 position, Vector3 rotation, int viewID)
     {
+        otherPlayerTransform = PhotonView.Find(viewID).transform;
         otherPlayerPosition = position;
         otherPlayerPosition.y = 0;
         otherPlayerRotation = rotation;
@@ -914,56 +916,31 @@ public class Teleporter : MonoBehaviour
     [PunRPC]
     void tpToOther()
     {
+        /*
         Vector3 posToMove = otherPlayerPosition;
+        posToMove.x -= cam.localPosition.x;
+        posToMove.z -= cam.localPosition.z;
         //Debug.Log(otherPlayerRotation);
-        if (otherPlayerRotation.y >= 225 && otherPlayerRotation.y <= 315)
+        Vector3 specificPos;
+        if (PhotonNetwork.IsMasterClient)
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                posToMove.z += 1;
-            }
-            else
-            {
-                posToMove.z -= 1;
-            }
+            specificPos = Vector3.right;
         }
-        //B
-        else if (otherPlayerRotation.y >= 135 && otherPlayerRotation.y <= 225)
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                posToMove.x -= 1;
-            }
-            else
-            {
-                posToMove.x += 1;
-            }
-        }
-        //L
-        else if (otherPlayerRotation.y <= 135 && otherPlayerRotation.y >= 45)
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                posToMove.z -= 1;
-            }
-            else
-            {
-                posToMove.z += 1;
-            }
-        }
-        //no wall
         else
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                posToMove.x += 1;
-            }
-            else
-            {
-                posToMove.x -= 1;
-            }
+            specificPos = Vector3.left;
         }
+        Debug.Log(specificPos);
+        specificPos = Quaternion.AngleAxis(otherPlayerRotation.y, Vector3.up) * specificPos;
+        
+        Debug.Log(specificPos);
+        Debug.Log(specificPos.magnitude);
+
+        posToMove += specificPos;
         StartCoroutine(MoveRigForSyncTP(cameraRig, posToMove, otherPlayerRotation));
+        */
+        cameraRig.position = otherPlayerTransform.position;
+        cameraRig.rotation = otherPlayerTransform.rotation;
     }
 
 [PunRPC]
@@ -1064,7 +1041,6 @@ public class Teleporter : MonoBehaviour
         // Rotation
         
         cameraRig.RotateAround(cam.position, Vector3.up, rotat.y - cameraRig.rotation.eulerAngles.y);
-        Vector3 translateVect = pos - cameraRig.position;
 
         cameraRig.position = pos; // teleportation
 

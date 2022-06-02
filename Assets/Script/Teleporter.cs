@@ -929,7 +929,7 @@ public class Teleporter : MonoBehaviour
 
         posToMove += specificPos;
         */
-        StartCoroutine(MoveRigForSyncTP(cameraRig, otherPlayerCameraRigPos, otherPlayerRotation));
+        StartCoroutine(MoveRigForSyncTP(otherPlayerCameraRigPos, otherPlayerRotation));
         
     }
 

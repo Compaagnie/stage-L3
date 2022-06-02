@@ -539,13 +539,11 @@ public class Teleporter : MonoBehaviour
         //if no hit stop the fonction
         if ( m_IsTeleportoting) //!m_HasPosition ||
             return;
-
-        // head position + camera rig
-        Vector3 headPosition = SteamVR_Render.Top().head.position;
-        //Transform cameraRig = SteamVR_Render.Top().origin;
+        
       
         //player possition
-        Vector3 groundPosition = new Vector3(headPosition.x, cameraRig.position.y, headPosition.z);
+        Vector3 groundPosition = new Vector3(cam.position.x, 0, cam.position.z);
+        Vector3 posPointer = m_Pointer.transform.position;
         if (e)
         {
             if (syncTeleportation || isOtherSynced)
@@ -571,36 +569,7 @@ public class Teleporter : MonoBehaviour
             return;
         }
         Vector3 translateVector;
-        /*
-        if (n)
-        {
-            //translateVector =  character.transform.forward * desiredDistance; // y not fix
-            translateVector = new Vector3(character.transform.forward.x * desiredDistance, cameraRig.position.y, character.transform.forward.z * desiredDistance);  //  y fix
-                                                                                                                                                                    // StartCoroutine(MoveRig(cameraRig, translateVector));
-            if (!syncTeleportation)
-            {
-                StartCoroutine(MoveRig(cameraRig, translateVector));
-            }
-            else
-            {
-                photonView.RPC("MoveRigRPC", Photon.Pun.RpcTarget.All, cameraRig.gameObject.GetComponent<PhotonView>().ViewID, translateVector);
-            }
-        }
-        else if (s)
-        {
-            //translateVector =  - character.transform.forward * desiredDistance;
-            translateVector = new Vector3(-character.transform.forward.x * desiredDistance, cameraRig.position.y, -character.transform.forward.z * desiredDistance);  //  y fix
-                                                                                                                                                                      //StartCoroutine(MoveRig(cameraRig, translateVector));
-            if (!syncTeleportation)
-            {
-                StartCoroutine(MoveRig(cameraRig, translateVector));
-            }
-            else
-            {
-                photonView.RPC("MoveRigRPC", Photon.Pun.RpcTarget.All, cameraRig.gameObject.GetComponent<PhotonView>().ViewID, translateVector);
-            }
-        }
-        */
+
         if (!m_HasPosition) // ||
             return;
 
@@ -609,7 +578,6 @@ public class Teleporter : MonoBehaviour
         
         else if (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" )
         {
-            Vector3 posPointer = m_Pointer.transform.position;
             if (posPointer.x < -3.5) { posPointer.x = -3.5f; }
             if (posPointer.x >  3.5) { posPointer.x =  3.5f; }
             if (posPointer.z < -3.5) { posPointer.z = -3.5f; }
@@ -630,11 +598,12 @@ public class Teleporter : MonoBehaviour
                     expe.curentTrial.incNbSyncTpGround(translateVector);
                 }
             }
-            StartCoroutine(MoveRig(cameraRig, translateVector));
+            StartCoroutine(MoveRig(translateVector, ""));
         }
         else if (hit.transform.tag == "Wall" || hit.transform.tag == "Card")
         {
             translateVector = new Vector3(0, 0, 0);
+            String yRotation = "";
             Vector3 camLookDirection = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z);
             objectHit = Physics.RaycastAll(cameraRig.transform.position, cameraRig.transform.forward, 100.0F);
             float x = -cameraRig.transform.position.x;
@@ -642,6 +611,7 @@ public class Teleporter : MonoBehaviour
             //check the wall
             if (hit.transform.name == "MUR B" || hit.transform.parent.name == "MUR B")
             {
+                yRotation = "B";
                 for (int i = 0; i < objectHit.Length; i++)
                 {
                     //Debug.Log("objHit : " + objectHit[i].transform.name);
@@ -679,6 +649,7 @@ public class Teleporter : MonoBehaviour
             }
             else if (hit.transform.name == "MUR R" || hit.transform.parent.name == "MUR R")
             {
+                yRotation = "R";
                 for (int i = 0; i < objectHit.Length; i++)
                 { 
                     //Debug.Log("objHit : " + objectHit[i].transform.name);
@@ -717,6 +688,7 @@ public class Teleporter : MonoBehaviour
             }
             else //(hit.transform.name == "MUR L" || hit.transform.parent.name == "MUR L")
             {
+                yRotation = "L";
                 for (int i = 0; i < objectHit.Length; i++)
                 {
                     //cameraRig.rotation = new Quaternion(0.0f, -0.7f, 0.0f, 0.7f);
@@ -769,7 +741,7 @@ public class Teleporter : MonoBehaviour
                     expe.curentTrial.incNbSyncTpWall(translateVector);
                 }
             }
-            StartCoroutine(MoveRig(cameraRig, translateVector));
+            StartCoroutine(MoveRig(translateVector, yRotation));
 
         }
         else if (hit.transform.tag == "Player")
@@ -940,7 +912,7 @@ public class Teleporter : MonoBehaviour
         synctag = tag;
     }
 
-    private IEnumerator MoveRig(Transform cameraRig , Vector3 translation)
+    private IEnumerator MoveRig(Vector3 translation, String wall)
     {
         m_IsTeleportoting = true;
 

@@ -837,15 +837,6 @@ public class Teleporter : MonoBehaviour
     }
 
     [PunRPC]
-    void MoveRigRPC(int cameraRig, Vector3 pos, Vector3 rotat)
-    {
-        // StartCoroutine(MoveRig(PhotonView.Find(cameraRig).transform, translation));
-
-        StartCoroutine(MoveRigForSyncTP(PhotonView.Find(cameraRig).transform, pos , rotat));
-        
-    }
-
-    [PunRPC]
     void MoveRigFromTransform(Vector3 translation, float rotation)
     {
         cameraRig.position += translation;
@@ -942,7 +933,7 @@ public class Teleporter : MonoBehaviour
         
     }
 
-[PunRPC]
+    [PunRPC]
     void tagMode(bool tag)
     {
        // Debug.Log("Change tag mode");
@@ -952,6 +943,12 @@ public class Teleporter : MonoBehaviour
     private IEnumerator MoveRig(Transform cameraRig , Vector3 translation)
     {
         m_IsTeleportoting = true;
+
+        if (syncTeleportation || isOtherSynced)
+        {
+            photonView.RPC("tpToOther", Photon.Pun.RpcTarget.Others);
+            syncTeleportation = false;
+        }
 
         SteamVR_Fade.Start(Color.black, m_FadeTime, true); // black screen
 
@@ -963,67 +960,7 @@ public class Teleporter : MonoBehaviour
         if (cam.position.z + translation.z > 3.5) { translation.z = 3.5f - cam.position.z; }
         cameraRig.position += translation;
         Debug.Log("camera rig pos tp :" +cameraRig.position);
-        if (syncTeleportation || isOtherSynced)
-        {
-            Cube.transform.position += translation; // teleportation
-
-            Vector3 rotat = SteamVR_Render.Top().origin.rotation.eulerAngles;
-            Debug.Log("rotation" + rotat);
-            Vector3 headPosition = SteamVR_Render.Top().head.position;
-            Vector3 playerPos = new Vector3(headPosition.x, 0, headPosition.z);
-            Debug.Log(playerPos);
-            //R
-            if (rotat.y >= 225 && rotat.y <= 315)
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    playerPos.z += 1;
-                }
-                else
-                {
-                    playerPos.z -= 1;
-                }
-            }
-            //B
-            else if (rotat.y >= 135 && rotat.y <= 225)
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    playerPos.x += 1;
-                }
-                else
-                {
-                    playerPos.x -= 1;
-                }
-            }
-            //L
-            else if (rotat.y <= 135 && rotat.y >= 45)
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    playerPos.z -= 1;
-                }
-                else
-                {
-                    playerPos.z += 1;
-                }
-            }
-            //no wall
-            else //if (Physics.RaycastAll(player.transform.position, player.transform.forward, 100.0F)[0].transform.name == "MUR R")
-            {
-                if (PhotonNetwork.IsMasterClient)
-                {
-                    playerPos.x -= 1;
-                }
-                else
-                {
-                    playerPos.x += 1;
-                }
-            }
-            Debug.Log(playerPos);
-            photonView.RPC("MoveRigRPC", Photon.Pun.RpcTarget.Others, cameraRig.gameObject.GetComponent<PhotonView>().ViewID, cameraRig.position, rotat);
-            syncTeleportation = false;
-        }
+        
 
         SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen
 
@@ -1031,7 +968,7 @@ public class Teleporter : MonoBehaviour
 
     }
 
-    private IEnumerator MoveRigForSyncTP(Transform cameraRig, Vector3 pos, Vector3 rotat)
+    private IEnumerator MoveRigForSyncTP(Vector3 pos, Vector3 rotat)
     {
         m_IsTeleportoting = true;
 
@@ -1042,11 +979,6 @@ public class Teleporter : MonoBehaviour
         cameraRig.RotateAround(cam.position, Vector3.up, rotat.y - cameraRig.rotation.eulerAngles.y);
 
         cameraRig.position = pos; // teleportation
-
-        if (syncTeleportation || isOtherSynced)
-        {
-            Cube.transform.position = pos; // teleportation
-        }
 
         SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen
         m_IsTeleportoting = false;

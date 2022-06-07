@@ -542,7 +542,6 @@ public class Teleporter : MonoBehaviour
         
       
         //player possition
-        Vector3 groundPosition = new Vector3(cam.position.x, 0, cam.position.z);
         Vector3 posPointer = m_Pointer.transform.position;
         if (e)
         {
@@ -582,7 +581,8 @@ public class Teleporter : MonoBehaviour
             if (posPointer.x >  3.5) { posPointer.x =  3.5f; }
             if (posPointer.z < -3.5) { posPointer.z = -3.5f; }
             if (posPointer.z >  3.5) { posPointer.z =  3.5f; }
-            translateVector = posPointer - groundPosition;
+            translateVector = posPointer - cam.position;
+            translateVector.y = 0;
 
             if (!syncTeleportation)
             {
@@ -615,15 +615,15 @@ public class Teleporter : MonoBehaviour
                     //Debug.Log("objHit : " + objectHit[i].transform.name);
                     if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
                     {
-                        translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, 0);
+                        translateVector = new Vector3(m_Pointer.transform.position.x - cam.position.x, 0, 0);
                     }
                     else if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
                     {
-                        translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, z + Mathf.Abs(x));
+                        translateVector = new Vector3(m_Pointer.transform.position.x - cam.position.x, 0, z + Mathf.Abs(x));
                     }
                     else if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
                     {
-                        translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, z + Mathf.Abs(x));
+                        translateVector = new Vector3(m_Pointer.transform.position.x - cam.position.x, 0, z + Mathf.Abs(x));
                     }
                     StartCoroutine(MoveRig(translateVector, MurB));
                 }
@@ -636,15 +636,15 @@ public class Teleporter : MonoBehaviour
                    
                     if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
                     {
-                        translateVector = new Vector3(0, 0, m_Pointer.transform.position.z- groundPosition.z);
+                        translateVector = new Vector3(0, 0, m_Pointer.transform.position.z- cam.position.z);
                     }
                     else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
                     {
-                        translateVector = new Vector3(x + Mathf.Abs(z), 0, m_Pointer.transform.position.z - groundPosition.z);
+                        translateVector = new Vector3(x + Mathf.Abs(z), 0, m_Pointer.transform.position.z - cam.position.z);
                     }
                     else if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
                     {
-                        translateVector = new Vector3(-2 * groundPosition.x, 0, m_Pointer.transform.position.z - groundPosition.z);
+                        translateVector = new Vector3(-2 * cam.position.x, 0, m_Pointer.transform.position.z - cam.position.z);
                     }
                     StartCoroutine(MoveRig(translateVector, MurR));
                 }
@@ -658,15 +658,15 @@ public class Teleporter : MonoBehaviour
 
                     if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
                     {
-                        translateVector = new Vector3(0, 0, m_Pointer.transform.position.z - groundPosition.z);
+                        translateVector = new Vector3(0, 0, m_Pointer.transform.position.z - cam.position.z);
                     }
                     else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
                     {
-                        translateVector = new Vector3(x - Mathf.Abs(z), 0, m_Pointer.transform.position.z - groundPosition.z);
+                        translateVector = new Vector3(x - Mathf.Abs(z), 0, m_Pointer.transform.position.z - cam.position.z);
                     }
                     else if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
                     {
-                        translateVector = new Vector3(-2 * groundPosition.x, 0, m_Pointer.transform.position.z - groundPosition.z);
+                        translateVector = new Vector3(-2 * cam.position.x, 0, m_Pointer.transform.position.z - cam.position.z);
                     }
                     StartCoroutine(MoveRig(translateVector, MurL));
                 }
@@ -800,12 +800,6 @@ public class Teleporter : MonoBehaviour
     {
         m_IsTeleportoting = true;
 
-        if (syncTeleportation || isOtherSynced)
-        {
-            photonView.RPC("tpToOther", Photon.Pun.RpcTarget.Others);
-            syncTeleportation = false;
-        }
-
         SteamVR_Fade.Start(Color.black, m_FadeTime, true); // black screen
 
         yield return new WaitForSeconds( m_FadeTime); // fade time
@@ -821,8 +815,11 @@ public class Teleporter : MonoBehaviour
         if (cam.position.z + translation.z > 3.5) { translation.z = 3.5f - cam.position.z; }
         cameraRig.position += translation;
 
-        
-        Debug.Log(cameraRig.rotation);
+        if (syncTeleportation || isOtherSynced)
+        {
+            photonView.RPC("tpToOther", Photon.Pun.RpcTarget.Others);
+            syncTeleportation = false;
+        }
         Debug.Log("camera rig pos tp :" +cameraRig.position);
         
 

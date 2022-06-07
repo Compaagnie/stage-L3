@@ -598,12 +598,11 @@ public class Teleporter : MonoBehaviour
                     expe.curentTrial.incNbSyncTpGround(translateVector);
                 }
             }
-            StartCoroutine(MoveRig(translateVector, ""));
+            StartCoroutine(MoveRig(translateVector, null));
         }
         else if (hit.transform.tag == "Wall" || hit.transform.tag == "Card")
         {
             translateVector = new Vector3(0, 0, 0);
-            String yRotation = "";
             Vector3 camLookDirection = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z);
             objectHit = Physics.RaycastAll(cameraRig.transform.position, cameraRig.transform.forward, 100.0F);
             float x = -cameraRig.transform.position.x;
@@ -611,7 +610,6 @@ public class Teleporter : MonoBehaviour
             //check the wall
             if (hit.transform.name == "MUR B" || hit.transform.parent.name == "MUR B")
             {
-                yRotation = "B";
                 for (int i = 0; i < objectHit.Length; i++)
                 {
                     //Debug.Log("objHit : " + objectHit[i].transform.name);
@@ -621,35 +619,17 @@ public class Teleporter : MonoBehaviour
                     }
                     else if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
                     {
-                        //Debug.Log("need to rotate w 1 time");
-                        cameraRig.RotateAround(cam.position, Vector3.up, 90);
                         translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, z + Mathf.Abs(x));
                     }
                     else if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
                     {
-                        // Debug.Log("need to rotate w 1 times");
-                        cameraRig.RotateAround(cam.position, Vector3.up, -90);
                         translateVector = new Vector3(m_Pointer.transform.position.x - groundPosition.x, 0, z + Mathf.Abs(x));
                     }
-                    else
-                    {
-                        cameraRig.RotateAround(cam.position, Vector3.up, 180);
-                    }
+                    StartCoroutine(MoveRig(translateVector, MurB));
                 }
-                //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
-                /*
-                for (int i = 0; i < objectHit.Length; i++)
-                {
-                    if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
-                    {
-                        cameraRig.RotateAround(cam.position, Vector3.up, -180);
-                    }
-                }
-                */
             }
             else if (hit.transform.name == "MUR R" || hit.transform.parent.name == "MUR R")
             {
-                yRotation = "R";
                 for (int i = 0; i < objectHit.Length; i++)
                 { 
                     //Debug.Log("objHit : " + objectHit[i].transform.name);
@@ -660,35 +640,17 @@ public class Teleporter : MonoBehaviour
                     }
                     else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
                     {
-                        //Debug.Log("need to rotate e 1 time");
-                        cameraRig.RotateAround(cam.position, Vector3.up, 90);
                         translateVector = new Vector3(x + Mathf.Abs(z), 0, m_Pointer.transform.position.z - groundPosition.z);
                     }
                     else if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
                     {
-                        //Debug.Log("need to rotate w 2 times");
-                        cameraRig.RotateAround(cam.position, Vector3.up, 180);
                         translateVector = new Vector3(-2 * groundPosition.x, 0, m_Pointer.transform.position.z - groundPosition.z);
                     }
-                    else
-                    {
-                        cameraRig.RotateAround(cam.position, Vector3.up, -90);
-                    }
+                    StartCoroutine(MoveRig(translateVector, MurR));
                 }
-                //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
-                /*
-                for (int i = 0; i < objectHit.Length; i++)
-                {
-                    if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
-                    {
-                        cameraRig.RotateAround(cam.position, Vector3.up, -90);
-                    }
-                }
-                */
             }
             else //(hit.transform.name == "MUR L" || hit.transform.parent.name == "MUR L")
             {
-                yRotation = "L";
                 for (int i = 0; i < objectHit.Length; i++)
                 {
                     //cameraRig.rotation = new Quaternion(0.0f, -0.7f, 0.0f, 0.7f);
@@ -700,33 +662,14 @@ public class Teleporter : MonoBehaviour
                     }
                     else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
                     {
-                        //Debug.Log("need to rotate w 1 time");
-                            
-                        cameraRig.RotateAround(cam.position, Vector3.up, -90);
                         translateVector = new Vector3(x - Mathf.Abs(z), 0, m_Pointer.transform.position.z - groundPosition.z);
                     }
                     else if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
                     {
-                        //Debug.Log("need to rotate w 2 times");
-                        cameraRig.RotateAround(cam.position, Vector3.up, 180);
                         translateVector = new Vector3(-2 * groundPosition.x, 0, m_Pointer.transform.position.z - groundPosition.z);
                     }
-                    else
-                    {
-                        cameraRig.RotateAround(cam.position, Vector3.up, 90);
-                    }
+                    StartCoroutine(MoveRig(translateVector, MurL));
                 }
-                //objectHit = Physics.RaycastAll(cameraRig.transform.position, -cameraRig.transform.forward, 100.0F);
-                /*
-                for (int i = 0; i < objectHit.Length; i++)
-                {
-                    if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
-                    {
-                        cameraRig.RotateAround(cam.position, Vector3.up, 90);
-                    }
-                }
-                */
-
             }
 
             //then teleport
@@ -741,69 +684,10 @@ public class Teleporter : MonoBehaviour
                     expe.curentTrial.incNbSyncTpWall(translateVector);
                 }
             }
-            StartCoroutine(MoveRig(translateVector, yRotation));
 
         }
         else if (hit.transform.tag == "Player")
         {
-            /*
-            Debug.Log(hit.collider.transform.parent.parent);
-            Vector3 otherPlayerPos = hit.collider.transform.parent.transform.position;
-            Vector3 otherPlayerRotation = hit.collider.transform.parent.parent.Find("Head").rotation.eulerAngles;
-            //Debug.Log(otherPlayerRotation);
-            if (Math.Round(otherPlayerPos.x,3) != Math.Round(cam.localPosition.x+cameraRig.position.x,3) && Math.Round(otherPlayerPos.z,3) != Math.Round(cam.localPosition.z+cameraRig.position.z,3))
-            {
-                if (otherPlayerRotation.y >= 225 && otherPlayerRotation.y <= 315)
-                {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        otherPlayerPos.z += 1;
-                    }
-                    else
-                    {
-                        otherPlayerPos.z -= 1;
-                    }
-                }
-                //B
-                else if (otherPlayerRotation.y >= 135 && otherPlayerRotation.y <= 225)
-                {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        otherPlayerPos.x -= 1;
-                    }
-                    else
-                    {
-                        otherPlayerPos.x += 1;
-                    }
-                }
-                //L
-                else if (otherPlayerRotation.y <= 135 && otherPlayerRotation.y >= 45)
-                {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        otherPlayerPos.z -= 1;
-                    }
-                    else
-                    {
-                        otherPlayerPos.z += 1;
-                    }
-                }
-                //no wall
-                else
-                {
-                    if (PhotonNetwork.IsMasterClient)
-                    {
-                        otherPlayerPos.x += 1;
-                    }
-                    else
-                    {
-                        otherPlayerPos.x -= 1;
-                    }
-                }
-                StartCoroutine(MoveRigForSyncTP(cameraRig, otherPlayerPos, otherPlayerRotation));
-                
-                
-            }*/
             tpToOther();
         }
     }
@@ -912,7 +796,7 @@ public class Teleporter : MonoBehaviour
         synctag = tag;
     }
 
-    private IEnumerator MoveRig(Vector3 translation, String wall)
+    private IEnumerator MoveRig(Vector3 translation, Transform wall)
     {
         m_IsTeleportoting = true;
 
@@ -925,12 +809,20 @@ public class Teleporter : MonoBehaviour
         SteamVR_Fade.Start(Color.black, m_FadeTime, true); // black screen
 
         yield return new WaitForSeconds( m_FadeTime); // fade time
+        
+        if (wall != null)
+        {
+            cameraRig.rotation = wall.rotation;
+        }
 
         if (cam.position.x + translation.x < -3.5) { translation.x = -3.5f - cam.position.x; }
         if (cam.position.x + translation.x > 3.5) { translation.x = 3.5f - cam.position.x; }
         if (cam.position.z + translation.z < -3.5) { translation.z = -3.5f - cam.position.z; }
         if (cam.position.z + translation.z > 3.5) { translation.z = 3.5f - cam.position.z; }
         cameraRig.position += translation;
+
+        
+        Debug.Log(cameraRig.rotation);
         Debug.Log("camera rig pos tp :" +cameraRig.position);
         
 

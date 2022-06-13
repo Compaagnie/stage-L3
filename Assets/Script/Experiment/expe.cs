@@ -56,12 +56,12 @@ public class expe
             {
                 curentTrial = new Trial(
                         values[0], values[1], values[2],
-                        values[3], values[4]
+                        values[3], values[4], values[5]
                     );
 
                     Debug.Log("Goupe: " + curentTrial.group + "Participant: " + curentTrial.participant +
                               "training: " + curentTrial.training + "cardSet: " + curentTrial.cardSet +
-                              "collabEnvironememn: " + curentTrial.collabEnvironememn);
+                              "collabEnvironememn: " + curentTrial.collabEnvironememnt + "moveMode: " + curentTrial.moveMode);
             }
         }
         //  Debug.Log("Goupe: " + trial.group + );
@@ -75,9 +75,8 @@ public class expe
         writer = new StreamWriter(path, false);
         writer.WriteLine(
             // "factor"
-            "Group;Participant;Training;CardSet;CollabEnvironememn"
+            "Group;Participant;CardSet;CollabEnvironememnt;MoveMode;Trial"
             // measure
-            + ";nbAsyncTP;nbSyncTp;nbSyncTpGround;nbAsyncTPGround;nbSyncTpWall;nbAsyncTPWall"
             + ";nbDestroyCard;nbUndoCard;nbDragCard;nbGroupCardTP"
             + ";nbTag;nbChangeTag");
         writer.Flush();
@@ -97,10 +96,10 @@ public class expe
 
         writer.WriteLine(
            // "factor"
-           curentTrial.group + ";" + curentTrial.participant + ";" + curentTrial.training + ";" + curentTrial.cardSet + ";" + curentTrial.collabEnvironememn + ";"  
-           + curentTrial.nbAsyncTP + ";" + curentTrial.nbSyncTp + ";" + curentTrial.nbSyncTpGround + ";" + curentTrial.nbAsyncTPGround + ";"
-           + curentTrial.nbSyncTpWall + ";" + curentTrial.nbAsyncTPWall + ";" + curentTrial.nbDestroyCard + ";" + curentTrial.nbUndoCard + ";"
-           + curentTrial.nbDragCard + ";" + curentTrial.nbGroupCardTP + ";" + curentTrial.nbTag + ";" + curentTrial.nbChangeTag
+           curentTrial.group + ";" + curentTrial.participant + ";" + curentTrial.training + ";" + curentTrial.cardSet + ";" + curentTrial.collabEnvironememnt + ";"  
+           // measure
+           + curentTrial.nbDestroyCard + ";" + curentTrial.nbUndoCard + ";"+ curentTrial.nbDragCard + ";" + curentTrial.nbGroupCardTP + ";" 
+           + curentTrial.nbTag + ";" + curentTrial.nbChangeTag
             );
         writer.Flush();
         writer.Close();

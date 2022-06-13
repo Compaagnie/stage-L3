@@ -158,9 +158,9 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         Debug.Log("nb async TP : " + expe.curentTrial.nbAsyncTP);
 
         Debug.Log("nb sync TP W : " + expe.curentTrial.nbSyncTpWall);
-        Debug.Log("nb async TP W: " + expe.curentTrial.nbAsyncTPWall);
+        Debug.Log("nb async TP W: " + expe.curentTrial.nbAsyncTpWall);
         Debug.Log("nb sync TP G: " + expe.curentTrial.nbSyncTpGround);
-        Debug.Log("nb async TP G: " + expe.curentTrial.nbAsyncTPGround);
+        Debug.Log("nb async TP G: " + expe.curentTrial.nbAsyncTpGround);
 
 
         Debug.Log("nb DragCard : " + expe.curentTrial.nbDragCard);

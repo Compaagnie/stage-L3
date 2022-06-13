@@ -399,9 +399,29 @@ public class Teleporter : MonoBehaviour
                     if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                     if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                     cameraRig.position += translateVect;
+
                     if (isOtherSynced)
                     {
                         photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
+                        if (position.y > 0.5)
+                        {
+                            expe.curentTrial.incNbSyncJoyForward(translateVect);
+                        }
+                        else if (position.y < -0.5)
+                        {
+                            expe.curentTrial.incNbSyncJoyBackward(translateVect);
+                        }
+                    }
+                    else
+                    {
+                        if (position.y > 0.5)
+                        {
+                            expe.curentTrial.incNbSyncJoyForward(translateVect);
+                        }
+                        else if (position.y < -0.5)
+                        {
+                            expe.curentTrial.incNbSyncJoyBackward(translateVect);
+                        }
                     }
                 }
                 /*
@@ -445,6 +465,11 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
+                            expe.curentTrial.incNbSyncDragGround(translateVect);
+                        }
+                        else
+                        {
+                            expe.curentTrial.incNbAsyncDragGround(translateVect);
                         }
 
                         //cameraRig.position += a - a.normalized*b;
@@ -510,6 +535,11 @@ public class Teleporter : MonoBehaviour
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
+                            expe.curentTrial.incNbSyncDragWall(translateVect);
+                        }
+                        else
+                        {
+                            expe.curentTrial.incNbAsyncDragWall(translateVect);
                         }
                     }
                     else
@@ -584,18 +614,15 @@ public class Teleporter : MonoBehaviour
             translateVector = posPointer - cam.position;
             translateVector.y = 0;
 
-            if (!syncTeleportation)
+            if (expe != null)
             {
-                if (expe != null)
-                {
-                    expe.curentTrial.incNbAsyncTPGround(translateVector);
-                }
-            }
-            else
-            {
-                if (expe != null)
+                if (syncTeleportation)
                 {
                     expe.curentTrial.incNbSyncTpGround(translateVector);
+                }
+                else
+                {
+                    expe.curentTrial.incNbAsyncTpGround(translateVector);
                 }
             }
             StartCoroutine(MoveRig(translateVector, null));
@@ -675,13 +702,13 @@ public class Teleporter : MonoBehaviour
             //then teleport
             if (expe != null)
             {
-                if (!syncTeleportation)
+                if (syncTeleportation)
                 {
-                    expe.curentTrial.incNbAsyncTPWall(translateVector);
+                    expe.curentTrial.incNbSyncTpWall(translateVector);
                 }
                 else
                 {
-                    expe.curentTrial.incNbSyncTpWall(translateVector);
+                    expe.curentTrial.incNbAsyncTpWall(translateVector);
                 }
             }
 

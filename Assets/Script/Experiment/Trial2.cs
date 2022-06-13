@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Trial
+public class Trial2
 {
 
     // input
@@ -13,23 +13,49 @@ public class Trial
     public string training;
 
     public string cardSet;
-    public string collabEnvironememnt;
-    public string moveMode;
+    public string collabEnvironememn;
 
     // measures
     // public float size;
     // public int tct;
     // public float mux, muy, muz;
 
-    //tag 
+        //tag 
     public int nbTag = 0;
     public int nbChangeTag = 0;
 
-    //move
-    public int nbMove = 0;
-    public int nbRotate = 0;
+        //tp
+    public int nbSyncTp  = 0;
+    public int nbAsyncTP = 0;
+       
+    public int nbSyncTpWall = 0;
+    public int nbAsyncTpWall = 0;
 
-    //card
+    public int nbSyncTpGround = 0;
+    public int nbAsyncTpGround = 0;
+
+    public int nbSyncTpRotateLeft = 0;
+    public int nbSyncTpRotateRight = 0;
+
+    public int nbAsyncTpRotateLeft = 0;
+    public int nbAsyncTpRotateRight = 0;
+
+
+    //drag
+    public int nbSyncDragWall = 0;
+    public int nbAsyncDragWall = 0;
+
+    public int nbSyncDragGround = 0;
+    public int nbAsyncDragGround = 0;
+
+        //joy
+    public int nbSyncJoyForward = 0;
+    public int nbAsyncJoyForward = 0;
+
+    public int nbSyncJoyBackward = 0;
+    public int nbAsyncJoyBackward = 0;
+
+        //card
     public int nbDragCard = 0;
     public int nbGroupCardTP = 0;
 
@@ -43,33 +69,19 @@ public class Trial
 
     public Trial(
         string g_, string p_, string train,
-        string cardS, string colabEnv, string moveM
+        string cardS, string colabEnv
         )
     {
-        group = g_;
-        participant = p_;
-        training = train;
-        cardSet = cardS;
-        collabEnvironememn = colabEnv;
-        moveMode = moveM;
+        group = g_; participant = p_;  training = train;
+        cardSet = cardS; collabEnvironememn = colabEnv;
         timer = Time.time;
     }
     public string StringToLog()
     {
-        string str = group + ";" + participant + ";" + training + ";" + cardSet + ";" + collabEnvironememn + ";" + moveMode;
+        string str = group + ";" + participant + ";" + training + ";" + cardSet + ";" + collabEnvironememn;
 
         return str;
     }
-
-    void Awake()
-    {
-
-    }
-
-
-
-
-
 
 
     // Tag 
@@ -101,7 +113,7 @@ public class Trial
     public void incNbSyncTpWall(Vector3 translateVector)
     {
         nbSyncTpWall = nbSyncTpWall + 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Sync TP Wall" + " ;  translateVector : " + translateVector);
+        kineWriter.WriteLine(Time.time - timer +";" + " Sync TP Wall" + " ;  translateVector : " + translateVector);
         kineWriter.Flush();
     }
     public void incNbAsyncTpWall(Vector3 translateVector)

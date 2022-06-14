@@ -52,7 +52,7 @@ public class Network_Player : MonoBehaviourPun
 
 
 
-    expe expe;
+    Expe expe;
 
     void Start()
     {

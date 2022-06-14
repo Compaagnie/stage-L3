@@ -6,18 +6,20 @@ using UnityEngine.UI;
 using System.IO;
 using System.Threading;
 
-public class expe
+public class Expe
 {
 
     public string participant = "P01";
     public int startTrial = 1;
 
     private readonly string expeDescriptionFile = "Experiments/expe";
+    private string previousCardNum;
     //static string[] letters = {"H", "N", "K", "R"};
     static readonly string[] letters = { "evertnone", "ehornone" };
     private readonly List<Trial> theTrials;
+    public List<GameObject> cardList;
     public Trial curentTrial;
-    private readonly int ctrial = -1;
+    private int trialNb = 0;
     private StreamWriter writer;
     private StreamWriter kineWriter;
     private readonly bool haveEyesCondition = false;
@@ -34,9 +36,10 @@ public class expe
 
 
 
-    public expe(string part)
+    public Expe(string part, List<GameObject> cardL)
     {
         participant = part;
+        cardList = cardL;
 
         Debug.Log("VisExpe :" + expeDescriptionFile + " " + participant);
 
@@ -47,21 +50,18 @@ public class expe
         
 
         theTrials = new List<Trial>();
-        Trial trial;
 
         foreach (string str in lines)
         {
             List<string> values = new List<string>(str.Split(';'));
             if (values[1] == participant)
             {
-                curentTrial = new Trial(
+                theTrials.Add(new Trial(this,
                         values[0], values[1], values[2],
-                        values[3], values[4], values[5]
-                    );
-
-                    Debug.Log("Goupe: " + curentTrial.group + "Participant: " + curentTrial.participant +
-                              "training: " + curentTrial.training + "cardSet: " + curentTrial.cardSet +
-                              "collabEnvironememn: " + curentTrial.collabEnvironememnt + "moveMode: " + curentTrial.moveMode);
+                        values[3], values[4], values[6]
+                    ));
+                Debug.Log("Goupe: " + curentTrial.group + "Participant: " + curentTrial.participant +
+                          "collabEnvironememn: " + curentTrial.collabEnvironememnt + "moveMode: " + curentTrial.moveMode + "cardToTag: " + curentTrial.cardToTag);
             }
         }
         //  Debug.Log("Goupe: " + trial.group + );
@@ -91,6 +91,28 @@ public class expe
 
     }
 
+    public void startTrials()
+    {
+        theTrials[trialNb].startTrial();
+    }
+
+    public void nextTrial()
+    {
+        if(trialNb == theTrials.Count)
+        {
+            Finished();
+        }
+        else
+        {
+            theTrials[trialNb].startTrial();
+            if(trialNb-2 >= 0)
+            {
+                theTrials[trialNb - 2].card.transform.GetChild(1).gameObject.SetActive(false);
+            }
+        }
+
+    }
+
     public void Finished()
     {
 
@@ -104,6 +126,11 @@ public class expe
         writer.Flush();
         writer.Close();
         kineWriter.Close();
+    }
+
+    public void incTrialNb()
+    {
+        trialNb += 1;
     }
 
 }

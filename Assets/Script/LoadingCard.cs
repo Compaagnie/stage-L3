@@ -7,6 +7,7 @@ public class LoadingCard : MonoBehaviour
 {
     object[] textures;
 
+    int cardPerLine = 10;
 
     [PunRPC]
     void LoadCard( int OB, int p , int i , int t)
@@ -52,14 +53,14 @@ public class LoadingCard : MonoBehaviour
         goCard.name = "Card " + t;
        
         goCard.transform.localScale = new Vector3(w, h, 1.0f);
-        if (i < 10) //10 card per ligne
+        if (i < cardPerLine) //10 card per ligne
         {
-            goCard.transform.localPosition = new Vector3(-0.35f + w + 1.5f * w * i, -1 * h, -0.001f);
+            goCard.transform.localPosition = new Vector3(-0.35f + w + 1.5f * w * i, -1 * h, -0.01f);
         }
         else
         {
-            i = i - 10;
-            goCard.transform.localPosition = new Vector3(-0.35f + w + 1.5f * w * i, 1 * h, -0.001f);
+            i = i - cardPerLine;
+            goCard.transform.localPosition = new Vector3(-0.35f + w + 1.5f * w * i, 1 * h, -0.01f);
         }
     }
 }

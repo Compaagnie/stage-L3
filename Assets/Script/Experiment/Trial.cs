@@ -6,7 +6,10 @@ using UnityEngine;
 
 public class Trial
 {
-
+    public GameObject card;
+    private Network_Player player;
+    private Teleporter teleport;
+    private Expe expe;
     // input
     public string group;
     public string participant;
@@ -15,6 +18,7 @@ public class Trial
     public string cardSet;
     public string collabEnvironememnt;
     public string moveMode;
+    public string cardToTag;
 
     // measures
     // public float size;
@@ -41,31 +45,58 @@ public class Trial
     private readonly float timer = 0;
 
 
-    public Trial(
-        string g_, string p_, string train,
-        string cardS, string colabEnv, string moveM
+    public Trial(Expe e,
+        string g_, string p_,
+        string cardS, string colabEnv, string moveM, string cardT
         )
     {
+        player = GameObject.Find("Network Player(Clone)").GetComponent<Network_Player>();
+        teleport = GameObject.Find("/[CameraRig]/ControllerRotator/Controller (right)").GetComponent<Teleporter>();
+        expe = e;
         group = g_;
         participant = p_;
-        training = train;
         cardSet = cardS;
-        collabEnvironememn = colabEnv;
+        collabEnvironememnt = colabEnv;
         moveMode = moveM;
+        cardToTag = cardT;
         timer = Time.time;
+
+        card = expe.cardList[int.Parse(cardT)];
+        Debug.Log("card found" + card);
     }
     public string StringToLog()
     {
-        string str = group + ";" + participant + ";" + training + ";" + cardSet + ";" + collabEnvironememn + ";" + moveMode;
+        string str = group + ";" + participant + ";" + training + ";" + cardSet + ";" + collabEnvironememnt + ";" + moveMode;
 
         return str;
     }
 
-    void Awake()
-    {
 
+
+    public void startTrial()
+    {
+        card.transform.GetChild(1).gameObject.SetActive(true);
     }
 
+    public void checkConditions()
+    {
+        float dist = (teleport.cam.position - card.transform.position).magnitude;
+        if (dist < 3)
+        {
+
+        }
+        if (card.transform.GetChild(0).GetComponent<Renderer>().material != player.none)
+        {
+            endTrial();
+        }
+    }
+
+    public void endTrial()
+    {
+        card.transform.GetChild(1).GetComponent<Renderer>().material = player.green;
+        expe.incTrialNb();
+        expe.nextTrial();
+    }
 
 
 
@@ -84,121 +115,6 @@ public class Trial
     {
         nbChangeTag = nbChangeTag + 1;
         kineWriter.WriteLine(Time.time - timer + ";" + " Change Tag" + " ; color : " + nameR);
-        kineWriter.Flush();
-    }
-
-    //TP 
-    public void incNbSyncTp()
-    {
-        nbSyncTp = nbSyncTp + 1;
-    }
-
-    public void incNbAsyncTP()
-    {
-        nbAsyncTP = nbAsyncTP + 1;
-    }
-
-    public void incNbSyncTpWall(Vector3 translateVector)
-    {
-        nbSyncTpWall = nbSyncTpWall + 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Sync TP Wall" + " ;  translateVector : " + translateVector);
-        kineWriter.Flush();
-    }
-    public void incNbAsyncTpWall(Vector3 translateVector)
-    {
-        nbAsyncTpWall = nbAsyncTpWall + 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Async TP Wall" + " ; translateVector : " + translateVector);
-        kineWriter.Flush();
-    }
-    public void incNbSyncTpGround(Vector3 translateVector)
-    {
-        nbSyncTpGround = nbSyncTpGround + 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Sync Tp Ground" + " ; translateVector : " + translateVector);
-        kineWriter.Flush();
-    }
-    public void incNbAsyncTpGround(Vector3 translateVector)
-    {
-        nbAsyncTpGround = nbAsyncTpGround + 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Async Tp Ground" + " ; translateVector : " + translateVector);
-        kineWriter.Flush();
-    }
-
-    public void incNbSyncTpRotateLeft()
-    {
-        nbSyncTpRotateLeft += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Sync Tp Rotate Left");
-        kineWriter.Flush();
-    }
-    public void incNbSyncTpRotateRight()
-    {
-        nbSyncTpRotateRight += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Sync Tp Rotate Right");
-        kineWriter.Flush();
-    }
-
-    public void incNbAsyncTpRotateLeft()
-    {
-        nbAsyncTpRotateLeft += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Async Tp Rotate Left");
-        kineWriter.Flush();
-    }
-
-    public void incNbAsyncTpRotateRight()
-    {
-        nbAsyncTpRotateRight += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Async Tp Rotate Right");
-        kineWriter.Flush();
-    }
-
-    //Drag
-    public void incNbSyncDragWall(Vector3 translateVector)
-    {
-        nbSyncDragWall += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Sync Drag Wall" + " ;  translateVector : " + translateVector);
-        kineWriter.Flush();
-    }
-    public void incNbAsyncDragWall(Vector3 translateVector)
-    {
-        nbAsyncDragWall += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Async Drag Wall" + " ; translateVector : " + translateVector);
-        kineWriter.Flush();
-    }
-    public void incNbSyncDragGround(Vector3 translateVector)
-    {
-        nbSyncDragGround += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Sync Drag Ground" + " ; translateVector : " + translateVector);
-        kineWriter.Flush();
-    }
-    public void incNbAsyncDragGround(Vector3 translateVector)
-    {
-        nbAsyncDragGround += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Async Drag Ground" + " ; translateVector : " + translateVector);
-        kineWriter.Flush();
-    }
-
-    //Joystick
-    public void incNbSyncJoyForward(Vector3 translateVector)
-    {
-        nbSyncJoyForward += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Sync Joystick forward" + " ;  translateVector : " + translateVector);
-        kineWriter.Flush();
-    }
-    public void incNbAsyncJoyForward(Vector3 translateVector)
-    {
-        nbAsyncJoyForward += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Async Joystick forward" + " ; translateVector : " + translateVector);
-        kineWriter.Flush();
-    }
-    public void incNbSyncJoyBackward(Vector3 translateVector)
-    {
-        nbSyncJoyBackward += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Sync Joystick backward" + " ; translateVector : " + translateVector);
-        kineWriter.Flush();
-    }
-    public void incNbAsyncJoyBackward(Vector3 translateVector)
-    {
-        nbAsyncJoyBackward += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Async Joystick backward" + " ; translateVector : " + translateVector);
         kineWriter.Flush();
     }
 

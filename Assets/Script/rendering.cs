@@ -30,7 +30,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     //List of textures
     public object[] textures;
     public bool card1;
-    public bool training;
+    public bool training = true;
 
     //who to load
     public string participant = "p01";
@@ -38,7 +38,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     public GameObject m_Pointer;
 
     private bool trialEnCours = false ;
-    public expe expe;
+    public Expe expe;
 
     public class MyCard
     {
@@ -62,11 +62,16 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     {
         if (Input.GetKeyDown(KeyCode.Space) && trialEnCours == false)
         {
-            print("space key was pressed");
-            photonView.RPC("startExpe", Photon.Pun.RpcTarget.AllBuffered);
             Cards();
             CardCreation();
+            print("space key was pressed");
+            photonView.RPC("startExpe", Photon.Pun.RpcTarget.AllBuffered);
+            
             trialEnCours = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && trialEnCours == true){
+            expe.startTrials();
         }
 
 
@@ -97,7 +102,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         }
         else 
         {
-            textures = Resources.LoadAll("dixit_part"+ expe.curentTrial.cardSet+ "/", typeof(Texture2D));
+            textures = Resources.LoadAll("dixit_part1/", typeof(Texture2D));
         }
         
 
@@ -154,6 +159,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         //stop timing , stop expe ? 
         Debug.Log("nb tag card : " + expe.curentTrial.nbTag);
         Debug.Log("nb change tag color : " + expe.curentTrial.nbChangeTag);
+        /*
         Debug.Log("nb sync TP : " + expe.curentTrial.nbSyncTp);
         Debug.Log("nb async TP : " + expe.curentTrial.nbAsyncTP);
 
@@ -161,7 +167,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         Debug.Log("nb async TP W: " + expe.curentTrial.nbAsyncTpWall);
         Debug.Log("nb sync TP G: " + expe.curentTrial.nbSyncTpGround);
         Debug.Log("nb async TP G: " + expe.curentTrial.nbAsyncTpGround);
-
+        */
 
         Debug.Log("nb DragCard : " + expe.curentTrial.nbDragCard);
         Debug.Log("nb GroupCardTP: " + expe.curentTrial.nbGroupCardTP);
@@ -173,17 +179,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     [PunRPC]
     void startExpe()
     {
-        expe = new expe(participant);
-
-        if (expe.curentTrial.training == "Y")
-        {
-            training = true;
-        }
-        else
-        {
-            training = false;
-        }
-
+        expe = new Expe(participant, cardList);
         if (expe.curentTrial.cardSet == "1")
         {
             card1 = true;
@@ -192,7 +188,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
             card1 = false;
         }
 
-        if (expe.curentTrial.collabEnvironememn == "C")
+        if (expe.curentTrial.collabEnvironememnt == "C")
         {
             //desactiver son
             Debug.Log("Sound off" );

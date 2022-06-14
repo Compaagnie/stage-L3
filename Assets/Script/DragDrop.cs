@@ -51,7 +51,7 @@ public class DragDrop : MonoBehaviourPun
     private string moveMode = "drag";
 
 
-    expe expe;
+    Expe expe;
 
 
     // Start is called before the first frame update

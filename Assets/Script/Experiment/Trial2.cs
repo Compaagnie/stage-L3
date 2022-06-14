@@ -67,7 +67,7 @@ public class Trial2
     private readonly float timer = 0;
 
 
-    public Trial(
+    public Trial2(
         string g_, string p_, string train,
         string cardS, string colabEnv
         )

@@ -1,5 +1,3 @@
-Group;Participant;Training;CardSet;CollabEnvironememn;MoveMode;
-g01;p01;N;1;C;
-g01;p02;N;1;C;
-g02;p03;N;2;R;
-g02;p04;N;2;R;
+Group;Participant;CardSet;CollabEnvironememn;MoveMode;Trial;CardToTag;
+g01;p01;1;C;Tp;1;12;
+g01;p02;1;C;Tp;1;12;

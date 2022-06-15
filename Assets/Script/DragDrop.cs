@@ -142,7 +142,7 @@ public class DragDrop : MonoBehaviourPun
 
         if (ob != null && wait && Vector3.Angle(forwardClic, transform.forward) > 2) //move more than 2* -> moving
         {
-            expe.curentTrial.incNbDragCard();
+            //expe.curentTrial.incNbDragCard();
             isMoving = true;
             wait = false;
         }
@@ -160,7 +160,7 @@ public class DragDrop : MonoBehaviourPun
             
             ob = null;
 
-            expe.curentTrial.incNbDestroyCard();
+            //expe.curentTrial.incNbDestroyCard();
 
         }
     
@@ -173,7 +173,7 @@ public class DragDrop : MonoBehaviourPun
             salle.GetComponent<PhotonView>().RPC("UndoCard", Photon.Pun.RpcTarget.All, temp.GetComponent<PhotonView>().ViewID , obUndo.Count);
             photonView.GetComponent<PhotonView>().RPC("RemoveObUndo", Photon.Pun.RpcTarget.All, temp.GetComponent<PhotonView>().ViewID);
 
-            expe.curentTrial.incNbUndoCard();
+            //expe.curentTrial.incNbUndoCard();
         }
       
 
@@ -214,15 +214,17 @@ public class DragDrop : MonoBehaviourPun
                 emptyToMoveCard = PhotonNetwork.Instantiate("emptyToMoveCard", transform.position, transform.rotation);
                 //emptyToMoveCard = new GameObject("TempEmptyToMove");
                 photonView.RPC("Initempty", Photon.Pun.RpcTarget.All, player.GetComponent<Network_Player>().nameR, namewall, emptyToMoveCard.GetComponent<PhotonView>().ViewID);
-                expe.curentTrial.incNbGroupCardTP(namewall);
+                //expe.curentTrial.incNbGroupCardTP(namewall);
             }
            TeleportCard(player.GetComponent<Network_Player>().nameR, namewall);
             // photonView.RPC("TeleportCard", Photon.Pun.RpcTarget.All, player.GetComponent<Network_Player>().nameR, namewall);
 
            
         }
-     
-        Move();
+        if (interactWithUI.GetState(m_pose.inputSource))
+        {
+            Move();
+        }       
     }
 
     [PunRPC]

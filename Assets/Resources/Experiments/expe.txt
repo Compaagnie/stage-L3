@@ -1,3 +1,9 @@
-Group;Participant;CardSet;CollabEnvironememn;MoveMode;Trial;CardToTag;
-g01;p01;1;C;Tp;1;12;
-g01;p02;1;C;Tp;1;12;
+Group;Participant;CollabEnvironememn;MoveMode;CardToTag;
+g01;p01;C;TP;12;
+g01;p02;C;TP;12;
+g01;p01;C;TP;28;
+g01;p02;C;TP;28;
+g01;p01;C;TP;40;
+g01;p02;C;TP;40;
+g01;p01;C;TP;2;
+g01;p02;C;TP;2;

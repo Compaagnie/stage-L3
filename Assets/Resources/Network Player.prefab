@@ -1085,6 +1085,7 @@ MonoBehaviour:
   palette: {fileID: 6971465204408581961}
   rayCast: {fileID: 7044005381316763644}
   circle: {fileID: 1123598673489640593}
+  blue: {fileID: 0}
   green: {fileID: 2100000, guid: fcbabaf981be0dc47b646bf30f784533, type: 2}
   white: {fileID: 2100000, guid: 8d5b411f3b7f06c46823332377e3ffba, type: 2}
   red: {fileID: 2100000, guid: e0b801c75c8a5304e970777a323032c8, type: 2}

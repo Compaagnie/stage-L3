@@ -71,7 +71,7 @@ public class Teleporter : MonoBehaviour
     private bool s = false;
     private bool e = false;
     private bool w = false;
-    private string moveMode = "drag";
+    public string moveMode = "drag";
     public bool isOtherSynced = false;
     public bool synctag = true;
    
@@ -111,10 +111,6 @@ public class Teleporter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        Debug.Log("Cam rotation" + cam.eulerAngles.y);
-        Debug.Log("Frame num " + Time.frameCount);*/
-
         if (Time.frameCount == 3 && (cam.rotation.eulerAngles.y < 315 || cam.rotation.eulerAngles.y > 45))
         {
             initialCamRotationY = cam.rotation.eulerAngles.y;
@@ -869,12 +865,5 @@ public class Teleporter : MonoBehaviour
             }
         }
         return false;
-    }
-
-    private Vector3 checkAndCorrectColisionBox()
-    {
-        Vector3 translateVector = new Vector3(0, 0, 0);
-        //to do, to avoid colision beetween players
-        return translateVector;
     }
 }

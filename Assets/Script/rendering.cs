@@ -37,7 +37,8 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
 
     public GameObject m_Pointer;
 
-    private bool trialEnCours = false ;
+    public bool expeEnCours = false;
+    public bool trialEnCours = false;
     public Expe expe;
 
     public class MyCard
@@ -60,22 +61,31 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && trialEnCours == false)
+        if (expeEnCours)
+        {
+            expeEnCours = expe.expeRunning;
+        }
+        if (trialEnCours && expeEnCours)
+        {
+            expe.curentTrial.checkConditions();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && !expeEnCours)
         {
             Cards();
             CardCreation();
             print("space key was pressed");
             photonView.RPC("startExpe", Photon.Pun.RpcTarget.AllBuffered);
             
+            expeEnCours = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.Space) && expeEnCours && !trialEnCours)
+        {
+            photonView.RPC("startTrials", Photon.Pun.RpcTarget.AllBuffered);
             trialEnCours = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && trialEnCours == true){
-            expe.startTrials();
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.E) && trialEnCours == true)
+        if (Input.GetKeyDown(KeyCode.E) && expeEnCours)
         {
             photonView.RPC("endExpe", Photon.Pun.RpcTarget.AllBuffered);
         }
@@ -167,12 +177,14 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         Debug.Log("nb async TP W: " + expe.curentTrial.nbAsyncTpWall);
         Debug.Log("nb sync TP G: " + expe.curentTrial.nbSyncTpGround);
         Debug.Log("nb async TP G: " + expe.curentTrial.nbAsyncTpGround);
-        */
 
         Debug.Log("nb DragCard : " + expe.curentTrial.nbDragCard);
         Debug.Log("nb GroupCardTP: " + expe.curentTrial.nbGroupCardTP);
         Debug.Log("nb DestroyCard: " + expe.curentTrial.nbDestroyCard);
         Debug.Log("nb UndoCard: " + expe.curentTrial.nbUndoCard);
+        */
+        expeEnCours = false;
+        trialEnCours = false;
     }
 
 
@@ -180,14 +192,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     void startExpe()
     {
         expe = new Expe(participant, cardList);
-        if (expe.curentTrial.cardSet == "1")
-        {
-            card1 = true;
-        }else
-        {
-            card1 = false;
-        }
-
+        
         if (expe.curentTrial.collabEnvironememnt == "C")
         {
             //desactiver son
@@ -199,6 +204,12 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         {
             Debug.Log(" Sound on");
         }
+    }
+
+    [PunRPC]
+    void startTrials()
+    {
+        expe.startTrials();
     }
 
     [PunRPC]

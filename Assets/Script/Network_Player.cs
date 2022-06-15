@@ -266,26 +266,26 @@ public class Network_Player : MonoBehaviourPun
            
             nameT = rayCast.GetComponent<Renderer>().material.name;
             
-              if (nameT == "blue (Instance)")
-              {
+            if (nameT == "blue (Instance)")
+            {
                 PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = blue;
-              }
-              else if (nameT == "green (Instance)")
-              {
+            }
+            else if (nameT == "green (Instance)")
+            {
                 PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = green;
-              }
-              else if (nameT == "red (Instance)")
-              {
+            }
+            else if (nameT == "red (Instance)")
+            {
                 PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = red;
-              }
-              else if (nameT == "white (Instance)")
-              {
+            }
+            else if (nameT == "white (Instance)")
+            {
                 PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = white;
-              }
-             else
-             {
+            }
+            else
+            {
                 PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = none;
-             }
+            }
         }
 
     }

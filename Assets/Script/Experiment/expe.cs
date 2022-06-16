@@ -24,6 +24,7 @@ public class Expe
     private StreamWriter kineWriter;
     private readonly bool haveEyesCondition = false;
     public bool expeRunning = false;
+    public bool trialRunning = false;
 
     static class ThreadSafeRandom
     {
@@ -65,29 +66,30 @@ public class Expe
 
         TextAsset mytxtData = (TextAsset)Resources.Load(expeDescriptionFile);
         string txt = mytxtData.text;
-        List<string> lines = new List<string>(txt.Split('\n'));
-        int i = 0;
-        
+        List<string> lines = new List<string>(txt.Split('\n'));        
 
         theTrials = new List<Trial>();
 
         foreach (string str in lines)
         {
             List<string> values = new List<string>(str.Split(';'));
-            if (values[1] == participant)
+            if (values[0] == "#pause")
+            {
+                theTrials.Add(new Trial(this, values[0], "", "", "", ""));
+                Debug.Log("Pause added to trials");
+            }
+            else if (values[1] == participant)
             {
                 theTrials.Add(new Trial(this,
                         values[0], values[1],
                         values[2], values[3], values[4]
                     ));
-                Debug.Log("Goupe: " + theTrials[i].group + "Participant: " + theTrials[i].participant +
-                          "collabEnvironememn: " + theTrials[i].collabEnvironememnt + "moveMode: " + theTrials[i].moveMode + "cardToTag: " + theTrials[i].cardToTag);
+                Debug.Log("Goupe: " + theTrials[theTrials.Count - 1].group + "Participant: " + theTrials[theTrials.Count - 1].participant +
+                          "collabEnvironememn: " + theTrials[theTrials.Count - 1].collabEnvironememnt + "moveMode: " + theTrials[theTrials.Count - 1].moveMode + "cardToTag: " + theTrials[theTrials.Count - 1].cardToTag);
 
-                theTrials[i].pathLog = path;
+                theTrials[theTrials.Count - 1].pathLog = path;
 
-                theTrials[i].kineWriter = kineWriter;
-
-                i++;
+                theTrials[theTrials.Count - 1].kineWriter = kineWriter;
             }
         }
         curentTrial = theTrials[trialNb];
@@ -96,16 +98,17 @@ public class Expe
         kineWriter.Flush();
     }
 
-    public void startTrials()
-    {
-        theTrials[trialNb].startTrial();
-        curentTrial = theTrials[trialNb];
-    }
-
     public void nextTrial()
     {
+
         Debug.Log("Trial count" + theTrials.Count + " curent nb " + trialNb);
-        if(trialNb == theTrials.Count-1)
+        if (!trialRunning)
+        {
+            theTrials[trialNb].startTrial();
+            curentTrial = theTrials[trialNb];
+            trialRunning = true;
+        }
+        else if (trialNb == theTrials.Count - 1)
         {
             writer.WriteLine(
             // "factor"
@@ -114,6 +117,8 @@ public class Expe
             + theTrials[trialNb].nbTag + ";" + theTrials[trialNb].nbChangeTag
             );
             writer.Flush();
+            theTrials[trialNb - 1].card.transform.GetChild(1).gameObject.SetActive(false);
+            theTrials[trialNb].card.transform.GetChild(1).gameObject.SetActive(false);
             Finished();
         }
         else
@@ -127,18 +132,26 @@ public class Expe
             writer.Flush();
 
             incTrialNb();
-            theTrials[trialNb].startTrial();
-            curentTrial = theTrials[trialNb];
-            if(trialNb-2 >= 0)
+
+
+            if (theTrials[trialNb].group == "#pause")
             {
-                theTrials[trialNb - 2].card.transform.GetChild(1).gameObject.SetActive(false);
+                trialRunning = false;
+                writer.WriteLine("#pause;");
+                writer.Flush();
+                incTrialNb();
+            }
+            else
+            {
+                theTrials[trialNb].startTrial();
+                curentTrial = theTrials[trialNb];
             }
         }
-
     }
 
     public void Finished()
     {
+        trialRunning = false;
         expeRunning = false;
         writer.Close();
         kineWriter.Close();
@@ -147,6 +160,10 @@ public class Expe
     public void incTrialNb()
     {
         trialNb += 1;
+        if (trialNb - 2 >= 0 && theTrials[trialNb - 2].group != "pause")
+        {
+            theTrials[trialNb - 2].card.transform.GetChild(1).gameObject.SetActive(false);
+        }
     }
 
 }

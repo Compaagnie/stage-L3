@@ -64,7 +64,9 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         if (expeEnCours)
         {
             expeEnCours = expe.expeRunning;
+            trialEnCours = expe.trialRunning;
         }
+
         if (trialEnCours && expeEnCours)
         {
             expe.curentTrial.checkConditions();
@@ -150,8 +152,6 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         }
     }
 
-
-    
     [PunRPC]
     //Add card to the list of card
     void addListCard(int OB)
@@ -159,11 +159,9 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         cardList.Add(PhotonView.Find(OB).gameObject);
     }
 
-
     [PunRPC]
     void endExpe()
     {
-
         expe.Finished();
         print("End");
         //stop timing , stop expe ? 
@@ -209,7 +207,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     [PunRPC]
     void startTrials()
     {
-        expe.startTrials();
+        expe.nextTrial();
     }
 
     [PunRPC]

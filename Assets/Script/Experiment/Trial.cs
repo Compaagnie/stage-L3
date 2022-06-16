@@ -52,9 +52,11 @@ public class Trial
         moveMode = moveM;
         cardToTag = cardT;
         timer = Time.time;
-
-        card = expe.cardList[int.Parse(cardT)];
-        initialCardMaterial = card.transform.GetChild(0).GetComponent<Renderer>().material;
+        if (cardT != "")
+        {
+            card = expe.cardList[int.Parse(cardT)];
+            initialCardMaterial = card.transform.GetChild(0).GetComponent<Renderer>().material;
+        }
         Debug.Log("card found" + card);
     }
 

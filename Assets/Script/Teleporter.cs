@@ -54,11 +54,10 @@ public class Teleporter : MonoBehaviour
     private Vector3 forwardClic;
     private Vector3 oldControlerRotation;
     private Vector3 oldHitPosition;
-    private const float moveSpeed = 0.01f;
-    Vector3 plusX = new Vector3(moveSpeed, 0f, 0f);
-    Vector3 minusX = new Vector3(-moveSpeed, 0f, 0f);
+    private const float moveSpeed = 0.02f;
     Vector3 plusZ = new Vector3(0f, 0f, moveSpeed);
     Vector3 minusZ = new Vector3(0f, 0f, -moveSpeed);
+    private float joystickRotation = 0.5f;
 
     private float timer = 0;
 
@@ -90,7 +89,7 @@ public class Teleporter : MonoBehaviour
     public Transform ControllerRotator;
     public Transform controllerRight;
     public Transform controllerLeft;
-    private float initialCamRotationY;
+    private float initialCamRotationY = 0;
 
     private Vector3 otherPlayerPosition = new Vector3(0,0,0);
     private Vector3 otherPlayerRotation = new Vector3(0, 0, 0);
@@ -340,13 +339,13 @@ public class Teleporter : MonoBehaviour
                         //translateVect = m.MultiplyPoint3x4(minusX);
                         if (isOtherSynced)
                         {
-                            photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, -0.35f);
-                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, -0.35f);
+                            photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, -joystickRotation);
+                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, -joystickRotation);
 
                         }
                         else
                         {
-                            cameraRig.RotateAround(cam.position, Vector3.up, -0.35f);
+                            cameraRig.RotateAround(cam.position, Vector3.up, -joystickRotation);
                         }
                     }
                     if (position.y > 0.5)
@@ -379,12 +378,12 @@ public class Teleporter : MonoBehaviour
                         //translateVect = m.MultiplyPoint3x4(plusX);
                         if (isOtherSynced)
                         {
-                            photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0.35f);
-                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, 0.35f);
+                            photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, joystickRotation);
+                            cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, joystickRotation);
                         }
                         else
                         {
-                            cameraRig.RotateAround(cam.position, Vector3.up, 0.35f);
+                            cameraRig.RotateAround(cam.position, Vector3.up, joystickRotation);
                         }
                     }
                     translateVect.y = 0;
@@ -469,7 +468,7 @@ public class Teleporter : MonoBehaviour
 
                         //cameraRig.position += a - a.normalized*b;
                     }
-                    else if (m_HasPosition && hit.transform.tag == "Wall")
+                    else if (m_HasPosition && (hit.transform.tag == "Wall" || hit.transform.parent.tag == "Wall"))
                     {
                         Transform mur;
                         float a, b, distMur;
@@ -614,66 +613,20 @@ public class Teleporter : MonoBehaviour
             //check the wall
             if (hit.transform.name == "MUR B" || hit.transform.parent.name == "MUR B")
             {
-                for (int i = 0; i < objectHit.Length; i++)
-                {
-                    //Debug.Log("objHit : " + objectHit[i].transform.name);
-                    if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
-                    {
-                        translateVector = new Vector3(m_Pointer.transform.position.x - cam.position.x, 0, 0);
-                    }
-                    else if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
-                    {
-                        translateVector = new Vector3(m_Pointer.transform.position.x - cam.position.x, 0, z + Mathf.Abs(x));
-                    }
-                    else if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
-                    {
-                        translateVector = new Vector3(m_Pointer.transform.position.x - cam.position.x, 0, z + Mathf.Abs(x));
-                    }
-                    StartCoroutine(MoveRig(translateVector, MurB));
-                }
+                translateVector = new Vector3(m_Pointer.transform.position.x - cam.position.x, 0, 3 - cam.position.z);
+                StartCoroutine(MoveRig(translateVector, MurB));
             }
             else if (hit.transform.name == "MUR R" || hit.transform.parent.name == "MUR R")
             {
-                for (int i = 0; i < objectHit.Length; i++)
-                { 
-                    //Debug.Log("objHit : " + objectHit[i].transform.name);
-                   
-                    if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
-                    {
-                        translateVector = new Vector3(0, 0, m_Pointer.transform.position.z- cam.position.z);
-                    }
-                    else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
-                    {
-                        translateVector = new Vector3(x + Mathf.Abs(z), 0, m_Pointer.transform.position.z - cam.position.z);
-                    }
-                    else if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
-                    {
-                        translateVector = new Vector3(-2 * cam.position.x, 0, m_Pointer.transform.position.z - cam.position.z);
-                    }
-                    StartCoroutine(MoveRig(translateVector, MurR));
-                }
+                
+                translateVector = new Vector3(3 - cam.position.x, 0, m_Pointer.transform.position.z- cam.position.z);
+                StartCoroutine(MoveRig(translateVector, MurR));
             }
             else //(hit.transform.name == "MUR L" || hit.transform.parent.name == "MUR L")
             {
-                for (int i = 0; i < objectHit.Length; i++)
-                {
-                    //cameraRig.rotation = new Quaternion(0.0f, -0.7f, 0.0f, 0.7f);
-                    //Debug.Log("objHit : " + objectHit[i].transform.name);
-
-                    if (objectHit[i].transform.name == "MUR L" || objectHit[i].transform.parent.name == "MUR L")
-                    {
-                        translateVector = new Vector3(0, 0, m_Pointer.transform.position.z - cam.position.z);
-                    }
-                    else if (objectHit[i].transform.name == "MUR B" || objectHit[i].transform.parent.name == "MUR B")
-                    {
-                        translateVector = new Vector3(x - Mathf.Abs(z), 0, m_Pointer.transform.position.z - cam.position.z);
-                    }
-                    else if (objectHit[i].transform.name == "MUR R" || objectHit[i].transform.parent.name == "MUR R")
-                    {
-                        translateVector = new Vector3(-2 * cam.position.x, 0, m_Pointer.transform.position.z - cam.position.z);
-                    }
-                    StartCoroutine(MoveRig(translateVector, MurL));
-                }
+               
+                translateVector = new Vector3(-3 - cam.position.x, 0, m_Pointer.transform.position.z - cam.position.z); 
+                StartCoroutine(MoveRig(translateVector, MurL));
             }
 
             //then teleport

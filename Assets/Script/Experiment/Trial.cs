@@ -10,7 +10,9 @@ public class Trial
     private Material initialCardMaterial;
     private Network_Player player;
     private Teleporter teleport;
+    private Transform cardArea;
     private Expe expe;
+    
     // input
     public string group;
     public string participant;
@@ -45,6 +47,7 @@ public class Trial
     {
         player = GameObject.Find("Network Player(Clone)").GetComponent<Network_Player>();
         teleport = GameObject.Find("/[CameraRig]/ControllerRotator/Controller (right)").GetComponent<Teleporter>();
+        cardArea = GameObject.Find("/Salle").GetComponent<rendering>().cardArea;
         expe = e;
         group = g_;
         participant = p_;
@@ -55,7 +58,6 @@ public class Trial
         if (cardT != "")
         {
             card = expe.cardList[int.Parse(cardT)];
-            initialCardMaterial = card.transform.GetChild(0).GetComponent<Renderer>().material;
         }
         Debug.Log("card found" + card);
     }
@@ -71,6 +73,8 @@ public class Trial
 
     public void startTrial()
     {
+        card.transform.GetChild(0).GetComponent<Renderer>().material = player.none;
+        initialCardMaterial = card.transform.GetChild(0).GetComponent<Renderer>().material;
         card.transform.GetChild(1).gameObject.SetActive(true);
         player.palette.gameObject.SetActive(false);
         teleport.moveMode = moveMode;
@@ -80,11 +84,12 @@ public class Trial
     public void checkConditions()
     {
         float dist = (teleport.cam.position - card.transform.position).magnitude;
-        if (dist < 3)
+        if (dist < 4)
         {
-
+            cardArea.position = new Vector3(card.transform.position.x, 0, card.transform.position.z);
+            cardArea.gameObject.SetActive(true);
         }
-        if (card.transform.GetChild(0).GetComponent<Renderer>().material != initialCardMaterial )
+        if (card.transform.GetChild(0).GetComponent<Renderer>().material != initialCardMaterial && dist <= 2.5)
         {
             Debug.Log("Card tagged with new color " + card);
             endTrial();
@@ -93,6 +98,7 @@ public class Trial
 
     public void endTrial()
     {
+        cardArea.gameObject.SetActive(false);
         card.transform.GetChild(1).GetComponent<Renderer>().material = player.green;
         expe.nextTrial();
     }

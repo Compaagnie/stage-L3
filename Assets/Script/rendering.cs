@@ -23,6 +23,8 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
 
     public Transform room;
 
+    public Transform cardArea;
+
     //Card list
     public List<GameObject> cardList;
     public List<GameObject> cardListToTeleport;

@@ -167,9 +167,10 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         expe.Finished();
         print("End");
         //stop timing , stop expe ? 
+        /*
         Debug.Log("nb tag card : " + expe.curentTrial.nbTag);
         Debug.Log("nb change tag color : " + expe.curentTrial.nbChangeTag);
-        /*
+        
         Debug.Log("nb sync TP : " + expe.curentTrial.nbSyncTp);
         Debug.Log("nb async TP : " + expe.curentTrial.nbAsyncTP);
 

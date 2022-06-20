@@ -57,7 +57,8 @@ public class Teleporter : MonoBehaviour
     private const float moveSpeed = 0.02f;
     Vector3 plusZ = new Vector3(0f, 0f, moveSpeed);
     Vector3 minusZ = new Vector3(0f, 0f, -moveSpeed);
-    private float joystickRotation = 0.5f;
+    private const float joystickRotation = 0.5f;
+    private float moveTimer;
 
     private float timer = 0;
 
@@ -194,7 +195,9 @@ public class Teleporter : MonoBehaviour
             oldHitPosition = m_Pointer.transform.position;
             //Debug.Log("update old"+ oldControlerRotation
             // head position + camera rig
+            moveTimer = Time.time;
         }
+        
         if (moveMode != "sync")
         {
             if (moveMode == "TP")
@@ -329,6 +332,10 @@ public class Teleporter : MonoBehaviour
             }
             else if (moveMode == "joy")
             {
+                if (m_TeleportAction.GetStateUp(m_pose.inputSource))
+                {
+                    expe.curentTrial.incMoveTime(Time.time - moveTimer);
+                }
                 if (m_TeleportAction.GetState(m_pose.inputSource))
                 {
                     Quaternion rotation = Quaternion.Euler(controllerRight.rotation.eulerAngles);
@@ -347,6 +354,7 @@ public class Teleporter : MonoBehaviour
                         {
                             cameraRig.RotateAround(cam.position, Vector3.up, -joystickRotation);
                         }
+                        expe.curentTrial.incRotateTotal(joystickRotation);
                     }
                     if (position.y > 0.5)
                     {
@@ -385,6 +393,7 @@ public class Teleporter : MonoBehaviour
                         {
                             cameraRig.RotateAround(cam.position, Vector3.up, joystickRotation);
                         }
+                        expe.curentTrial.incRotateTotal(joystickRotation);
                     }
                     translateVect.y = 0;
                     if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
@@ -434,6 +443,10 @@ public class Teleporter : MonoBehaviour
             }
             else if (moveMode == "drag")
             {
+                if (m_TeleportAction.GetStateUp(m_pose.inputSource))
+                {
+                    expe.curentTrial.incMoveTime(Time.time - moveTimer);
+                }
                 if (m_TeleportAction.GetState(m_pose.inputSource))
                 {
                     Vector3 translateVect = new Vector3(0, 0, 0);
@@ -456,6 +469,7 @@ public class Teleporter : MonoBehaviour
                         if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                         if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                         cameraRig.position += translateVect;
+                        expe.curentTrial.incDistTotal(translateVect.magnitude);
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
@@ -508,6 +522,7 @@ public class Teleporter : MonoBehaviour
                         if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                         if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                         cameraRig.position += translateVect;
+                        expe.curentTrial.incDistTotal(translateVect.magnitude);
                         if (isOtherSynced)
                         {
                             photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, 0f);
@@ -530,6 +545,7 @@ public class Teleporter : MonoBehaviour
                         {
                             cameraRig.RotateAround(cam.position, Vector3.up, angle);
                         }
+                        expe.curentTrial.incRotateTotal(angle);
                     }
                     oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
                     oldHitPosition = m_Pointer.transform.position;
@@ -558,6 +574,7 @@ public class Teleporter : MonoBehaviour
             else
             {
                 cameraRig.RotateAround(cam.position, Vector3.up, 90);
+                expe.curentTrial.incRotateTotal(90);
             }
             return;
         }
@@ -570,6 +587,7 @@ public class Teleporter : MonoBehaviour
             else
             {
                 cameraRig.RotateAround(cam.position, Vector3.up, -90);
+                expe.curentTrial.incRotateTotal(90);
             }
             return;
         }
@@ -654,6 +672,8 @@ public class Teleporter : MonoBehaviour
     {
         cameraRig.position += translation;
         cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, rotation);
+        expe.curentTrial.incRotateTotal(joystickRotation);
+        expe.curentTrial.incDistTotal(translation.magnitude);
     }
 
     [PunRPC]
@@ -690,14 +710,15 @@ public class Teleporter : MonoBehaviour
         {
             Cube.transform.RotateAround(Cube.transform.position, Vector3.up, 90);
             cameraRig2.RotateAround(Cube.transform.position, Vector3.up, 90);
-
+            expe.curentTrial.incRotateTotal(90);
         }
         else if (s == "w")
         {
             Cube.transform.RotateAround(Cube.transform.position, Vector3.up, -90);
             cameraRig2.RotateAround(Cube.transform.position, Vector3.up, -90);
+            expe.curentTrial.incRotateTotal(90);
         }
-        
+
     }
 
     [PunRPC]
@@ -755,6 +776,7 @@ public class Teleporter : MonoBehaviour
 
     private IEnumerator MoveRig(Vector3 translation, Transform wall)
     {
+        moveTimer = Time.time;
         m_IsTeleportoting = true;
 
         SteamVR_Fade.Start(Color.black, m_FadeTime, true); // black screen
@@ -764,6 +786,7 @@ public class Teleporter : MonoBehaviour
         if (wall != null)
         {
             cameraRig.rotation = wall.rotation;
+            expe.curentTrial.incRotateTotal(wall.rotation.eulerAngles.y - cameraRig.rotation.eulerAngles.y);
         }
 
         if (cam.position.x + translation.x < -3.5) { translation.x = -3.5f - cam.position.x; }
@@ -771,6 +794,7 @@ public class Teleporter : MonoBehaviour
         if (cam.position.z + translation.z < -3.5) { translation.z = -3.5f - cam.position.z; }
         if (cam.position.z + translation.z > 3.5) { translation.z = 3.5f - cam.position.z; }
         cameraRig.position += translation;
+        expe.curentTrial.incDistTotal(translation.magnitude);
 
         if (syncTeleportation || isOtherSynced)
         {
@@ -783,11 +807,13 @@ public class Teleporter : MonoBehaviour
         SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen
 
         m_IsTeleportoting = false;
-
+        expe.curentTrial.incMoveTime(Time.time - moveTimer);
+        expe.curentTrial.incNbMove();
     }
 
     private IEnumerator MoveRigForSyncTP(Vector3 pos, Vector3 rotat)
     {
+        moveTimer = Time.time;
         m_IsTeleportoting = true;
 
         SteamVR_Fade.Start(Color.black, m_FadeTime, true); // black screen
@@ -795,12 +821,14 @@ public class Teleporter : MonoBehaviour
         // Rotation
         
         cameraRig.RotateAround(cam.position, Vector3.up, rotat.y - cameraRig.rotation.eulerAngles.y);
+        expe.curentTrial.incRotateTotal(rotat.y - cameraRig.rotation.eulerAngles.y);
+        expe.curentTrial.incDistTotal((pos - cameraRig.position).magnitude);
 
         cameraRig.position = pos; // teleportation
 
         SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen
         m_IsTeleportoting = false;
-
+        expe.curentTrial.incMoveTime(Time.time - moveTimer);
     }
 
     private bool UpdatePointer()

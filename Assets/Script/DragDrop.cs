@@ -80,7 +80,6 @@ public class DragDrop : MonoBehaviourPun
               
                 player = GameObject.Find("Network Player(Clone)");
                 player.GetComponent<PhotonView>().RPC("ChangeTag", Photon.Pun.RpcTarget.AllBuffered, hit.transform.gameObject.GetComponent<PhotonView>().ViewID);
-                expe.curentTrial.incNbTag(player.GetComponent<Network_Player>().nameR);
             }
 
             if (emptyToMoveCard != null)

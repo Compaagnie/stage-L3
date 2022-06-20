@@ -56,9 +56,10 @@ public class Expe
 
         writer.WriteLine(
             // "factor"
-            "Group;Participant;CollabEnvironememnt;MoveMode;CardToTag"
+            "Group;Participant;CollabEnvironememnt;MoveMode;CardToTag;"
             // measure
-            + ";nbTag;nbChangeTag");
+            + "nbMove;distTotal;nbRotate;rotateTotal;"
+            + "trialTime;moveTime;");
         writer.Flush();
         path = "Assets/Resources/logs/class-" + participant + "-" + mydate + ".txt";
         kineWriter = new StreamWriter(path, false);
@@ -110,30 +111,16 @@ public class Expe
         }
         else if (trialNb == theTrials.Count - 1)
         {
-            writer.WriteLine(
-            // "factor"
-            theTrials[trialNb].group + ";" + theTrials[trialNb].participant + ";" + theTrials[trialNb].collabEnvironememnt + ";" + theTrials[trialNb].moveMode + ";" + theTrials[trialNb].cardToTag + ";"
-            // measure
-            + theTrials[trialNb].nbTag + ";" + theTrials[trialNb].nbChangeTag
-            );
-            writer.Flush();
+            write();
             theTrials[trialNb - 1].card.transform.GetChild(1).gameObject.SetActive(false);
             theTrials[trialNb].card.transform.GetChild(1).gameObject.SetActive(false);
             Finished();
         }
         else
         {
-            writer.WriteLine(
-            // "factor"
-            theTrials[trialNb].group + ";" + theTrials[trialNb].participant + ";" + theTrials[trialNb].collabEnvironememnt + ";" + theTrials[trialNb].moveMode + ";" + theTrials[trialNb].cardToTag + ";"
-            // measure
-            + theTrials[trialNb].nbTag + ";" + theTrials[trialNb].nbChangeTag
-            );
-            writer.Flush();
-
+            write();
             incTrialNb();
-
-
+            
             if (theTrials[trialNb].group == "#pause")
             {
                 trialRunning = false;
@@ -147,6 +134,18 @@ public class Expe
                 curentTrial = theTrials[trialNb];
             }
         }
+    }
+
+    public void write()
+    {
+        writer.WriteLine(
+            // "factor"
+            theTrials[trialNb].group + ";" + theTrials[trialNb].participant + ";" + theTrials[trialNb].collabEnvironememnt + ";" + theTrials[trialNb].moveMode + ";" + theTrials[trialNb].cardToTag + ";"
+            // measure
+            + theTrials[trialNb].nbMove + ";" + theTrials[trialNb].distTotal + ";" + theTrials[trialNb].nbRotate + ";" + theTrials[trialNb].rotateTotal + ";"
+            + theTrials[trialNb].trialTime + ";" + theTrials[trialNb].moveTime + ";"
+            );
+        writer.Flush();
     }
 
     public void Finished()

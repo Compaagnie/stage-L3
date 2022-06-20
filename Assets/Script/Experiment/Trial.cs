@@ -27,13 +27,15 @@ public class Trial
     // public int tct;
     // public float mux, muy, muz;
 
-    //tag 
-    public int nbTag = 0;
-    public int nbChangeTag = 0;
-
     //move
     public int nbMove = 0;
     public int nbRotate = 0;
+
+    public float distTotal = 0;
+    public float rotateTotal = 0;
+
+    public float trialTime;
+    public float moveTime = 0;
 
     public string pathLog = "";
     public StreamWriter kineWriter;
@@ -73,6 +75,7 @@ public class Trial
 
     public void startTrial()
     {
+        trialTime = Time.time;
         card.transform.GetChild(0).GetComponent<Renderer>().material = player.none;
         initialCardMaterial = card.transform.GetChild(0).GetComponent<Renderer>().material;
         card.transform.GetChild(1).gameObject.SetActive(true);
@@ -98,28 +101,40 @@ public class Trial
 
     public void endTrial()
     {
+        trialTime = Time.time - trialTime;
         cardArea.gameObject.SetActive(false);
         card.transform.GetChild(1).GetComponent<Renderer>().material = player.green;
         expe.nextTrial();
     }
 
-
-
-
-
-
-    // Tag 
-    public void incNbTag(string nameR)
+    
+    public void incNbMove()
     {
-        nbTag += 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Tag" + " ; color : " + nameR);
+        nbMove += 1;
+        kineWriter.WriteLine(Time.time - timer + "; Move");
+        kineWriter.Flush();
+    }
+    public void incNbRotate()
+    {
+        nbRotate += 1;
+        kineWriter.WriteLine(Time.time - timer + "; Rotate");
+        kineWriter.Flush();
+    }
+    public void incDistTotal(float dist)
+    {
+        distTotal += 1;
+        kineWriter.WriteLine(Time.time - timer + "; Move " + dist);
+        kineWriter.Flush();
+    }
+    public void incRotateTotal(float angle)
+    {
+        rotateTotal += 1;
+        kineWriter.WriteLine(Time.time - timer + "; Rotate " + angle);
         kineWriter.Flush();
     }
 
-    public void incNbChangeTag(string nameR)
+    public void incMoveTime(float t)
     {
-        nbChangeTag = nbChangeTag + 1;
-        kineWriter.WriteLine(Time.time - timer + ";" + " Change Tag" + " ; color : " + nameR);
-        kineWriter.Flush();
+        moveTime += t;
     }
 }

@@ -119,6 +119,7 @@ public class Teleporter : MonoBehaviour
             CameraRotator.RotateAround(cam.position, Vector3.up, -initialCamRotationY);
             ControllerRotator.RotateAround(cam.position, Vector3.up, -initialCamRotationY);
             Debug.Log("Camera:"+CameraRotator.rotation.eulerAngles.y+" Ctrl:"+ControllerRotator.rotation.eulerAngles.y);
+            cameraRig.RotateAround(cam.position, Vector3.up, -initialCamRotationY);
         }
 
         if (expe == null)

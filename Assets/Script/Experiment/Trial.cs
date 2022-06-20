@@ -3,13 +3,17 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
+using UnityEditor;
 
-public class Trial
+public class Trial : MonoBehaviour
 {
     public GameObject card;
     private Material initialCardMaterial;
     private Network_Player player;
     private Teleporter teleport;
+    private rendering render;
     private Transform cardArea;
     private Expe expe;
     
@@ -21,6 +25,8 @@ public class Trial
     public string collabEnvironememnt;
     public string moveMode;
     public string cardToTag;
+
+    public bool trialEnded = false;
 
     // measures
     // public float size;
@@ -49,6 +55,7 @@ public class Trial
     {
         player = GameObject.Find("Network Player(Clone)").GetComponent<Network_Player>();
         teleport = GameObject.Find("/[CameraRig]/ControllerRotator/Controller (right)").GetComponent<Teleporter>();
+        render = GameObject.Find("/Salle").GetComponent<rendering>();
         cardArea = GameObject.Find("/Salle").GetComponent<rendering>().cardArea;
         expe = e;
         group = g_;
@@ -92,7 +99,7 @@ public class Trial
             cardArea.position = new Vector3(card.transform.position.x, 0, card.transform.position.z);
             cardArea.gameObject.SetActive(true);
         }
-        if (card.transform.GetChild(0).GetComponent<Renderer>().material != initialCardMaterial && dist <= 2.5)
+        if (!trialEnded && card.transform.GetChild(0).GetComponent<Renderer>().material != initialCardMaterial/* && dist <= 2.5*/)
         {
             Debug.Log("Card tagged with new color " + card);
             endTrial();
@@ -104,10 +111,11 @@ public class Trial
         trialTime = Time.time - trialTime;
         cardArea.gameObject.SetActive(false);
         card.transform.GetChild(1).GetComponent<Renderer>().material = player.green;
-        expe.nextTrial();
+        trialEnded = true;
+        render.nextTrial();
     }
 
-    
+
     public void incNbMove()
     {
         nbMove += 1;

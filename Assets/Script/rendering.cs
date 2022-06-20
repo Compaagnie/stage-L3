@@ -85,7 +85,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         }
         else if (Input.GetKeyDown(KeyCode.Space) && expeEnCours && !trialEnCours)
         {
-            photonView.RPC("startTrials", Photon.Pun.RpcTarget.AllBuffered);
+            photonView.RPC("nextTrial", Photon.Pun.RpcTarget.AllBuffered);
             trialEnCours = true;
         }
 
@@ -208,9 +208,9 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     }
 
     [PunRPC]
-    void startTrials()
+    public void nextTrial()
     {
-        expe.nextTrial();
+        StartCoroutine(expe.nextTrial());
     }
 
     [PunRPC]

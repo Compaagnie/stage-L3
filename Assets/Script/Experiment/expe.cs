@@ -12,6 +12,8 @@ public class Expe
     public string participant = "P01";
     public int startTrial = 1;
 
+    private Teleporter teleport;
+
     private readonly string expeDescriptionFile = "Experiments/expe";
     private string previousCardNum;
     //static string[] letters = {"H", "N", "K", "R"};
@@ -43,6 +45,8 @@ public class Expe
         expeRunning = true;
         participant = part;
         cardList = cardL;
+
+        teleport = GameObject.Find("/[CameraRig]/ControllerRotator/Controller (right)").GetComponent<Teleporter>();
 
         string mydate = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
         //  Debug.Log("Goupe: " + trial.group + );
@@ -99,12 +103,22 @@ public class Expe
         kineWriter.Flush();
     }
 
-    public void nextTrial()
+    public IEnumerator nextTrial()
     {
-
+        
         Debug.Log("Trial count" + theTrials.Count + " curent nb " + trialNb);
         if (!trialRunning)
         {
+            Debug.Log("update text info");
+            teleport.menu.transform.Find("textInfo").gameObject.SetActive(true);
+            teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Prochain trial dans\n 3";
+            yield return new WaitForSeconds(1);
+            teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Prochain trial dans\n 2";
+            yield return new WaitForSeconds(1);
+            teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Prochain trial dans\n 1";
+            yield return new WaitForSeconds(1);
+            teleport.menu.transform.Find("textInfo").gameObject.SetActive(false);
+
             theTrials[trialNb].startTrial();
             curentTrial = theTrials[trialNb];
             trialRunning = true;
@@ -123,6 +137,8 @@ public class Expe
             
             if (theTrials[trialNb].group == "#pause")
             {
+                teleport.menu.transform.Find("textInfo").gameObject.SetActive(true);
+                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Pause";
                 trialRunning = false;
                 writer.WriteLine("#pause;");
                 writer.Flush();
@@ -130,6 +146,17 @@ public class Expe
             }
             else
             {
+                Debug.Log("update text info");
+                teleport.menu.transform.Find("textInfo").gameObject.SetActive(true);
+                teleport.menu.
+                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Bravo, prochain trial dans\n 3";
+                yield return new WaitForSeconds(1);
+                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Bravo, prochain trial dans\n 2";
+                yield return new WaitForSeconds(1);
+                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Bravo, prochain trial dans\n 1";
+                yield return new WaitForSeconds(1);
+                teleport.menu.transform.Find("textInfo").gameObject.SetActive(false);
+
                 theTrials[trialNb].startTrial();
                 curentTrial = theTrials[trialNb];
             }
@@ -150,6 +177,8 @@ public class Expe
 
     public void Finished()
     {
+        teleport.menu.transform.Find("textInfo").gameObject.SetActive(true);
+        teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Fin de l'expérience";
         trialRunning = false;
         expeRunning = false;
         writer.Close();
@@ -159,7 +188,7 @@ public class Expe
     public void incTrialNb()
     {
         trialNb += 1;
-        if (trialNb - 2 >= 0 && theTrials[trialNb - 2].group != "pause")
+        if (trialNb - 2 >= 0 && theTrials[trialNb - 2].group != "#pause")
         {
             theTrials[trialNb - 2].card.transform.GetChild(1).gameObject.SetActive(false);
         }

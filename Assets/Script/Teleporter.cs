@@ -105,7 +105,7 @@ public class Teleporter : MonoBehaviour
     {
         m_pose = GetComponent<SteamVR_Behaviour_Pose>();
         photonView = GetComponent<PhotonView>();
-        //Menu.SetActive(false);
+        menu.SetActive(false);
         menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = moveMode;
     }
 
@@ -425,7 +425,7 @@ public class Teleporter : MonoBehaviour
                 {
                     Vector3 translateVect = new Vector3(0, 0, 0);
                     //Debug.Log(m_HasPosition + hit.transform.tag);
-                    if (m_HasPosition && hit.transform.tag == "TpLimit")
+                    if (m_HasPosition && (hit.transform.tag == "TpLimit" || hit.transform.tag == "Tp"))
                     {
                         float a = Mathf.Tan((90 - oldControlerRotation.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
                         float b = Mathf.Tan((90 - controllerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controllerRight.transform.position.y;

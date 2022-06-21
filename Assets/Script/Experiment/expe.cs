@@ -103,21 +103,28 @@ public class Expe
         kineWriter.Flush();
     }
 
+    void setInfoLocation()
+    {
+        teleport.menu.transform.position = teleport.cam.position + 1.5f*teleport.cam.forward;
+        teleport.menu.transform.RotateAround(teleport.menu.transform.position, Vector3.up, teleport.cam.rotation.eulerAngles.y - teleport.menu.transform.rotation.eulerAngles.y);
+    }
+
     public IEnumerator nextTrial()
     {
         
         Debug.Log("Trial count" + theTrials.Count + " curent nb " + trialNb);
         if (!trialRunning)
         {
+            setInfoLocation();
             Debug.Log("update text info");
-            teleport.menu.transform.Find("textInfo").gameObject.SetActive(true);
+            teleport.menu.SetActive(true);
             teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Prochain trial dans\n 3";
             yield return new WaitForSeconds(1);
             teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Prochain trial dans\n 2";
             yield return new WaitForSeconds(1);
             teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Prochain trial dans\n 1";
             yield return new WaitForSeconds(1);
-            teleport.menu.transform.Find("textInfo").gameObject.SetActive(false);
+            teleport.menu.SetActive(false);
 
             theTrials[trialNb].startTrial();
             curentTrial = theTrials[trialNb];
@@ -137,7 +144,8 @@ public class Expe
             
             if (theTrials[trialNb].group == "#pause")
             {
-                teleport.menu.transform.Find("textInfo").gameObject.SetActive(true);
+                setInfoLocation();
+                teleport.menu.SetActive(true);
                 teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Pause";
                 trialRunning = false;
                 writer.WriteLine("#pause;");
@@ -147,15 +155,15 @@ public class Expe
             else
             {
                 Debug.Log("update text info");
-                teleport.menu.transform.Find("textInfo").gameObject.SetActive(true);
-                teleport.menu.
+                setInfoLocation();
+                teleport.menu.SetActive(true);
                 teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Bravo, prochain trial dans\n 3";
                 yield return new WaitForSeconds(1);
                 teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Bravo, prochain trial dans\n 2";
                 yield return new WaitForSeconds(1);
                 teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Bravo, prochain trial dans\n 1";
                 yield return new WaitForSeconds(1);
-                teleport.menu.transform.Find("textInfo").gameObject.SetActive(false);
+                teleport.menu.SetActive(false);
 
                 theTrials[trialNb].startTrial();
                 curentTrial = theTrials[trialNb];

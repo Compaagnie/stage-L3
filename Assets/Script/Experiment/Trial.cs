@@ -97,12 +97,16 @@ public class Trial : MonoBehaviour
         if (dist < 4)
         {
             cardArea.position = new Vector3(card.transform.position.x, 0, card.transform.position.z);
+            cardArea.rotation = card.transform.rotation;
             cardArea.gameObject.SetActive(true);
         }
         if (!trialEnded && card.transform.GetChild(0).GetComponent<Renderer>().material != initialCardMaterial/* && dist <= 2.5*/)
         {
-            Debug.Log("Card tagged with new color " + card);
-            endTrial();
+            if ((card.transform.rotation.eulerAngles.y == 0 && Math.Abs(teleport.cam.position.x - card.transform.position.x) < 1 && Math.Abs(teleport.cam.position.z - card.transform.position.z) < 2.5f) || (card.transform.rotation.eulerAngles.y != 0 && Math.Abs(teleport.cam.position.x - card.transform.position.x) < 2.5f && Math.Abs(teleport.cam.position.z - card.transform.position.z) < 1))
+            {
+                Debug.Log("Card tagged with new color " + card);
+                endTrial();
+            }
         }
     }
 

@@ -53,7 +53,9 @@ public class Teleporter : MonoBehaviour
     private Vector3 coordPrev;
     private Vector3 forwardClic;
     private Vector3 oldControlerRotation;
-    private Vector3 oldHitPosition;
+    private GameObject oldHit;
+    private float oldFingerX = 0;
+    private float oldFingerY = 0;
     private const float moveSpeed = 0.02f;
     Vector3 plusZ = new Vector3(0f, 0f, moveSpeed);
     Vector3 minusZ = new Vector3(0f, 0f, -moveSpeed);
@@ -66,9 +68,6 @@ public class Teleporter : MonoBehaviour
     private string teleporationMode = "Not syncro";
     readonly float desiredDistance = 1;
 
-
-    private bool n = false;
-    private bool s = false;
     private bool e = false;
     private bool w = false;
     public string moveMode = "drag";
@@ -107,6 +106,7 @@ public class Teleporter : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         menu.SetActive(false);
         menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = moveMode;
+        oldHit = m_Pointer;
     }
 
     // Update is called once per frame
@@ -129,6 +129,7 @@ public class Teleporter : MonoBehaviour
         }
         //Pointer
         m_HasPosition = UpdatePointer();
+        Debug.Log(hit);
         photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cam.position, cameraRig.rotation.eulerAngles, cameraRig.position);
 
         if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
@@ -171,10 +172,9 @@ public class Teleporter : MonoBehaviour
         if (m_TeleportAction.GetStateDown(m_pose.inputSource))
         {
             oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
-            oldHitPosition = m_Pointer.transform.position;
+            oldHit = m_Pointer;
             //Debug.Log("update old"+ oldControlerRotation
             // head position + camera rig
-            moveTimer = Time.time;
         }
         
         if (moveMode != "sync")
@@ -250,8 +250,6 @@ public class Teleporter : MonoBehaviour
 
                     isMoving = false;
                     longclic = false;
-                    n = false;
-                    s = false;
                     e = false;
                     w = false;
 
@@ -311,10 +309,22 @@ public class Teleporter : MonoBehaviour
             }
             else if (moveMode == "joy")
             {
-                if (m_TeleportAction.GetStateUp(m_pose.inputSource) && expe != null)
+
+                if ((oldFingerX > 0.5 && (position.x < 0.5 || m_TeleportAction.GetStateUp(m_pose.inputSource))) || (oldFingerX < -0.5 && (position.x > -0.5 || m_TeleportAction.GetStateUp(m_pose.inputSource))) && expe != null)
                 {
+                    expe.curentTrial.incNbRotate();
+                }
+                if ((oldFingerY > 0.5 && (position.y < 0.5 || m_TeleportAction.GetStateUp(m_pose.inputSource))) || (oldFingerY < -0.5 && (position.y > -0.5 || m_TeleportAction.GetStateUp(m_pose.inputSource))) && expe != null)
+                {
+                    expe.curentTrial.incNbMove();
                     expe.curentTrial.incMoveTime(Time.time - moveTimer);
                 }
+
+                if ((oldFingerY < 0.5 && position.y > 0.5) || (oldFingerY > -0.5 && position.y < -0.5 ))
+                {
+                    moveTimer = Time.time;
+                }
+
                 if (m_TeleportAction.GetState(m_pose.inputSource))
                 {
                     Quaternion rotation = Quaternion.Euler(controllerRight.rotation.eulerAngles);
@@ -414,12 +424,42 @@ public class Teleporter : MonoBehaviour
                         }
                     }
                 }
+                oldFingerX = position.x;
+                oldFingerY = position.y;
             }
             else if (moveMode == "drag")
             {
                 if (m_TeleportAction.GetStateUp(m_pose.inputSource) && expe != null)
                 {
-                    expe.curentTrial.incMoveTime(Time.time - moveTimer);
+                    if(oldHit != null)
+                    {
+                        expe.curentTrial.incNbMove();
+                        expe.curentTrial.incMoveTime(Time.time - moveTimer);
+                    }
+                    else
+                    {
+                        expe.curentTrial.incNbRotate();
+                    }
+                }
+                if (oldHit != null)
+                {
+                    if ((oldHit.transform.tag == "TpLimit" || oldHit.transform.tag == "Tp") && (hit.transform.tag == "Wall" || hit.transform.parent.tag == "Wall" || !m_HasPosition) && expe != null)
+                    {
+                        expe.curentTrial.incNbMove();
+                        expe.curentTrial.incMoveTime(Time.time - moveTimer);
+                    }
+                    if ((oldHit.transform.tag == "Wall" || oldHit.transform.parent.tag == "Wall") && (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || !m_HasPosition) && expe != null)
+                    {
+                        expe.curentTrial.incNbMove();
+                        expe.curentTrial.incMoveTime(Time.time - moveTimer);
+                    }
+                }
+                else
+                {
+                    if (m_HasPosition && expe != null)
+                    {
+                        expe.curentTrial.incNbRotate();
+                    }
                 }
                 if (m_TeleportAction.GetState(m_pose.inputSource))
                 {
@@ -430,8 +470,8 @@ public class Teleporter : MonoBehaviour
                         float a = Mathf.Tan((90 - oldControlerRotation.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
                         float b = Mathf.Tan((90 - controllerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
                         //Debug.Log("b: " + b);
-                        Vector3 camToHit = oldHitPosition - cam.position;
-                        Vector3 ctrlToHit = oldHitPosition - controllerRight.position;
+                        Vector3 camToHit = oldHit.transform.position - cam.position;
+                        Vector3 ctrlToHit = oldHit.transform.position - controllerRight.position;
                         //Debug.Log(camToHit.z);
                         camToHit.y = 0;
                         ctrlToHit.y = 0;
@@ -531,7 +571,7 @@ public class Teleporter : MonoBehaviour
                         }
                     }
                     oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
-                    oldHitPosition = m_Pointer.transform.position;
+                    oldHit = m_Pointer;
                 }
 
             }

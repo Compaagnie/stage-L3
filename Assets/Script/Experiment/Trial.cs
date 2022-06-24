@@ -85,7 +85,10 @@ public class Trial : MonoBehaviour
         trialTime = Time.time;
         card.transform.GetChild(0).GetComponent<Renderer>().material = player.none;
         initialCardMaterial = card.transform.GetChild(0).GetComponent<Renderer>().material;
-        card.transform.GetChild(1).gameObject.SetActive(true);
+        if (moveMode == "sync")
+        {
+            card.transform.GetChild(1).gameObject.SetActive(true);
+        }
         player.palette.gameObject.SetActive(false);
         teleport.moveMode = moveMode;
         Debug.Log("Trial started, card to tag " + cardToTag);

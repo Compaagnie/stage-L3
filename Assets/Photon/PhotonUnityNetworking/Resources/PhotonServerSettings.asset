@@ -78,6 +78,7 @@ MonoBehaviour:
   - nextTrial
   - checkConditions
   - curentTrialConditionCheck
+  - trialStarted
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -27,6 +27,7 @@ public class Trial
     public string cardToTag;
 
     public bool trialEnded = false;
+    public bool canTagCard = false;
 
     // measures
     // public float size;
@@ -82,7 +83,6 @@ public class Trial
 
     public void startTrial()
     {
-        trialTime = Time.time;
         card.transform.GetChild(0).GetComponent<Renderer>().material = player.none;
         initialCardMaterial = card.transform.GetChild(0).GetComponent<Renderer>().material;
         if (moveMode == "sync")
@@ -97,7 +97,15 @@ public class Trial
         teleport.moveMode = moveMode;
         Debug.Log("Trial started, card to tag " + cardToTag);
     }
-    
+
+    public void startTrialTimer()
+    {
+        render.p.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
+        expe.trialRunning = true;
+        Debug.Log("                                                             Trial Timer started");
+        trialTime = Time.time;
+    }
+
     public void checkConditions()
     {
         float dist = (teleport.centerBetweenPlayers - card.transform.position).magnitude;
@@ -107,13 +115,20 @@ public class Trial
             cardArea.rotation = card.transform.rotation;
             cardArea.gameObject.SetActive(true);
         }
-        if (!trialEnded && card.transform.GetChild(0).GetComponent<Renderer>().material != initialCardMaterial)
+        if (!trialEnded && (card.transform.rotation.eulerAngles.y == 0 && Math.Abs(teleport.centerBetweenPlayers.x - card.transform.position.x) < 1 && Math.Abs(teleport.centerBetweenPlayers.z - card.transform.position.z) < 2.5f) || (card.transform.rotation.eulerAngles.y != 0 && Math.Abs(teleport.centerBetweenPlayers.x - card.transform.position.x) < 2.5f && Math.Abs(teleport.centerBetweenPlayers.z - card.transform.position.z) < 1))
         {
-            if ((card.transform.rotation.eulerAngles.y == 0 && Math.Abs(teleport.centerBetweenPlayers.x - card.transform.position.x) < 1 && Math.Abs(teleport.centerBetweenPlayers.z - card.transform.position.z) < 2.5f) || (card.transform.rotation.eulerAngles.y != 0 && Math.Abs(teleport.centerBetweenPlayers.x - card.transform.position.x) < 2.5f && Math.Abs(teleport.centerBetweenPlayers.z - card.transform.position.z) < 1))
-            {
-                Debug.Log("Card tagged with new color " + card);
-                endTrial();
-            }
+            canTagCard = true;
+            cardArea.GetComponent<Renderer>().material = player.white;
+        }
+        else
+        {
+            canTagCard = false;
+            cardArea.GetComponent<Renderer>().material = player.none;
+        }
+        if (canTagCard && card.transform.GetChild(0).GetComponent<Renderer>().material != initialCardMaterial)
+        {
+            Debug.Log("Card tagged with new color " + card);
+            endTrial();
         }
     }
 

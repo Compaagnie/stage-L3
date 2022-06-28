@@ -25,6 +25,8 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
 
     public Transform cardArea;
 
+    public PhotonView p;
+
     //Card list
     public List<GameObject> cardList;
     public List<GameObject> cardListToTeleport;
@@ -100,6 +102,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     // Start is called before the first frame update
     void Awake()
     {
+        p = photonView;
         trash1.SetActive(false);
         trash2.SetActive(false);
         trash3.SetActive(false);
@@ -198,6 +201,12 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     }
 
     [PunRPC]
+    void trialStarted()
+    {
+        StartCoroutine(expe.trialStarted());
+    }
+
+    [PunRPC]
     void curentTrialConditionCheck()
     {
         expe.curentTrial.checkConditions();
@@ -233,7 +242,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     [PunRPC]
     public void nextTrial()
     {
-        StartCoroutine(expe.nextTrial());
+        expe.nextTrial();
     }
 
     [PunRPC]

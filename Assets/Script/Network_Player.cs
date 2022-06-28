@@ -261,26 +261,28 @@ public class Network_Player : MonoBehaviourPun
             if (PhotonView.Find(OB).gameObject.tag != "Card"){ return; }
            
             nameT = rayCast.GetComponent<Renderer>().material.name;
-            
-            if (nameT == "blue (Instance)")
+            if (expe != null && expe.curentTrial.canTagCard)
             {
-                PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = blue;
-            }
-            else if (nameT == "green (Instance)")
-            {
-                PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = green;
-            }
-            else if (nameT == "red (Instance)")
-            {
-                PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = red;
-            }
-            else if (nameT == "white (Instance)")
-            {
-                PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = white;
-            }
-            else
-            {
-                PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = none;
+                if (nameT == "blue (Instance)")
+                {
+                    PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = blue;
+                }
+                else if (nameT == "green (Instance)")
+                {
+                    PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = green;
+                }
+                else if (nameT == "red (Instance)")
+                {
+                    PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = red;
+                }
+                else if (nameT == "white (Instance)")
+                {
+                    PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = white;
+                }
+                else
+                {
+                    PhotonView.Find(OB).gameObject.transform.GetChild(0).GetComponent<Renderer>().material = none;
+                }
             }
         }
 

@@ -106,10 +106,18 @@ public class Expe
     void setInfoLocation()
     {
         teleport.menu.transform.position = teleport.cam.position + 1.5f*teleport.cam.forward;
-        teleport.menu.transform.RotateAround(teleport.menu.transform.position, Vector3.up, teleport.cam.rotation.eulerAngles.y - teleport.menu.transform.rotation.eulerAngles.y);
+        teleport.menu.transform.rotation = teleport.cam.rotation;
+        //teleport.menu.transform.RotateAround(teleport.menu.transform.position, Vector3.up, teleport.cam.rotation.eulerAngles.y - teleport.menu.transform.rotation.eulerAngles.y);
     }
 
-    public IEnumerator nextTrial()
+    public IEnumerator trialStarted()
+    {
+        teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Trial started";
+        yield return new WaitForSeconds(3);
+        teleport.menu.SetActive(false);
+    }
+
+    public void nextTrial()
     {
         
         Debug.Log("Trial count" + theTrials.Count + " curent nb " + trialNb);
@@ -119,17 +127,11 @@ public class Expe
             setInfoLocation();
             teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
             teleport.menu.SetActive(true);
-            teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Prochain trial dans\n 3";
-            yield return new WaitForSeconds(1);
-            teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Prochain trial dans\n 2";
-            yield return new WaitForSeconds(1);
-            teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Prochain trial dans\n 1";
-            yield return new WaitForSeconds(1);
-            teleport.menu.SetActive(false);
+            teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Next trial starts when you press the navigation button";
 
             theTrials[trialNb].startTrial();
             curentTrial = theTrials[trialNb];
-            trialRunning = true;
+            //trialRunning = true;
         }
         else if (trialNb == theTrials.Count - 1)
         {
@@ -160,12 +162,6 @@ public class Expe
                 teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
                 teleport.menu.SetActive(true);
                 teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Bravo, prochain trial dans\n 3";
-                yield return new WaitForSeconds(1);
-                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Bravo, prochain trial dans\n 2";
-                yield return new WaitForSeconds(1);
-                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Bravo, prochain trial dans\n 1";
-                yield return new WaitForSeconds(1);
-                teleport.menu.SetActive(false);
 
                 theTrials[trialNb].startTrial();
                 curentTrial = theTrials[trialNb];

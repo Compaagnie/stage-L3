@@ -163,7 +163,7 @@ public class Expe
                 setInfoLocation();
                 teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
                 teleport.menu.SetActive(true);
-                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Bravo, prochain trial dans\n 3";
+                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Next trial starts when you press the navigation button";
 
                 theTrials[trialNb].startTrial();
                 curentTrial = theTrials[trialNb];

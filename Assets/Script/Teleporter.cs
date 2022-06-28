@@ -175,7 +175,7 @@ public class Teleporter : MonoBehaviour
             oldHit = m_Pointer;
             if (expe != null && expe.trialRunning == false)
             {
-                photonView.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
+                GameObject.Find("/Salle").GetComponent<rendering>().photonView.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
             }
             //Debug.Log("update old"+ oldControlerRotation
             // head position + camera rig

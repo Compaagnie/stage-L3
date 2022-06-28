@@ -103,7 +103,7 @@ public class Trial
             cardArea.rotation = card.transform.rotation;
             cardArea.gameObject.SetActive(true);
         }
-        if (!trialEnded && card.transform.GetChild(0).GetComponent<Renderer>().material != initialCardMaterial/* && dist <= 2.5*/)
+        if (!trialEnded && card.transform.GetChild(0).GetComponent<Renderer>().material != initialCardMaterial)
         {
             if ((card.transform.rotation.eulerAngles.y == 0 && Math.Abs(teleport.cam.position.x - card.transform.position.x) < 1 && Math.Abs(teleport.cam.position.z - card.transform.position.z) < 2.5f) || (card.transform.rotation.eulerAngles.y != 0 && Math.Abs(teleport.cam.position.x - card.transform.position.x) < 2.5f && Math.Abs(teleport.cam.position.z - card.transform.position.z) < 1))
             {

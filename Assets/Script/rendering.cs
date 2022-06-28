@@ -202,9 +202,15 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     void startExpe()
     {
         if (PhotonNetwork.IsMasterClient)
-            expe = new Expe("p01", cardList);
+        { 
+            participant = "p01";
+        }
         else
-            expe = new Expe("p02", cardList);
+        {
+            participant = "p02";
+        }
+
+        expe = new Expe(participant, cardList);
         
         if (expe.curentTrial.collabEnvironememnt == "C")
         {

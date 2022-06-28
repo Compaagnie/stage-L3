@@ -73,7 +73,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
 
         if (trialEnCours && expeEnCours)
         {
-            photonView.RPC("curentTrialConditionCheck", Photon.Pun.RpcTarget.AllBuffered)
+            photonView.RPC("curentTrialConditionCheck", Photon.Pun.RpcTarget.AllBuffered);
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && !expeEnCours)

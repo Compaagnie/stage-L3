@@ -89,6 +89,10 @@ public class Trial
         {
             card.transform.GetChild(1).gameObject.SetActive(true);
         }
+        else
+        {
+            teleport.isOtherSynced = true;
+        }
         player.palette.gameObject.SetActive(false);
         teleport.moveMode = moveMode;
         Debug.Log("Trial started, card to tag " + cardToTag);

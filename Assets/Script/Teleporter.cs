@@ -94,7 +94,7 @@ public class Teleporter : MonoBehaviour
     private Vector3 otherPlayerPosition = new Vector3(0,0,0);
     private Vector3 otherPlayerRotation = new Vector3(0, 0, 0);
     private Vector3 otherPlayerCameraRigPos = new Vector3(0, 0, 0);
-    private Vector3 centerBetweenPlayers = new Vector3(0, 0, 0);
+    public Vector3 centerBetweenPlayers = new Vector3(0, 0, 0);
 
     Expe expe;
 

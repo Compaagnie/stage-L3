@@ -100,7 +100,7 @@ public class Trial
 
     public void checkConditions()
     {
-        float dist = (teleport.cam.position - card.transform.position).magnitude;
+        float dist = (teleport.centerBetweenPlayers - card.transform.position).magnitude;
         if (dist < 4)
         {
             cardArea.position = new Vector3(card.transform.position.x, 0, card.transform.position.z);
@@ -109,7 +109,7 @@ public class Trial
         }
         if (!trialEnded && card.transform.GetChild(0).GetComponent<Renderer>().material != initialCardMaterial)
         {
-            if ((card.transform.rotation.eulerAngles.y == 0 && Math.Abs(teleport.cam.position.x - card.transform.position.x) < 1 && Math.Abs(teleport.cam.position.z - card.transform.position.z) < 2.5f) || (card.transform.rotation.eulerAngles.y != 0 && Math.Abs(teleport.cam.position.x - card.transform.position.x) < 2.5f && Math.Abs(teleport.cam.position.z - card.transform.position.z) < 1))
+            if ((card.transform.rotation.eulerAngles.y == 0 && Math.Abs(teleport.centerBetweenPlayers.x - card.transform.position.x) < 1 && Math.Abs(teleport.centerBetweenPlayers.z - card.transform.position.z) < 2.5f) || (card.transform.rotation.eulerAngles.y != 0 && Math.Abs(teleport.centerBetweenPlayers.x - card.transform.position.x) < 2.5f && Math.Abs(teleport.centerBetweenPlayers.z - card.transform.position.z) < 1))
             {
                 Debug.Log("Card tagged with new color " + card);
                 endTrial();

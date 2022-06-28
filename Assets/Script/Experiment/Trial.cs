@@ -100,7 +100,6 @@ public class Trial
 
     public void startTrialTimer()
     {
-        render.p.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
         Debug.Log("                                                             Trial Timer started");
         trialTime = Time.time;
     }

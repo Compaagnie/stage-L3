@@ -97,7 +97,7 @@ public class Trial
         teleport.moveMode = moveMode;
         Debug.Log("Trial started, card to tag " + cardToTag);
     }
-
+    
     public void checkConditions()
     {
         float dist = (teleport.centerBetweenPlayers - card.transform.position).magnitude;

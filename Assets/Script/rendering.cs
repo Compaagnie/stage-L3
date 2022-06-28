@@ -73,7 +73,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
 
         if (trialEnCours && expeEnCours)
         {
-            expe.curentTrial.checkConditions();
+            photonView.RPC("curentTrialConditionCheck", Photon.Pun.RpcTarget.AllBuffered)
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && !expeEnCours)
@@ -171,34 +171,6 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     }
 
     [PunRPC]
-    void endExpe()
-    {
-        expe.Finished();
-        print("End");
-        //stop timing , stop expe ? 
-        /*
-        Debug.Log("nb tag card : " + expe.curentTrial.nbTag);
-        Debug.Log("nb change tag color : " + expe.curentTrial.nbChangeTag);
-        
-        Debug.Log("nb sync TP : " + expe.curentTrial.nbSyncTp);
-        Debug.Log("nb async TP : " + expe.curentTrial.nbAsyncTP);
-
-        Debug.Log("nb sync TP W : " + expe.curentTrial.nbSyncTpWall);
-        Debug.Log("nb async TP W: " + expe.curentTrial.nbAsyncTpWall);
-        Debug.Log("nb sync TP G: " + expe.curentTrial.nbSyncTpGround);
-        Debug.Log("nb async TP G: " + expe.curentTrial.nbAsyncTpGround);
-
-        Debug.Log("nb DragCard : " + expe.curentTrial.nbDragCard);
-        Debug.Log("nb GroupCardTP: " + expe.curentTrial.nbGroupCardTP);
-        Debug.Log("nb DestroyCard: " + expe.curentTrial.nbDestroyCard);
-        Debug.Log("nb UndoCard: " + expe.curentTrial.nbUndoCard);
-        */
-        expeEnCours = false;
-        trialEnCours = false;
-    }
-
-
-    [PunRPC]
     void startExpe()
     {
         if (PhotonNetwork.IsMasterClient)
@@ -223,6 +195,39 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         {
             Debug.Log(" Sound on");
         }
+    }
+
+    [PunRPC]
+    void curentTrialConditionCheck()
+    {
+        expe.curentTrial.checkConditions();
+    }
+
+    [PunRPC]
+    void endExpe()
+    {
+        expe.Finished();
+        print("End");
+        //stop timing , stop expe ? 
+        /*
+        Debug.Log("nb tag card : " + expe.curentTrial.nbTag);
+        Debug.Log("nb change tag color : " + expe.curentTrial.nbChangeTag);
+        
+        Debug.Log("nb sync TP : " + expe.curentTrial.nbSyncTp);
+        Debug.Log("nb async TP : " + expe.curentTrial.nbAsyncTP);
+
+        Debug.Log("nb sync TP W : " + expe.curentTrial.nbSyncTpWall);
+        Debug.Log("nb async TP W: " + expe.curentTrial.nbAsyncTpWall);
+        Debug.Log("nb sync TP G: " + expe.curentTrial.nbSyncTpGround);
+        Debug.Log("nb async TP G: " + expe.curentTrial.nbAsyncTpGround);
+
+        Debug.Log("nb DragCard : " + expe.curentTrial.nbDragCard);
+        Debug.Log("nb GroupCardTP: " + expe.curentTrial.nbGroupCardTP);
+        Debug.Log("nb DestroyCard: " + expe.curentTrial.nbDestroyCard);
+        Debug.Log("nb UndoCard: " + expe.curentTrial.nbUndoCard);
+        */
+        expeEnCours = false;
+        trialEnCours = false;
     }
 
     [PunRPC]

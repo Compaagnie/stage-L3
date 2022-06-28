@@ -25,7 +25,6 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
 
     public Transform cardArea;
 
-    public PhotonView p;
 
     //Card list
     public List<GameObject> cardList;
@@ -102,7 +101,6 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     // Start is called before the first frame update
     void Awake()
     {
-        p = photonView;
         trash1.SetActive(false);
         trash2.SetActive(false);
         trash3.SetActive(false);

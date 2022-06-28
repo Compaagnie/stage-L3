@@ -113,6 +113,7 @@ public class Expe
     public IEnumerator trialStarted()
     {
         curentTrial.startTrialTimer();
+        trialRunning = true;
         teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Trial started";
         yield return new WaitForSeconds(3);
         teleport.menu.SetActive(false);

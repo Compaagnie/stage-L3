@@ -7,7 +7,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEditor;
 
-public class Trial : MonoBehaviour
+public class Trial
 {
     public GameObject card;
     private Material initialCardMaterial;
@@ -45,7 +45,7 @@ public class Trial : MonoBehaviour
 
     public string pathLog = "";
     public StreamWriter kineWriter;
-    private readonly float timer = 0;
+    private float timer = 0;
 
 
     public Trial(Expe e,
@@ -68,7 +68,7 @@ public class Trial : MonoBehaviour
         {
             card = expe.cardList[int.Parse(cardT)];
         }
-        Debug.Log("card found" + card);
+        //Debug.Log("card found" + card);
     }
 
     public string StringToLog()

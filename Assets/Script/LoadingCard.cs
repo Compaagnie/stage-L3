@@ -11,7 +11,7 @@ public class LoadingCard : MonoBehaviour
     static float h = 0.239f;
     static int cardPerLine = Mathf.RoundToInt(rendering.cardPerWall/2);
     float minimalCardX = -0.35f -w;
-    float cardEspacement = 0.7f /cardPerLine;
+    float cardEspacement;
 
     [PunRPC]
     void LoadCard( int OB, int wallViewID, int pos, int i)
@@ -33,7 +33,17 @@ public class LoadingCard : MonoBehaviour
                 textures = Resources.LoadAll("dixit_part2/", typeof(Texture2D));
             }
             */
-            textures = Resources.LoadAll("dixit_part1/", typeof(Texture2D));
+            textures = Resources.LoadAll("dixit_all/", typeof(Texture2D));
+        }
+
+
+        if (rendering.cardPerWall % 2 == 0)
+        {
+            cardEspacement = 0.7f / (cardPerLine - 1);
+        }
+        else
+        {
+            cardEspacement = 0.7f / (cardPerLine);
         }
 
         // wall + card
@@ -56,7 +66,7 @@ public class LoadingCard : MonoBehaviour
         goCard.name = "Card " + i;
        
         goCard.transform.localScale = new Vector3(w, h, 1.0f);
-        if (pos <= cardPerLine) //10 card per ligne
+        if (pos < cardPerLine) //10 card per ligne
         {
             goCard.transform.localPosition = new Vector3(minimalCardX + w + cardEspacement * pos,        -1 * h, -0.01f);
         }

@@ -33,7 +33,8 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     public object[] textures;
     public bool card1 = true;
     public bool training = false;
-    public static int cardPerWall = 15; //choisir le nombre de carte par mur, elles seront ensuite placées automatiquement (marche difficilement à plus de 40 cartes)
+
+    public static int cardPerWall = 20; //choisir le nombre de carte par mur, elles seront ensuite placées automatiquement (marche difficilement à plus de 40 cartes)
 
     //who to load
     public string participant = "p01";
@@ -117,7 +118,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         }
         else 
         {
-            textures = Resources.LoadAll("dixit_part1/", typeof(Texture2D));
+            textures = Resources.LoadAll("dixit_all/", typeof(Texture2D));
         }
         Debug.Log(textures.Length);
 
@@ -200,7 +201,10 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     [PunRPC]
     void startExpe()
     {
-        expe = new Expe(participant, cardList);
+        if (PhotonNetwork.IsMasterClient)
+            expe = new Expe("p01", cardList);
+        else
+            expe = new Expe("p02", cardList);
         
         if (expe.curentTrial.collabEnvironememnt == "C")
         {

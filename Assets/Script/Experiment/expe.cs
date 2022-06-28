@@ -8,8 +8,8 @@ using System.Threading;
 
 public class Expe
 {
-
-    public string participant = "p01";
+    public string participant;
+    private string group = "g01";
     public int startTrial = 1;
 
     private Teleporter teleport;
@@ -78,19 +78,19 @@ public class Expe
         foreach (string str in lines)
         {
             List<string> values = new List<string>(str.Split(';'));
-            if (values[0] == "#pause")
+            if (values[0] == "#pause" && theTrials[theTrials.Count - 1].group == group)
             {
                 theTrials.Add(new Trial(this, values[0], "", "", "", ""));
                 Debug.Log("Pause added to trials");
             }
-            else if (values[1] == participant)
+            else if (values[0] == group && values[1] == participant)
             {
                 theTrials.Add(new Trial(this,
                         values[0], values[1],
                         values[2], values[3], values[4]
                     ));
-                Debug.Log("Goupe: " + theTrials[theTrials.Count - 1].group + "Participant: " + theTrials[theTrials.Count - 1].participant +
-                          "collabEnvironememn: " + theTrials[theTrials.Count - 1].collabEnvironememnt + "moveMode: " + theTrials[theTrials.Count - 1].moveMode + "cardToTag: " + theTrials[theTrials.Count - 1].cardToTag);
+                Debug.Log("Goupe: " + theTrials[theTrials.Count - 1].group + "; Participant: " + theTrials[theTrials.Count - 1].participant +
+                          "; collabEnvironememn: " + theTrials[theTrials.Count - 1].collabEnvironememnt + "; moveMode: " + theTrials[theTrials.Count - 1].moveMode + "; cardToTag: " + theTrials[theTrials.Count - 1].cardToTag);
 
                 theTrials[theTrials.Count - 1].pathLog = path;
 

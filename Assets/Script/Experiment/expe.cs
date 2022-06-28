@@ -115,9 +115,9 @@ public class Expe
         Debug.Log("Trial count" + theTrials.Count + " curent nb " + trialNb);
         if (!trialRunning)
         {
-            setInfoLocation();
             Debug.Log("update text info");
-            teleport.menu.transform.Find("moveModeInfo").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
+            setInfoLocation();
+            teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
             teleport.menu.SetActive(true);
             teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Prochain trial dans\n 3";
             yield return new WaitForSeconds(1);
@@ -157,6 +157,7 @@ public class Expe
             {
                 Debug.Log("update text info");
                 setInfoLocation();
+                teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
                 teleport.menu.SetActive(true);
                 teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Bravo, prochain trial dans\n 3";
                 yield return new WaitForSeconds(1);

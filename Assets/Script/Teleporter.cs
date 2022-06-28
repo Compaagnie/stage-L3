@@ -129,7 +129,7 @@ public class Teleporter : MonoBehaviour
         }
         //Pointer
         m_HasPosition = UpdatePointer();
-        Debug.Log(hit);
+        //Debug.Log(hit);
         photonView.RPC("receiveOtherPosition", Photon.Pun.RpcTarget.Others, cam.position, cameraRig.rotation.eulerAngles, cameraRig.position);
 
         if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
@@ -448,7 +448,7 @@ public class Teleporter : MonoBehaviour
                         expe.curentTrial.incNbMove();
                         expe.curentTrial.incMoveTime(Time.time - moveTimer);
                     }
-                    if ((oldHit.transform.tag == "Wall" || oldHit.transform.parent.tag == "Wall") && (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || !m_HasPosition) && expe != null)
+                    if ((oldHit.transform.tag == "Wall" || oldHit.transform.tag == "Card") && (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || !m_HasPosition) && expe != null)
                     {
                         expe.curentTrial.incNbMove();
                         expe.curentTrial.incMoveTime(Time.time - moveTimer);

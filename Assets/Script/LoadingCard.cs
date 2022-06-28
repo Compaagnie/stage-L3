@@ -7,13 +7,18 @@ public class LoadingCard : MonoBehaviour
 {
     object[] textures;
 
-    int cardPerLine = 10;
+    static float w = 0.033f;
+    static float h = 0.239f;
+    static int cardPerLine = Mathf.RoundToInt(rendering.cardPerWall/2);
+    float minimalCardX = -0.35f -w;
+    float cardEspacement = 0.7f /cardPerLine;
 
     [PunRPC]
-    void LoadCard( int OB, int p , int i , int t)
+    void LoadCard( int OB, int wallViewID, int pos, int i)
     {
         if (textures == null) // load one time the texture
         {
+            /*
             bool card1 = GameObject.Find("/Salle").GetComponent<rendering>().card1;
             bool training = GameObject.Find("/Salle").GetComponent<rendering>().training;
             if (training)
@@ -22,45 +27,43 @@ public class LoadingCard : MonoBehaviour
             }
             else if (card1)
             {
-                textures = Resources.LoadAll("dixit_part1/", typeof(Texture2D));
             }
             else
             {
                 textures = Resources.LoadAll("dixit_part2/", typeof(Texture2D));
             }
+            */
+            textures = Resources.LoadAll("dixit_part1/", typeof(Texture2D));
         }
 
         // wall + card
-        Transform mur = PhotonView.Find(p).transform;
+        Transform mur = PhotonView.Find(wallViewID).transform;
         GameObject goCard = PhotonView.Find(OB).gameObject;
 
 
         //set the texture
-        Texture2D tex = (Texture2D)textures[t];
+        Texture2D tex = (Texture2D)textures[i];
         goCard.GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
 
         //height and width depending on the size of te wall
-        float w, h;
-        float div = 2 * 1000f; //GetDiv();
+        
         Vector3 v = mur.localScale;
-        h = tex.height / div;
-        w = tex.width / div;
-        w = w * (v.y / v.x);
+        //w = w * (v.y / v.x);
 
         //set parent, rotation , name , local scale
         goCard.transform.parent = mur;
         goCard.transform.rotation = mur.rotation;
-        goCard.name = "Card " + t;
+        goCard.name = "Card " + i;
        
         goCard.transform.localScale = new Vector3(w, h, 1.0f);
-        if (i < cardPerLine) //10 card per ligne
+        if (pos <= cardPerLine) //10 card per ligne
         {
-            goCard.transform.localPosition = new Vector3(-0.35f + w + 1.5f * w * i, -1 * h, -0.01f);
+            goCard.transform.localPosition = new Vector3(minimalCardX + w + cardEspacement * pos,        -1 * h, -0.01f);
         }
         else
         {
-            i = i - cardPerLine;
-            goCard.transform.localPosition = new Vector3(-0.35f + w + 1.5f * w * i, 1 * h, -0.01f);
+            pos = pos - cardPerLine;
+            goCard.transform.localPosition = new Vector3(minimalCardX + w + cardEspacement * pos,        1 * h, -0.01f);
         }
     }
 }

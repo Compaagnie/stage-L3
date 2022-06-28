@@ -31,8 +31,9 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
 
     //List of textures
     public object[] textures;
-    public bool card1;
-    public bool training = true;
+    public bool card1 = true;
+    public bool training = false;
+    public static int cardPerWall = 15; //choisir le nombre de carte par mur, elles seront ensuite placées automatiquement (marche difficilement à plus de 40 cartes)
 
     //who to load
     public string participant = "p01";
@@ -118,7 +119,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         {
             textures = Resources.LoadAll("dixit_part1/", typeof(Texture2D));
         }
-        
+        Debug.Log(textures.Length);
 
     }
 
@@ -126,31 +127,38 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         
         Debug.Log("Creation carte " + PhotonNetwork.IsMasterClient);
 
-        int nbcard = textures.Length;
 
         Transform mur;
         int pos;
-        for (int i = 0 ; i < nbcard ; i++)
+        for (int i = 0 ; i < cardPerWall*3 ; i++)
         {
-            // Slit the cqrd over the 3 walls
-            if (i < nbcard / 3)
+            if (i < textures.Length)
             {
-                mur = MurL;
-                pos = i ;
+                // Slit the cqrd over the 3 walls
+                if (i < cardPerWall)
+                {
+                    mur = MurL;
+                    pos = i;
+                }
+                else if (i < 2 * cardPerWall)
+                {
+                    mur = MurB;
+                    pos = i - cardPerWall;
+                }
+                else
+                {
+                    mur = MurR;
+                    pos = i - 2 * cardPerWall;
+                }
+                Debug.Log(i);
+                MyCard c = new MyCard((Texture2D)textures[i], mur, i);
+                photonView.RPC("addListCard", Photon.Pun.RpcTarget.AllBuffered, c.pv.ViewID);
+                c.pv.RPC("LoadCard", Photon.Pun.RpcTarget.AllBuffered, c.pv.ViewID, mur.GetComponent<PhotonView>().ViewID, pos, i);
             }
-            else if (i < 2* nbcard / 3)
+            else
             {
-                mur = MurB;
-                pos = i - nbcard / 3;
+                break;
             }
-            else 
-            {
-                mur = MurR;
-                pos = i - 2 * nbcard / 3;
-            }
-            MyCard c = new MyCard((Texture2D)textures[i], mur, i);
-            photonView.RPC("addListCard", Photon.Pun.RpcTarget.AllBuffered, c.pv.ViewID);
-            c.pv.RPC("LoadCard", Photon.Pun.RpcTarget.AllBuffered, c.pv.ViewID, mur.GetComponent<PhotonView>().ViewID, pos, i);
         }
     }
 

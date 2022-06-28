@@ -9,12 +9,12 @@ using System.Threading;
 public class Expe
 {
 
-    public string participant = "P01";
+    public string participant = "p01";
     public int startTrial = 1;
 
     private Teleporter teleport;
 
-    private readonly string expeDescriptionFile = "Experiments/expe";
+    private readonly string expeDescriptionFile = "Experiments/initialTrialFile";
     private string previousCardNum;
     //static string[] letters = {"H", "N", "K", "R"};
     static readonly string[] letters = { "evertnone", "ehornone" };

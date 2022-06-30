@@ -125,7 +125,7 @@ public class Expe
         Debug.Log("Trial count" + theTrials.Count + " curent nb " + trialNb);
         if (!trialRunning)
         {
-            Debug.Log("update text info");
+            Debug.Log("update text info no trial running");
             setInfoLocation();
             teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
             teleport.menu.SetActive(true);

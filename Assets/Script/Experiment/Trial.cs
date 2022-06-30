@@ -88,6 +88,7 @@ public class Trial
         if (moveMode == "sync")
         {
             card.transform.GetChild(1).gameObject.SetActive(true);
+            teleport.isOtherSynced = false;
         }
         else
         {
@@ -102,6 +103,7 @@ public class Trial
     {
         Debug.Log("                                                             Trial Timer started");
         trialTime = Time.time;
+        expe.trialRunning = true;
     }
 
     public void checkConditions()
@@ -136,7 +138,6 @@ public class Trial
         cardArea.gameObject.SetActive(false);
         card.transform.GetChild(1).GetComponent<Renderer>().material = player.green;
         trialEnded = true;
-        expe.trialRunning = false;
         render.nextTrial();
     }
 

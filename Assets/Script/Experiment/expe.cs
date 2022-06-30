@@ -146,13 +146,12 @@ public class Expe
         {
             write();
             incTrialNb();
-            
+            trialRunning = false;
             if (theTrials[trialNb].group == "#pause")
             {
                 setInfoLocation();
                 teleport.menu.SetActive(true);
                 teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Pause";
-                trialRunning = false;
                 writer.WriteLine("#pause;");
                 writer.Flush();
                 incTrialNb();

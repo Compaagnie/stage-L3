@@ -199,12 +199,6 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     }
 
     [PunRPC]
-    void trialStarted()
-    {
-        StartCoroutine(expe.trialStarted());
-    }
-
-    [PunRPC]
     void curentTrialConditionCheck()
     {
         expe.curentTrial.checkConditions();

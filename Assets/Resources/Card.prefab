@@ -12,13 +12,13 @@ GameObject:
   - component: {fileID: 4415790197844413754}
   - component: {fileID: 3256477908946756262}
   - component: {fileID: 7554488760978468221}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: surbrillance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4486252179615993377
 Transform:
   m_ObjectHideFlags: 0

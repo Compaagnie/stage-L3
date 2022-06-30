@@ -112,6 +112,7 @@ public class Teleporter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         if (Time.frameCount == 3 && (cam.rotation.eulerAngles.y < 315 || cam.rotation.eulerAngles.y > 45))
         {
             initialCamRotationY = cam.rotation.eulerAngles.y;
@@ -122,7 +123,7 @@ public class Teleporter : MonoBehaviour
             Debug.Log("Camera:"+CameraRotator.rotation.eulerAngles.y+" Ctrl:"+ControllerRotator.rotation.eulerAngles.y);
             cameraRig.RotateAround(cam.position, Vector3.up, -initialCamRotationY);
         }
-
+        */
         if (expe == null)
         {
             expe = GameObject.Find("/Salle").GetComponent<rendering>().expe;
@@ -175,7 +176,7 @@ public class Teleporter : MonoBehaviour
             oldHit = m_Pointer;
             if (expe != null && expe.trialRunning == false)
             {
-                GameObject.Find("/Salle").GetComponent<rendering>().photonView.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
+                photonView.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
             }
             //Debug.Log("update old"+ oldControlerRotation
             // head position + camera rig
@@ -743,6 +744,13 @@ public class Teleporter : MonoBehaviour
         */
         StartCoroutine(MoveRigForSyncTP(otherPlayerCameraRigPos, otherPlayerRotation));
         
+    }
+
+
+    [PunRPC]
+    void trialStarted()
+    {
+        StartCoroutine(expe.trialStarted());
     }
 
     [PunRPC]

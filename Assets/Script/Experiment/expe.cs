@@ -60,7 +60,7 @@ public class Expe
 
         writer.WriteLine(
             // "factor"
-            "Group;Participant;CollabEnvironememnt;MoveMode;CardToTag;"
+            "Group;Participant;CollabEnvironememnt;trialNb;training;MoveMode;CardToTag;"
             // measure
             + "nbMove;distTotal;nbRotate;rotateTotal;"
             + "trialTime;moveTime;");
@@ -80,17 +80,17 @@ public class Expe
             List<string> values = new List<string>(str.Split(';'));
             if (values[0] == "#pause" && theTrials[theTrials.Count - 1].group == group)
             {
-                theTrials.Add(new Trial(this, values[0], "", "", "", ""));
+                theTrials.Add(new Trial(this, values[0], "", "", "", "", "", ""));
                 Debug.Log("Pause added to trials");
             }
             else if (values[0] == group && values[1] == participant)
             {
                 theTrials.Add(new Trial(this,
                         values[0], values[1],
-                        values[2], values[3], values[4]
+                        values[2], values[3], values[4], values[5], values[6]
                     ));
                 Debug.Log("Goupe: " + theTrials[theTrials.Count - 1].group + "; Participant: " + theTrials[theTrials.Count - 1].participant +
-                          "; collabEnvironememn: " + theTrials[theTrials.Count - 1].collabEnvironememnt + "; moveMode: " + theTrials[theTrials.Count - 1].moveMode + "; cardToTag: " + theTrials[theTrials.Count - 1].cardToTag);
+                          "; collabEnvironememn: " + theTrials[theTrials.Count - 1].collabEnvironememnt + "; trialNb: " + theTrials[theTrials.Count - 1].trialNb + "; training: " + theTrials[theTrials.Count - 1].training + "; moveMode: " + theTrials[theTrials.Count - 1].moveMode + "; cardToTag: " + theTrials[theTrials.Count - 1].cardToTag);
 
                 theTrials[theTrials.Count - 1].pathLog = path;
 
@@ -155,6 +155,7 @@ public class Expe
                 writer.WriteLine("#pause;");
                 writer.Flush();
                 incTrialNb();
+                teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
             }
             else
             {
@@ -174,7 +175,7 @@ public class Expe
     {
         writer.WriteLine(
             // "factor"
-            theTrials[trialNb].group + ";" + theTrials[trialNb].participant + ";" + theTrials[trialNb].collabEnvironememnt + ";" + theTrials[trialNb].moveMode + ";" + theTrials[trialNb].cardToTag + ";"
+            theTrials[trialNb].group + ";" + theTrials[trialNb].participant + ";" + theTrials[trialNb].collabEnvironememnt + ";" + theTrials[trialNb].trialNb + ";" + theTrials[trialNb].training + ";" + theTrials[trialNb].moveMode + ";" + theTrials[trialNb].cardToTag + ";"
             // measure
             + theTrials[trialNb].nbMove + ";" + theTrials[trialNb].distTotal + ";" + theTrials[trialNb].nbRotate + ";" + theTrials[trialNb].rotateTotal + ";"
             + theTrials[trialNb].trialTime + ";" + theTrials[trialNb].moveTime + ";"

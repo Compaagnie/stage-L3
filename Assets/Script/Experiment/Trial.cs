@@ -136,6 +136,7 @@ public class Trial
         cardArea.gameObject.SetActive(false);
         card.transform.GetChild(1).GetComponent<Renderer>().material = player.green;
         trialEnded = true;
+        expe.trialRunning = false;
         render.nextTrial();
     }
 

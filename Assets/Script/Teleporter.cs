@@ -785,7 +785,7 @@ public class Teleporter : MonoBehaviour
         SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen
         if (syncTeleportation || isOtherSynced)
         {
-            photonView.RPC("MoveRigRPC", Photon.Pun.RpcTarget.Others, cam.position + translation, cameraRig.rotation.eulerAngles);
+            photonView.RPC("MoveRigRPC", Photon.Pun.RpcTarget.Others, cameraRig.position, cameraRig.rotation.eulerAngles);
             syncTeleportation = false;
         }
         m_IsTeleportoting = false;

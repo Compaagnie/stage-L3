@@ -700,6 +700,12 @@ public class Teleporter : MonoBehaviour
     }
 
     [PunRPC]
+    void MoveRigRPC(Vector3 translation, Vector3 rotat)
+    {
+        StartCoroutine(MoveRigForSyncTP(translation, rotat));
+    }
+
+    [PunRPC]
     void RotationRigRPC(string s)
     {
         Transform cameraRig2 = SteamVR_Render.Top().origin.parent;
@@ -729,30 +735,7 @@ public class Teleporter : MonoBehaviour
     [PunRPC]
     void tpToOther()
     {
-        /*
-        Vector3 posToMove = otherPlayerPosition;
-        posToMove.x -= cam.localPosition.x;
-        posToMove.z -= cam.localPosition.z;
-        //Debug.Log(otherPlayerRotation);
-        Vector3 specificPos;
-        if (PhotonNetwork.IsMasterClient)
-        {
-            specificPos = Vector3.right;
-        }
-        else
-        {
-            specificPos = Vector3.left;
-        }
-        Debug.Log(specificPos);
-        specificPos = Quaternion.AngleAxis(otherPlayerRotation.y, Vector3.up) * specificPos;
-        
-        Debug.Log(specificPos);
-        Debug.Log(specificPos.magnitude);
-
-        posToMove += specificPos;
-        */
         StartCoroutine(MoveRigForSyncTP(otherPlayerCameraRigPos, otherPlayerRotation));
-        
     }
 
 
@@ -802,7 +785,7 @@ public class Teleporter : MonoBehaviour
         SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen
         if (syncTeleportation || isOtherSynced)
         {
-            photonView.RPC("MoveRigForSyncTP", Photon.Pun.RpcTarget.Others, cam.position + translation, cameraRig.rotation.eulerAngles);
+            photonView.RPC("MoveRigRPC", Photon.Pun.RpcTarget.Others, cam.position + translation, cameraRig.rotation.eulerAngles);
             syncTeleportation = false;
         }
         m_IsTeleportoting = false;
@@ -813,7 +796,7 @@ public class Teleporter : MonoBehaviour
         }
     }
 
-    public IEnumerator MoveRigForSyncTP(Vector3 pos, Vector3 rotat)
+    private IEnumerator MoveRigForSyncTP(Vector3 pos, Vector3 rotat)
     {
         moveTimer = Time.time;
         m_IsTeleportoting = true;

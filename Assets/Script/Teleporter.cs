@@ -709,13 +709,19 @@ public class Teleporter : MonoBehaviour
         {
             Cube.transform.RotateAround(Cube.transform.position, Vector3.up, 90);
             cameraRig2.RotateAround(Cube.transform.position, Vector3.up, 90);
-            expe.curentTrial.incRotateTotal(90);
+            if (expe != null)
+            {
+                expe.curentTrial.incRotateTotal(90);
+            }
         }
         else if (s == "w")
         {
             Cube.transform.RotateAround(Cube.transform.position, Vector3.up, -90);
             cameraRig2.RotateAround(Cube.transform.position, Vector3.up, -90);
-            expe.curentTrial.incRotateTotal(90);
+            if (expe != null)
+            {
+                expe.curentTrial.incRotateTotal(90);
+            }
         }
 
     }
@@ -796,7 +802,7 @@ public class Teleporter : MonoBehaviour
         SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen
         if (syncTeleportation || isOtherSynced)
         {
-            photonView.RPC("MoveRigForSyncTP", Photon.Pun.RpcTarget.Others, cam.position+translation, cameraRig.rotation);
+            photonView.RPC("MoveRigForSyncTP", Photon.Pun.RpcTarget.Others, cam.position + translation, cameraRig.rotation.eulerAngles);
             syncTeleportation = false;
         }
         m_IsTeleportoting = false;

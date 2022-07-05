@@ -318,6 +318,7 @@ public class Teleporter : MonoBehaviour
                 {
                     expe.curentTrial.incNbMove();
                     expe.curentTrial.incMoveTime(Time.time - moveTimer);
+                    moveTimer = Time.time;
                 }
 
                 if ((oldFingerY < 0.5 && position.y > 0.5) || (oldFingerY > -0.5 && position.y < -0.5 ))
@@ -435,6 +436,7 @@ public class Teleporter : MonoBehaviour
                     {
                         expe.curentTrial.incNbMove();
                         expe.curentTrial.incMoveTime(Time.time - moveTimer);
+                        moveTimer = Time.time;
                     }
                     else
                     {
@@ -453,6 +455,7 @@ public class Teleporter : MonoBehaviour
                         expe.curentTrial.incNbMove();
                         expe.curentTrial.incMoveTime(Time.time - moveTimer);
                     }
+                    moveTimer = Time.time;
                 }
                 else
                 {
@@ -793,7 +796,7 @@ public class Teleporter : MonoBehaviour
         SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen
         if (syncTeleportation || isOtherSynced)
         {
-            photonView.RPC("tpToOther", Photon.Pun.RpcTarget.Others);
+            photonView.RPC("MoveRigForSyncTP", Photon.Pun.RpcTarget.Others, cam.position+translation, cameraRig.rotation);
             syncTeleportation = false;
         }
         m_IsTeleportoting = false;

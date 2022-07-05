@@ -813,7 +813,7 @@ public class Teleporter : MonoBehaviour
         }
     }
 
-    private IEnumerator MoveRigForSyncTP(Vector3 pos, Vector3 rotat)
+    public IEnumerator MoveRigForSyncTP(Vector3 pos, Vector3 rotat)
     {
         moveTimer = Time.time;
         m_IsTeleportoting = true;

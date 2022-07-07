@@ -96,6 +96,7 @@ public class Trial
         {
             teleport.isOtherSynced = true;
         }
+        player.palette.gameObject.SetActive(false);
         teleport.moveMode = moveMode;
         Debug.Log("Trial started, card to tag " + cardToTag);
     }

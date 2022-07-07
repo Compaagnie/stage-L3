@@ -127,9 +127,17 @@ public class Expe
         {
             Debug.Log("update text info no trial running");
             setInfoLocation();
-            teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
             teleport.menu.SetActive(true);
-            teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Next trial starts when you press the navigation button";
+            if (theTrials[trialNb].moveMode == "sync")
+            {
+                teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = "Search";
+                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one synchronized \n wait for the other to start moving \n spot the card and tell the other";
+            }
+            else
+            {
+                teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = "Navigate " + theTrials[trialNb].moveMode;
+                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one moving \n move to start the trial \n let the other tell you where to go";
+            }
 
             theTrials[trialNb].startTrial();
             curentTrial = theTrials[trialNb];
@@ -163,8 +171,16 @@ public class Expe
                 setInfoLocation();
                 teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
                 teleport.menu.SetActive(true);
-                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Next trial starts when you press the navigation button";
-
+                if (theTrials[trialNb].moveMode == "sync")
+                {
+                    teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = "Search";
+                    teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one synchronized \n wait for the other to start moving \n spot the card and tell the other";
+                }
+                else
+                {
+                    teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = "Navigate " + theTrials[trialNb].moveMode;
+                    teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one moving \n move to start the trial \n let the other tell you where to go";
+                }
                 theTrials[trialNb].startTrial();
                 curentTrial = theTrials[trialNb];
             }

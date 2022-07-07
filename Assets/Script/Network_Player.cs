@@ -69,7 +69,8 @@ public class Network_Player : MonoBehaviourPun
         m_pose = right.GetComponent<SteamVR_Behaviour_Pose>();
 
         leftHand.gameObject.SetActive(false);
-        palette.gameObject.SetActive(false);
+        
+        //palette.gameObject.SetActive(false);
 
         if (photonView.IsMine)
         {

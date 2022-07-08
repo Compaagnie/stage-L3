@@ -56,7 +56,7 @@ public class Teleporter : MonoBehaviour
     private GameObject oldHit;
     private float oldFingerX = 0;
     private float oldFingerY = 0;
-    private const float moveSpeed = 0.04f;
+    private const float moveSpeed = 4f;
     Vector3 plusZ = new Vector3(0f, 0f, moveSpeed);
     Vector3 minusZ = new Vector3(0f, 0f, -moveSpeed);
     private const float joystickRotation = 0.5f;
@@ -335,7 +335,7 @@ public class Teleporter : MonoBehaviour
                     Quaternion rotation = Quaternion.Euler(controllerRight.rotation.eulerAngles);
                     Matrix4x4 m = Matrix4x4.Rotate(rotation);
                     Vector3 translateVect = new Vector3(0, 0, 0);
-                    Debug.Log(90 - controllerRight.eulerAngles.x);
+                    Debug.Log(FPS.GetCurrentFPS());
                     if (position.x < -0.5)
                     {
                         //translateVect = m.MultiplyPoint3x4(minusX);
@@ -356,7 +356,7 @@ public class Teleporter : MonoBehaviour
                     }
                     if (position.y > 0.5)
                     {
-                        translateVect = m.MultiplyPoint3x4(plusZ * Vector3.Cross(Vector3.up, controllerRight.forward).magnitude);
+                        translateVect = m.MultiplyPoint3x4(plusZ * Vector3.Cross(Vector3.up, controllerRight.forward).magnitude * 1/FPS.GetCurrentFPS());
                         /* Rotation de la camera dans la direction du pointeur, à décommenter avec le if getStateUp
                         
                         Vector3 camAngle = new Vector3(cam.transform.forward.x, 0, cam.transform.forward.z);
@@ -377,7 +377,7 @@ public class Teleporter : MonoBehaviour
                     }
                     if (position.y < -0.5)
                     {
-                        translateVect = m.MultiplyPoint3x4(minusZ * Vector3.Cross(Vector3.up, controllerRight.forward).magnitude);
+                        translateVect = m.MultiplyPoint3x4(minusZ * Vector3.Cross(Vector3.up, controllerRight.forward).magnitude * 1 / FPS.GetCurrentFPS());
                     }
                     if (position.x > 0.5)
                     {

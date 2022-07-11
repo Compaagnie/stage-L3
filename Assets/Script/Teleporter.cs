@@ -536,7 +536,7 @@ public class Teleporter : MonoBehaviour
                         {
                             //expe.curentTrial.incNbAsyncDragGround(translateVect);
                         }
-                        
+                        /*
                         float angle = oldControlerRotation.y - controllerRight.transform.rotation.eulerAngles.y;
                         if (isOtherSynced)
                         {
@@ -551,7 +551,7 @@ public class Teleporter : MonoBehaviour
                         {
                             expe.curentTrial.incRotateTotal(angle);
                         }
-
+                        */
                         //cameraRig.position += a - a.normalized*b;
                     }
                     else if (m_HasPosition && (hit.transform.tag == "Wall" || hit.transform.parent.tag == "Wall"))

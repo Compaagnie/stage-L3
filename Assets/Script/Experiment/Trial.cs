@@ -25,6 +25,7 @@ public class Trial
 
     public string collabEnvironememnt;
     public string moveMode;
+    public string wall;
     public string cardToTag;
 
     public bool trialEnded = false;
@@ -52,7 +53,7 @@ public class Trial
 
     public Trial(Expe e,
         string g_, string p_,
-        string colabEnv, string trial, string train, string moveM, string cardT
+        string colabEnv, string trial, string train, string moveM, string w, string cardT
         )
     {
         player = GameObject.Find("Network Player(Clone)").GetComponent<Network_Player>();
@@ -66,6 +67,7 @@ public class Trial
         trialNb = trial;
         training = train;
         moveMode = moveM;
+        wall = w;
         cardToTag = cardT;
         timer = Time.time;
         if (cardT != "")

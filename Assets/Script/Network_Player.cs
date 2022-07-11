@@ -70,7 +70,7 @@ public class Network_Player : MonoBehaviourPun
 
         leftHand.gameObject.SetActive(false);
         
-        //palette.gameObject.SetActive(false);
+        palette.gameObject.SetActive(false);
 
         if (photonView.IsMine)
         {

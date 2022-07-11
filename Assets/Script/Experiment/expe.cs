@@ -51,7 +51,7 @@ public class Expe
         string mydate = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
         //  Debug.Log("Goupe: " + trial.group + );
         // file name should look like  "class-PXX-2019-MM-DD-HH-MM-SS.csv"
-        string path = "Assets/Resources/logs/class-" + participant + "-" + mydate + ".csv";
+        string path = "Assets/Resources/logs/class-" +  group + "-" + participant + "-" + mydate + ".csv";
         //string path = "Assets/Resources/logs/test.csv";
 
         //File.Create(path);
@@ -60,9 +60,9 @@ public class Expe
 
         writer.WriteLine(
             // "factor"
-            "Group;Participant;CollabEnvironememnt;trialNb;training;MoveMode;Wall;CardToTag;"
+            "Group;Participant;CollabEnvironememnt;trialNb;training;MoveMode;Task;Wall;CardToTag;"
             // measure
-            + "nbMove;distTotal;nbRotate;rotateTotal;"
+            + "nbMove;nbMoveWall;distTotal;nbRotate;rotateTotal;"
             + "trialTime;moveTime;");
         writer.Flush();
         path = "Assets/Resources/logs/class-" + participant + "-" + mydate + ".txt";
@@ -80,17 +80,17 @@ public class Expe
             List<string> values = new List<string>(str.Split(';'));
             if (values[0] == "#pause" && theTrials[theTrials.Count - 1].group == group)
             {
-                theTrials.Add(new Trial(this, values[0], "", "", "", "", "", "", ""));
+                theTrials.Add(new Trial(this, values[0], "", "", "", "", "", "", "", ""));
                 Debug.Log("Pause added to trials");
             }
             else if (values[0] == group && values[1] == participant)
             {
                 theTrials.Add(new Trial(this,
                         values[0], values[1],
-                        values[2], values[3], values[4], values[5], values[6], values[7]
+                        values[2], values[3], values[4], values[5], values[6], values[7], values[8]
                     ));
                 Debug.Log("Goupe: " + theTrials[theTrials.Count - 1].group + "; Participant: " + theTrials[theTrials.Count - 1].participant +
-                          "; collabEnvironememn: " + theTrials[theTrials.Count - 1].collabEnvironememnt + "; trialNb: " + theTrials[theTrials.Count - 1].trialNb + "; training: " + theTrials[theTrials.Count - 1].training + "; moveMode: " + theTrials[theTrials.Count - 1].moveMode + "; wall: " + theTrials[theTrials.Count - 1].wall + "; cardToTag: " + theTrials[theTrials.Count - 1].cardToTag);
+                          "; collabEnvironememn: " + theTrials[theTrials.Count - 1].collabEnvironememnt + "; trialNb: " + theTrials[theTrials.Count - 1].trialNb + "; training: " + theTrials[theTrials.Count - 1].training + "; moveMode: " + theTrials[theTrials.Count - 1].moveMode + "; task: " + theTrials[theTrials.Count - 1].task + "; wall: " + theTrials[theTrials.Count - 1].wall + "; cardToTag: " + theTrials[theTrials.Count - 1].cardToTag);
 
                 theTrials[theTrials.Count - 1].pathLog = path;
 
@@ -128,7 +128,7 @@ public class Expe
             Debug.Log("update text info no trial running");
             setInfoLocation();
             teleport.menu.SetActive(true);
-            if (theTrials[trialNb].moveMode == "sync")
+            if (theTrials[trialNb].moveMode == "search")
             {
                 teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = "Search";
                 teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one synchronized \n wait for the other to start moving \n spot the card and tell the other";
@@ -171,7 +171,7 @@ public class Expe
                 setInfoLocation();
                 teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
                 teleport.menu.SetActive(true);
-                if (theTrials[trialNb].moveMode == "sync")
+                if (theTrials[trialNb].moveMode == "search")
                 {
                     teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = "Search";
                     teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one synchronized \n wait for the other to start moving \n spot the card and tell the other";
@@ -191,10 +191,10 @@ public class Expe
     {
         writer.WriteLine(
             // "factor"
-            theTrials[trialNb].group + ";" + theTrials[trialNb].participant + ";" + theTrials[trialNb].collabEnvironememnt + ";" + theTrials[trialNb].trialNb + ";" + theTrials[trialNb].training + ";" + theTrials[trialNb].moveMode + ";"+ theTrials[trialNb].wall + ";" + theTrials[trialNb].cardToTag + ";"
+            theTrials[trialNb].group + ";" + theTrials[trialNb].participant + ";" + theTrials[trialNb].collabEnvironememnt + ";" + theTrials[trialNb].trialNb + ";" + theTrials[trialNb].training + ";" + theTrials[trialNb].moveMode + ";" + theTrials[trialNb].task + ";" + theTrials[trialNb].wall + ";" + theTrials[trialNb].cardToTag + ";"
             // measure
-            + theTrials[trialNb].nbMove + ";" + theTrials[trialNb].distTotal + ";" + theTrials[trialNb].nbRotate + ";" + theTrials[trialNb].rotateTotal + ";"
-            + theTrials[trialNb].trialTime + ";" + theTrials[trialNb].moveTime + ";"
+            + theTrials[trialNb].nbMove + ";" + theTrials[trialNb].nbMoveWall + ";" + theTrials[trialNb].distTotal + ";" + theTrials[trialNb].nbRotate + ";" + theTrials[trialNb].rotateTotal + ";"
+            + theTrials[trialNb].trialTime + ";" + theTrials[trialNb].moveTime
             );
         writer.Flush();
     }

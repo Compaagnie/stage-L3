@@ -25,6 +25,7 @@ public class Trial
 
     public string collabEnvironememnt;
     public string moveMode;
+    public string task;
     public string wall;
     public string cardToTag;
 
@@ -38,6 +39,7 @@ public class Trial
 
     //move
     public int nbMove = 0;
+    public int nbMoveWall = 0;
     public int nbRotate = 0;
 
     public float distTotal = 0;
@@ -53,7 +55,7 @@ public class Trial
 
     public Trial(Expe e,
         string g_, string p_,
-        string colabEnv, string trial, string train, string moveM, string w, string cardT
+        string colabEnv, string trial, string train, string moveM, string t, string w, string cardT
         )
     {
         player = GameObject.Find("Network Player(Clone)").GetComponent<Network_Player>();
@@ -67,6 +69,7 @@ public class Trial
         trialNb = trial;
         training = train;
         moveMode = moveM;
+        task = t;
         wall = w;
         cardToTag = cardT;
         timer = Time.time;
@@ -90,16 +93,17 @@ public class Trial
     {
         card.transform.GetChild(0).GetComponent<Renderer>().material = player.none;
         initialCardMaterial = card.transform.GetChild(0).GetComponent<Renderer>().material;
-        if (moveMode == "sync")
+        if (task == "search")
         {
             teleport.isOtherSynced = false;
+            teleport.moveMode = "sync";
         }
         else
         {
             teleport.isOtherSynced = true;
+            teleport.moveMode = moveMode;
         }
         //player.palette.gameObject.SetActive(false);
-        teleport.moveMode = moveMode;
         Debug.Log("Trial started, card to tag " + cardToTag);
     }
 
@@ -108,7 +112,7 @@ public class Trial
         Debug.Log("                                                             Trial Timer started");
         trialTime = Time.time;
         expe.trialRunning = true;
-        if (moveMode == "sync")
+        if (moveMode == "search")
         {
             card.transform.GetChild(1).gameObject.SetActive(true);
         }
@@ -154,6 +158,12 @@ public class Trial
     {
         nbMove += 1;
         kineWriter.WriteLine(Time.time - timer + "; Move");
+        kineWriter.Flush();
+    }
+    public void incNbMoveWall()
+    {
+        nbMoveWall += 1;
+        kineWriter.WriteLine(Time.time - timer + "; MoveWall");
         kineWriter.Flush();
     }
     public void incNbRotate()

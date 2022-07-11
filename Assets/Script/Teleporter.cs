@@ -53,7 +53,7 @@ public class Teleporter : MonoBehaviour
     private Vector3 coordPrev;
     private Vector3 forwardClic;
     private Vector3 oldControlerRotation;
-    private Transform oldHit;
+    private RaycastHit oldHit;
     private float oldFingerX = 0;
     private float oldFingerY = 0;
     private const float moveSpeed = 4f;
@@ -106,7 +106,7 @@ public class Teleporter : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         menu.SetActive(false);
         menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = moveMode;
-        oldHit = hit.transform;
+        oldHit = hit;
     }
 
     // Update is called once per frame
@@ -173,7 +173,7 @@ public class Teleporter : MonoBehaviour
         if (m_TeleportAction.GetStateDown(m_pose.inputSource))
         {
             oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
-            oldHit = hit.transform;
+            oldHit = hit;
             if (expe != null && expe.trialRunning == false)
             {
                 photonView.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
@@ -439,7 +439,7 @@ public class Teleporter : MonoBehaviour
                 if (m_TeleportAction.GetStateUp(m_pose.inputSource) && expe != null && expe.trialRunning)
                 {
                     Debug.Log(oldHit);
-                    if(oldHit != null)
+                    if(oldHit.transform != null)
                     {
                         expe.curentTrial.incNbMove();
                         expe.curentTrial.incMoveTime(Time.time - moveTimer);
@@ -452,27 +452,37 @@ public class Teleporter : MonoBehaviour
                 }
                 if (m_TeleportAction.GetState(m_pose.inputSource))
                 {
-                    if (oldHit != null)
+                    if (expe != null && expe.trialRunning)
                     {
-                        if ((oldHit.transform.tag == "TpLimit" || oldHit.transform.tag == "Tp") && (hit.transform.tag == "Wall" || hit.transform.parent.tag == "Wall" || !m_HasPosition) && expe != null && expe.trialRunning)
+                        if (oldHit.transform != null)
                         {
-                            expe.curentTrial.incNbMove();
+                            if (oldHit.transform.tag == "TpLimit" || oldHit.transform.tag == "Tp")
+                            {
+                                if (hit.transform.tag == "Wall" || hit.transform.parent.tag == "Wall")
+                                {
+                                    expe.curentTrial.incNbMove();
+                                    expe.curentTrial.incNbRotate();
+                                }
+                                else
+                                {
+                                    expe.curentTrial.incNbMove();
+                                }
+                            }
+                            if ((oldHit.transform.tag == "Wall" || oldHit.transform.tag == "Card") && (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || !m_HasPosition))
+                            {
+                                expe.curentTrial.incNbMove();
+                                expe.curentTrial.incNbMoveWall();
+                            }
+                            expe.curentTrial.incMoveTime(Time.time - moveTimer);
+                            moveTimer = Time.time;
                         }
-                        if ((oldHit.transform.tag == "Wall" || oldHit.transform.tag == "Card") && (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || !m_HasPosition) && expe != null && expe.trialRunning)
-                        {
-                            expe.curentTrial.incNbMove();
-                        }
-                        expe.curentTrial.incMoveTime(Time.time - moveTimer);
-                        moveTimer = Time.time;
-                    }
-                    else
-                    {
-                        if (m_HasPosition && expe != null && expe.trialRunning)
+                        else if (m_HasPosition)
                         {
                             expe.curentTrial.incNbRotate();
                             moveTimer = Time.time;
                         }
                     }
+
                     Vector3 translateVect = new Vector3(0, 0, 0);
                     //Debug.Log(m_HasPosition + hit.transform.tag);
                     if (m_HasPosition && (hit.transform.tag == "TpLimit" || hit.transform.tag == "Tp"))
@@ -480,8 +490,8 @@ public class Teleporter : MonoBehaviour
                         float a = Mathf.Tan((90 - oldControlerRotation.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
                         float b = Mathf.Tan((90 - controllerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
                         //Debug.Log("b: " + b);
-                        Vector3 camToHit = oldHit.transform.position - cam.position;
-                        Vector3 ctrlToHit = oldHit.transform.position - controllerRight.position;
+                        Vector3 camToHit = oldHit.point - cam.position;
+                        Vector3 ctrlToHit = oldHit.point - controllerRight.position;
                         //Debug.Log(camToHit.z);
                         camToHit.y = 0;
                         ctrlToHit.y = 0;
@@ -506,7 +516,7 @@ public class Teleporter : MonoBehaviour
                         {
                             //expe.curentTrial.incNbAsyncDragGround(translateVect);
                         }
-
+                        
                         float angle = oldControlerRotation.y - controllerRight.transform.rotation.eulerAngles.y;
                         if (isOtherSynced)
                         {
@@ -596,7 +606,7 @@ public class Teleporter : MonoBehaviour
                         }
                     }
                     oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
-                    oldHit = hit.transform;
+                    oldHit = hit;
                 }
 
             }
@@ -623,6 +633,7 @@ public class Teleporter : MonoBehaviour
             {
                 cameraRig.RotateAround(cam.position, Vector3.up, 90);
                 expe.curentTrial.incRotateTotal(90);
+                expe.curentTrial.incNbRotate();
             }
             return;
         }
@@ -636,6 +647,7 @@ public class Teleporter : MonoBehaviour
             {
                 cameraRig.RotateAround(cam.position, Vector3.up, -90);
                 expe.curentTrial.incRotateTotal(90);
+                expe.curentTrial.incNbRotate();
             }
             return;
         }
@@ -740,6 +752,7 @@ public class Teleporter : MonoBehaviour
             if (expe != null)
             {
                 expe.curentTrial.incRotateTotal(90);
+                expe.curentTrial.incNbRotate();
             }
         }
         else if (s == "w")
@@ -749,6 +762,7 @@ public class Teleporter : MonoBehaviour
             if (expe != null)
             {
                 expe.curentTrial.incRotateTotal(90);
+                expe.curentTrial.incNbRotate();
             }
         }
 
@@ -789,6 +803,10 @@ public class Teleporter : MonoBehaviour
             if (expe != null && expe.trialRunning)
             {
                 expe.curentTrial.incRotateTotal(wall.rotation.eulerAngles.y - cameraRig.rotation.eulerAngles.y);
+                if (wall.rotation.eulerAngles.y - cameraRig.rotation.eulerAngles.y != 0)
+                {
+                    expe.curentTrial.incNbRotate();
+                }
             }
         }
 
@@ -813,8 +831,14 @@ public class Teleporter : MonoBehaviour
         m_IsTeleportoting = false;
         if (expe != null && expe.trialRunning)
         {
-            expe.curentTrial.incMoveTime(Time.time - moveTimer);
             expe.curentTrial.incNbMove();
+            expe.curentTrial.incMoveTime(Time.time - moveTimer);
+            moveTimer = Time.time;
+
+            if (wall != null)
+            {
+                expe.curentTrial.incNbMoveWall();
+            }
         }
     }
 
@@ -854,7 +878,6 @@ public class Teleporter : MonoBehaviour
             {
                 m_Pointer.transform.position = hit.point;
                 return true;
-                
             }
         }
         return false;

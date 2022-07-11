@@ -175,13 +175,13 @@ public class Trial
     }
     public void incDistTotal(float dist)
     {
-        distTotal += 1;
+        distTotal += dist;
         kineWriter.WriteLine(Time.time - timer + "; Move " + dist);
         kineWriter.Flush();
     }
     public void incRotateTotal(float angle)
     {
-        rotateTotal += 1;
+        rotateTotal += angle;
         kineWriter.WriteLine(Time.time - timer + "; Rotate " + angle);
         kineWriter.Flush();
     }

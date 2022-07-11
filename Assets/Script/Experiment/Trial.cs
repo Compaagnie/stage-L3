@@ -157,12 +157,14 @@ public class Trial
 
     public void incNbMove()
     {
+        Debug.Log("                                    incNbMove");
         nbMove += 1;
         kineWriter.WriteLine(Time.time - timer + "; Move");
         kineWriter.Flush();
     }
     public void incNbMoveWall()
     {
+        Debug.Log("                                    incNbMoveWall");
         nbMoveWall += 1;
         kineWriter.WriteLine(Time.time - timer + "; MoveWall");
         kineWriter.Flush();
@@ -170,6 +172,7 @@ public class Trial
     public void incNbRotate()
     {
         nbRotate += 1;
+        Debug.Log("                                    incNbRotate");
         kineWriter.WriteLine(Time.time - timer + "; Rotate");
         kineWriter.Flush();
     }
@@ -181,7 +184,7 @@ public class Trial
     }
     public void incRotateTotal(float angle)
     {
-        rotateTotal += angle;
+        rotateTotal += Mathf.Abs(angle);
         kineWriter.WriteLine(Time.time - timer + "; Rotate " + angle);
         kineWriter.Flush();
     }

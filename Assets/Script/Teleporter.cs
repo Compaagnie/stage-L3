@@ -438,22 +438,14 @@ public class Teleporter : MonoBehaviour
             {
                 if (m_TeleportAction.GetStateUp(m_pose.inputSource) && expe != null && expe.trialRunning)
                 {
-                    Debug.Log(oldHit);
+                    Debug.Log(oldHit.transform);
                     if (oldHit.transform != null)
                     {
-                        if (oldHit.transform.tag == "TpLimit" || oldHit.transform.tag == "Tp")
+                        if ((oldHit.transform.tag == "TpLimit" || oldHit.transform.tag == "Tp"))
                         {
-                            if (hit.transform.tag == "Wall" || hit.transform.parent.tag == "Wall")
-                            {
-                                expe.curentTrial.incNbMove();
-                                expe.curentTrial.incNbRotate();
-                            }
-                            else
-                            {
-                                expe.curentTrial.incNbMove();
-                            }
+                            expe.curentTrial.incNbMove();
                         }
-                        if ((oldHit.transform.tag == "Wall" || oldHit.transform.tag == "Card") && (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || !m_HasPosition))
+                        if ((oldHit.transform.tag == "Wall" || oldHit.transform.tag == "Card"))
                         {
                             expe.curentTrial.incNbMove();
                             expe.curentTrial.incNbMoveWall();
@@ -461,7 +453,7 @@ public class Teleporter : MonoBehaviour
                         expe.curentTrial.incMoveTime(Time.time - moveTimer);
                         moveTimer = Time.time;
                     }
-                    else if (m_HasPosition)
+                    else
                     {
                         expe.curentTrial.incNbRotate();
                         moveTimer = Time.time;
@@ -473,19 +465,12 @@ public class Teleporter : MonoBehaviour
                     {
                         if (oldHit.transform != null)
                         {
-                            if (oldHit.transform.tag == "TpLimit" || oldHit.transform.tag == "Tp")
+                            Debug.Log(oldHit.transform.tag + "   " + hit.transform.tag);
+                            if ((oldHit.transform.tag == "TpLimit" || oldHit.transform.tag == "Tp") && (!m_HasPosition || hit.transform.tag == "Wall" || hit.transform.parent.tag == "Wall"))
                             {
-                                if (hit.transform.tag == "Wall" || hit.transform.parent.tag == "Wall")
-                                {
-                                    expe.curentTrial.incNbMove();
-                                    expe.curentTrial.incNbRotate();
-                                }
-                                else
-                                {
-                                    expe.curentTrial.incNbMove();
-                                }
+                                expe.curentTrial.incNbMove();
                             }
-                            if ((oldHit.transform.tag == "Wall" || oldHit.transform.tag == "Card") && (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || !m_HasPosition))
+                            if ((oldHit.transform.tag == "Wall" || oldHit.transform.tag == "Card") && (!m_HasPosition || hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || !m_HasPosition))
                             {
                                 expe.curentTrial.incNbMove();
                                 expe.curentTrial.incNbMoveWall();
@@ -507,7 +492,7 @@ public class Teleporter : MonoBehaviour
                         float a = Mathf.Tan((90 - oldControlerRotation.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
                         float b = Mathf.Tan((90 - controllerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
                         //Debug.Log("b: " + b);
-                        Debug.Log(oldHit.point);
+                        //Debug.Log(oldHit.point);
                         Vector3 camToHit = oldHit.point - cam.position;
                         Vector3 ctrlToHit = oldHit.point - controllerRight.position;
                         //Debug.Log(camToHit.z);

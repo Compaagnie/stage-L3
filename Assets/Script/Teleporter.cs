@@ -178,6 +178,7 @@ public class Teleporter : MonoBehaviour
             {
                 photonView.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
             }
+            moveTimer = Time.time;
             //Debug.Log("update old"+ oldControlerRotation
             // head position + camera rig
         }
@@ -448,29 +449,29 @@ public class Teleporter : MonoBehaviour
                         expe.curentTrial.incNbRotate();
                     }
                 }
-                if (oldHit != null)
-                {
-                    if ((oldHit.transform.tag == "TpLimit" || oldHit.transform.tag == "Tp") && (hit.transform.tag == "Wall" || hit.transform.parent.tag == "Wall" || !m_HasPosition) && expe != null && expe.trialRunning)
-                    {
-                        expe.curentTrial.incNbMove();
-                        expe.curentTrial.incMoveTime(Time.time - moveTimer);
-                    }
-                    if ((oldHit.transform.tag == "Wall" || oldHit.transform.tag == "Card") && (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || !m_HasPosition) && expe != null && expe.trialRunning)
-                    {
-                        expe.curentTrial.incNbMove();
-                        expe.curentTrial.incMoveTime(Time.time - moveTimer);
-                    }
-                    moveTimer = Time.time;
-                }
-                else
-                {
-                    if (m_HasPosition && expe != null && expe.trialRunning)
-                    {
-                        expe.curentTrial.incNbRotate();
-                    }
-                }
                 if (m_TeleportAction.GetState(m_pose.inputSource))
                 {
+                    if (oldHit != null)
+                    {
+                        if ((oldHit.transform.tag == "TpLimit" || oldHit.transform.tag == "Tp") && (hit.transform.tag == "Wall" || hit.transform.parent.tag == "Wall" || !m_HasPosition) && expe != null && expe.trialRunning)
+                        {
+                            expe.curentTrial.incNbMove();
+                        }
+                        if ((oldHit.transform.tag == "Wall" || oldHit.transform.tag == "Card") && (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || !m_HasPosition) && expe != null && expe.trialRunning)
+                        {
+                            expe.curentTrial.incNbMove();
+                        }
+                        expe.curentTrial.incMoveTime(Time.time - moveTimer);
+                        moveTimer = Time.time;
+                    }
+                    else
+                    {
+                        if (m_HasPosition && expe != null && expe.trialRunning)
+                        {
+                            expe.curentTrial.incNbRotate();
+                            moveTimer = Time.time;
+                        }
+                    }
                     Vector3 translateVect = new Vector3(0, 0, 0);
                     //Debug.Log(m_HasPosition + hit.transform.tag);
                     if (m_HasPosition && (hit.transform.tag == "TpLimit" || hit.transform.tag == "Tp"))

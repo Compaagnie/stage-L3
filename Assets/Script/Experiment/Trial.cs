@@ -112,7 +112,7 @@ public class Trial
         Debug.Log("                                                             Trial Timer started");
         trialTime = Time.time;
         expe.trialRunning = true;
-        if (moveMode == "search")
+        if (task == "search")
         {
             card.transform.GetChild(1).gameObject.SetActive(true);
         }

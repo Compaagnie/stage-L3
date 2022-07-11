@@ -93,6 +93,7 @@ public class Trial
     {
         card.transform.GetChild(0).GetComponent<Renderer>().material = player.none;
         initialCardMaterial = card.transform.GetChild(0).GetComponent<Renderer>().material;
+        Debug.Log(task);
         if (task == "search")
         {
             teleport.isOtherSynced = false;
@@ -104,7 +105,7 @@ public class Trial
             teleport.moveMode = moveMode;
         }
         //player.palette.gameObject.SetActive(false);
-        Debug.Log("Trial started, card to tag " + cardToTag);
+        Debug.Log("Trial started, card to tag " + cardToTag + ";" + teleport.moveMode);
     }
 
     public void startTrialTimer()

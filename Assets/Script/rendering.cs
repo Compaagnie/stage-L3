@@ -38,7 +38,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     public static int cardPerWall = 20; //choisir le nombre de carte par mur, elles seront ensuite placées automatiquement (marche difficilement à plus de 40 cartes)
 
     //who to load
-    public string participant = "p01";
+    public string participant = "";
 
     public GameObject m_Pointer;
 

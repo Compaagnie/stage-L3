@@ -174,7 +174,7 @@ public class Teleporter : MonoBehaviour
         {
             oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
             oldHit = hit;
-            if (expe != null && expe.trialRunning == false)
+            if (expe != null && expe.trialRunning == false && moveMode != "sync")
             {
                 photonView.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
             }
@@ -439,15 +439,32 @@ public class Teleporter : MonoBehaviour
                 if (m_TeleportAction.GetStateUp(m_pose.inputSource) && expe != null && expe.trialRunning)
                 {
                     Debug.Log(oldHit);
-                    if(oldHit.transform != null)
+                    if (oldHit.transform != null)
                     {
-                        expe.curentTrial.incNbMove();
+                        if (oldHit.transform.tag == "TpLimit" || oldHit.transform.tag == "Tp")
+                        {
+                            if (hit.transform.tag == "Wall" || hit.transform.parent.tag == "Wall")
+                            {
+                                expe.curentTrial.incNbMove();
+                                expe.curentTrial.incNbRotate();
+                            }
+                            else
+                            {
+                                expe.curentTrial.incNbMove();
+                            }
+                        }
+                        if ((oldHit.transform.tag == "Wall" || oldHit.transform.tag == "Card") && (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || !m_HasPosition))
+                        {
+                            expe.curentTrial.incNbMove();
+                            expe.curentTrial.incNbMoveWall();
+                        }
                         expe.curentTrial.incMoveTime(Time.time - moveTimer);
                         moveTimer = Time.time;
                     }
-                    else
+                    else if (m_HasPosition)
                     {
                         expe.curentTrial.incNbRotate();
+                        moveTimer = Time.time;
                     }
                 }
                 if (m_TeleportAction.GetState(m_pose.inputSource))
@@ -490,6 +507,7 @@ public class Teleporter : MonoBehaviour
                         float a = Mathf.Tan((90 - oldControlerRotation.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
                         float b = Mathf.Tan((90 - controllerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
                         //Debug.Log("b: " + b);
+                        Debug.Log(oldHit.point);
                         Vector3 camToHit = oldHit.point - cam.position;
                         Vector3 ctrlToHit = oldHit.point - controllerRight.position;
                         //Debug.Log(camToHit.z);
@@ -502,7 +520,9 @@ public class Teleporter : MonoBehaviour
                         if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
                         if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                         if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
+
                         cameraRig.position += translateVect;
+
                         if (expe != null && expe.trialRunning)
                         {
                             expe.curentTrial.incDistTotal(translateVect.magnitude);
@@ -520,7 +540,7 @@ public class Teleporter : MonoBehaviour
                         float angle = oldControlerRotation.y - controllerRight.transform.rotation.eulerAngles.y;
                         if (isOtherSynced)
                         {
-                            photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, translateVect, angle);
+                            photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, new Vector3(0, 0, 0), angle);
                             cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, angle);
                         }
                         else

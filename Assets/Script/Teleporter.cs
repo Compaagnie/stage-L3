@@ -53,7 +53,7 @@ public class Teleporter : MonoBehaviour
     private Vector3 coordPrev;
     private Vector3 forwardClic;
     private Vector3 oldControlerRotation;
-    private GameObject oldHit;
+    private Transform oldHit;
     private float oldFingerX = 0;
     private float oldFingerY = 0;
     private const float moveSpeed = 4f;
@@ -106,7 +106,7 @@ public class Teleporter : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         menu.SetActive(false);
         menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = moveMode;
-        oldHit = m_Pointer;
+        oldHit = hit.transform;
     }
 
     // Update is called once per frame
@@ -173,7 +173,7 @@ public class Teleporter : MonoBehaviour
         if (m_TeleportAction.GetStateDown(m_pose.inputSource))
         {
             oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
-            oldHit = m_Pointer;
+            oldHit = hit.transform;
             if (expe != null && expe.trialRunning == false)
             {
                 photonView.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
@@ -438,6 +438,7 @@ public class Teleporter : MonoBehaviour
             {
                 if (m_TeleportAction.GetStateUp(m_pose.inputSource) && expe != null && expe.trialRunning)
                 {
+                    Debug.Log(oldHit);
                     if(oldHit != null)
                     {
                         expe.curentTrial.incNbMove();
@@ -595,7 +596,7 @@ public class Teleporter : MonoBehaviour
                         }
                     }
                     oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
-                    oldHit = m_Pointer;
+                    oldHit = hit.transform;
                 }
 
             }

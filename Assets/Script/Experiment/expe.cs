@@ -63,7 +63,7 @@ public class Expe
             "Group;Participant;CollabEnvironememnt;trialNb;training;MoveMode;Task;Wall;CardToTag;"
             // measure
             + "nbMove;nbMoveWall;distTotal;nbRotate;rotateTotal;"
-            + "trialTime;moveTime;");
+            + "trialTime;moveTime");
         writer.Flush();
         path = "Assets/Resources/logs/class-" + participant + "-" + mydate + ".txt";
         kineWriter = new StreamWriter(path, false);
@@ -201,6 +201,7 @@ public class Expe
 
     public void Finished()
     {
+        write();
         teleport.menu.transform.Find("textInfo").gameObject.SetActive(true);
         teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Fin de l'expérience";
         trialRunning = false;

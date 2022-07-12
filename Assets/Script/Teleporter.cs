@@ -53,6 +53,8 @@ public class Teleporter : MonoBehaviour
     private Vector3 coordPrev;
     private Vector3 forwardClic;
     private Vector3 oldControlerRotation;
+    private Vector3 oldControlerForward;
+    private Vector3 initialDragDirection;
     private RaycastHit oldHit;
     private float oldFingerX = 0;
     private float oldFingerY = 0;
@@ -173,6 +175,7 @@ public class Teleporter : MonoBehaviour
         if (m_TeleportAction.GetStateDown(m_pose.inputSource))
         {
             oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
+            oldControlerForward = controllerRight.forward;
             oldHit = hit;
             if (expe != null && expe.trialRunning == false && moveMode != "sync")
             {
@@ -459,6 +462,13 @@ public class Teleporter : MonoBehaviour
                         moveTimer = Time.time;
                     }
                 }
+
+                if (m_TeleportAction.GetStateDown(m_pose.inputSource))
+                {
+                    initialDragDirection = (hit.point - new Vector3(controllerRight.position.x, 0, controllerRight.position.z)).normalized;
+                    oldHit = hit;
+                }
+
                 if (m_TeleportAction.GetState(m_pose.inputSource))
                 {
                     if (expe != null && expe.trialRunning)
@@ -489,17 +499,34 @@ public class Teleporter : MonoBehaviour
                     //Debug.Log(m_HasPosition + hit.transform.tag);
                     if (m_HasPosition && (hit.transform.tag == "TpLimit" || hit.transform.tag == "Tp"))
                     {
-                        float a = Mathf.Tan((90 - oldControlerRotation.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
-                        float b = Mathf.Tan((90 - controllerRight.rotation.eulerAngles.x) * Mathf.PI / 180) * controllerRight.transform.position.y;
+                        
+                        float currentAngle = Vector3.SignedAngle(Vector3.down, controllerRight.forward, Vector3.Cross(Vector3.down,initialDragDirection).normalized);
+                        float oldAngle = Vector3.SignedAngle(Vector3.down, oldControlerForward, Vector3.Cross(Vector3.down, initialDragDirection).normalized);
+                        Debug.Log(currentAngle + "      " + oldAngle);
+                        float a = Mathf.Tan(oldAngle * Mathf.PI / 180);
+                        float b = Mathf.Tan(currentAngle * Mathf.PI / 180);
                         //Debug.Log("b: " + b);
                         //Debug.Log(oldHit.point);
-                        Vector3 camToHit = oldHit.point - cam.position;
+                        //Vector3 camToHit = oldHit.point - cam.position;
                         Vector3 ctrlToHit = oldHit.point - controllerRight.position;
                         //Debug.Log(camToHit.z);
-                        camToHit.y = 0;
-                        ctrlToHit.y = 0;
-                        float c = camToHit.magnitude * (ctrlToHit.magnitude - b) / ctrlToHit.magnitude;
-                        translateVect = camToHit.normalized * (a-b);
+                        //camToHit.y = 0;
+                        //ctrlToHit.y = 0;
+                        //float c = camToHit.magnitude * (ctrlToHit.magnitude - b) / ctrlToHit.magnitude;
+                        translateVect = initialDragDirection;
+                        translateVect *= (a-b)*controllerRight.position.y;
+                        translateVect.y = 0;
+
+                        /*
+                        float angleForwards = Vector3.SignedAngle(initialDragDirection, controllerRight.forward, Vector3.up);
+                        float oldAngleForwards = Vector3.SignedAngle(initialDragDirection, oldControlerForward, Vector3.up);
+                        float c = Mathf.Tan(oldAngleForwards * Mathf.PI / 180);
+                        float d = Mathf.Tan(angleForwards * Mathf.PI / 180);
+                        translateVect += Vector3.Cross(initialDragDirection, Vector3.up).normalized * (c-d)*ctrlToHit.magnitude;
+                        
+                    */
+                        //translateVect = (hit.point - oldHit.point);
+                        //oldHit = hit;
                         //Debug.Log(c);
                         if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
                         if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
@@ -572,13 +599,14 @@ public class Teleporter : MonoBehaviour
 
                         }
 
-                        translateVect *= (a-b)*distMur;
+                        translateVect *= (a-b) * distMur;
                         //Debug.Log(translateVect);
                         if (cam.position.x + translateVect.x < -3.5) { translateVect.x = -3.5f - cam.position.x; }
                         if (cam.position.x + translateVect.x > 3.5) { translateVect.x = 3.5f - cam.position.x; }
                         if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                         if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                         cameraRig.position += translateVect;
+
                         if (expe != null && expe.trialRunning)
                         {
                             expe.curentTrial.incDistTotal(translateVect.magnitude);
@@ -610,6 +638,7 @@ public class Teleporter : MonoBehaviour
                             expe.curentTrial.incRotateTotal(angle);
                         }
                     }
+                    oldControlerForward = controllerRight.forward;
                     oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
                     oldHit = hit;
                 }

@@ -80,8 +80,9 @@ public class Expe
 
         foreach (string str in lines)
         {
+            
             List<string> values = new List<string>(str.Split(';'));
-            if (values[0] == "#pause" && theTrials[theTrials.Count - 1].group == group)
+            if (values[0] == "#pause" && theTrials.Count != 0 && theTrials[theTrials.Count - 1].group == group)
             {
                 theTrials.Add(new Trial(this, values[0], "", "", "", "", "", "", "", ""));
                 Debug.Log("Pause added to trials");

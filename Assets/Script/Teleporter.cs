@@ -55,7 +55,7 @@ public class Teleporter : MonoBehaviour
     private Vector3 oldControlerRotation;
     private Vector3 oldControlerForward;
     private Vector3 initialDragDirection;
-    private RaycastHit oldHit;
+    private RaycastHit initialHit;
     private float oldFingerX = 0;
     private float oldFingerY = 0;
     private const float moveSpeed = 4f;
@@ -108,7 +108,6 @@ public class Teleporter : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         menu.SetActive(false);
         menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = moveMode;
-        oldHit = hit;
     }
 
     // Update is called once per frame
@@ -169,6 +168,13 @@ public class Teleporter : MonoBehaviour
             }
             menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = moveMode;
         }
+        if (interactWithUI.GetLastStateDown(m_pose.inputSource)){
+            if (expe != null && expe.trialRunning == false && moveMode == "sync")
+            {
+                photonView.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
+            }
+            moveTimer = Time.time;
+        }
 
         //Teleport
         position = SteamVR_Actions.default_Pos.GetAxis(SteamVR_Input_Sources.Any);
@@ -176,12 +182,7 @@ public class Teleporter : MonoBehaviour
         {
             oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
             oldControlerForward = controllerRight.forward;
-            oldHit = hit;
-            if (expe != null && expe.trialRunning == false && moveMode != "sync")
-            {
-                photonView.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
-            }
-            moveTimer = Time.time;
+            initialHit = hit;
             //Debug.Log("update old"+ oldControlerRotation
             // head position + camera rig
         }
@@ -442,7 +443,7 @@ public class Teleporter : MonoBehaviour
                 if (m_TeleportAction.GetStateUp(m_pose.inputSource) && expe != null && expe.trialRunning)
                 {
                     //Debug.Log(oldHit.transform);
-                    if (oldHit.transform != null)
+                    if (hit.transform != null)
                     {
                         if ((hit.transform.tag == "TpLimit" || hit.transform.tag == "Tp"))
                         {
@@ -466,7 +467,6 @@ public class Teleporter : MonoBehaviour
                 if (m_TeleportAction.GetStateDown(m_pose.inputSource))
                 {
                     initialDragDirection = (hit.point - new Vector3(controllerRight.position.x, 0, controllerRight.position.z)).normalized;
-                    oldHit = hit;
                 }
 
                 if (m_TeleportAction.GetState(m_pose.inputSource))
@@ -509,7 +509,7 @@ public class Teleporter : MonoBehaviour
                         //Debug.Log("b: " + b);
                         //Debug.Log(oldHit.point);
                         //Vector3 camToHit = oldHit.point - cam.position;
-                        Vector3 ctrlToHit = oldHit.point - controllerRight.position;
+                        //Vector3 ctrlToHit = initialHit.point - controllerRight.position;
                         //Debug.Log(camToHit.z);
                         //camToHit.y = 0;
                         //ctrlToHit.y = 0;
@@ -641,7 +641,6 @@ public class Teleporter : MonoBehaviour
                     }
                     oldControlerForward = controllerRight.forward;
                     oldControlerRotation = controllerRight.transform.rotation.eulerAngles;
-                    oldHit = hit;
                 }
 
             }
@@ -738,6 +737,11 @@ public class Teleporter : MonoBehaviour
     [PunRPC]
     void MoveRigFromTransform(Vector3 translation, float rotation)
     {
+
+        if (cam.position.x + translation.x < -4f) { translation.x = -4f - cam.position.x; }
+        if (cam.position.x + translation.x > 4f) { translation.x = 4f - cam.position.x; }
+        if (cam.position.z + translation.z < -4f) { translation.z = -4f - cam.position.z; }
+        if (cam.position.z + translation.z > 4f) { translation.z = 4f - cam.position.z; }
         cameraRig.position += translation;
         cameraRig.RotateAround(centerBetweenPlayers, Vector3.up, rotation);
         expe.curentTrial.incRotateTotal(joystickRotation);
@@ -804,11 +808,16 @@ public class Teleporter : MonoBehaviour
     }
 
     [PunRPC]
-    void tpToOther()
+    public void tpToOther()
     {
         StartCoroutine(MoveRigForSyncTP(otherPlayerCameraRigPos, otherPlayerRotation));
     }
 
+    [PunRPC]
+    public void resetPosition()
+    {
+        StartCoroutine(MoveRigForSyncTP(Vector3.zero, Vector3.zero));
+    }
 
     [PunRPC]
     void trialStarted()

@@ -14,6 +14,8 @@ public class Expe
     public int trialNb = 0;
 
     private Teleporter teleport;
+    private Network_Player player;
+    private rendering render;
 
     private readonly string expeDescriptionFile = "Experiments/initialTrialFile";
     private string previousCardNum;
@@ -50,6 +52,8 @@ public class Expe
         cardList = cardL;
 
         teleport = GameObject.Find("/[CameraRig]/ControllerRotator/Controller (right)").GetComponent<Teleporter>();
+        player = GameObject.Find("Network Player(Clone)").GetComponent<Network_Player>();
+        render = GameObject.Find("/Salle").GetComponent<rendering>();
 
         string mydate = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
         //  Debug.Log("Goupe: " + trial.group + );
@@ -65,7 +69,7 @@ public class Expe
             // "factor"
             "Group;Participant;CollabEnvironememnt;trialNb;training;MoveMode;Task;Wall;CardToTag;"
             // measure
-            + "nbMove;nbMoveWall;distTotal;nbRotate;rotateTotal;"
+            + "nbMove;nbMoveWall;nbDragWallFloor;distTotal;nbRotate;rotateTotal;"
             + "trialTime;moveTime");
         writer.Flush();
         path = "Assets/Resources/logs/class-" + participant + "-" + mydate + ".txt";
@@ -119,7 +123,7 @@ public class Expe
         curentTrial.startTrialTimer();
         trialRunning = true;
         teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Trial started";
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(5);
         teleport.menu.SetActive(false);
     }
 
@@ -135,12 +139,12 @@ public class Expe
             if (theTrials[trialNb].task == "search")
             {
                 teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = "Search";
-                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one synchronized \n wait for the other to start moving \n spot the card and tell the other";
+                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one synchronized \n click to start the trial \n spot the card and tell the other";
             }
             else
             {
                 teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = "Navigate " + theTrials[trialNb].moveMode;
-                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one moving \n move to start the trial \n let the other tell you where to go";
+                teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one moving \n wait for the other to start \n let the other tell you where to go";
             }
 
             theTrials[trialNb].startTrial();
@@ -161,6 +165,7 @@ public class Expe
             trialRunning = false;
             if (theTrials[trialNb].group == "#pause")
             {
+                render.photonView.RPC("resetPosition", Photon.Pun.RpcTarget.AllBuffered);
                 setInfoLocation();
                 teleport.menu.SetActive(true);
                 teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Pause";
@@ -178,12 +183,12 @@ public class Expe
                 if (theTrials[trialNb].task == "search")
                 {
                     teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = "Search";
-                    teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one synchronized \n wait for the other to start moving \n spot the card and tell the other";
+                    teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one synchronized \n click to start the trial \n spot the card and tell the other";
                 }
                 else
                 {
                     teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = "Navigate " + theTrials[trialNb].moveMode;
-                    teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one moving \n move to start the trial \n let the other tell you where to go";
+                    teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one moving \n wait for the other to start \n let the other tell you where to go";
                 }
                 theTrials[trialNb].startTrial();
                 curentTrial = theTrials[trialNb];
@@ -197,7 +202,7 @@ public class Expe
             // "factor"
             theTrials[trialNb].group + ";" + theTrials[trialNb].participant + ";" + theTrials[trialNb].collabEnvironememnt + ";" + theTrials[trialNb].trialNb + ";" + theTrials[trialNb].training + ";" + theTrials[trialNb].moveMode + ";" + theTrials[trialNb].task + ";" + theTrials[trialNb].wall + ";" + theTrials[trialNb].cardToTag + ";"
             // measure
-            + theTrials[trialNb].nbMove + ";" + theTrials[trialNb].nbMoveWall + ";" + theTrials[trialNb].distTotal + ";" + theTrials[trialNb].nbRotate + ";" + theTrials[trialNb].rotateTotal + ";"
+            + theTrials[trialNb].nbMove + ";" + theTrials[trialNb].nbMoveWall + ";" + theTrials[trialNb].nbDragWallFloor  + ";" + theTrials[trialNb].distTotal + ";" + theTrials[trialNb].nbRotate + ";" + theTrials[trialNb].rotateTotal + ";"
             + theTrials[trialNb].trialTime + ";" + theTrials[trialNb].moveTime
             );
         writer.Flush();
@@ -220,6 +225,7 @@ public class Expe
         if (trialNb - 2 >= 0 && theTrials[trialNb - 2].group != "#pause")
         {
             theTrials[trialNb - 2].card.transform.GetChild(1).gameObject.SetActive(false);
+            theTrials[trialNb - 2].card.transform.GetChild(0).GetComponent<Renderer>().material = player.none;
         }
     }
 

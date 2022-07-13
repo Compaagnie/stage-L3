@@ -40,6 +40,7 @@ public class Trial
     //move
     public int nbMove = 0;
     public int nbMoveWall = 0;
+    public int nbDragWallFloor = 0;
     public int nbRotate = 0;
 
     public float distTotal = 0;
@@ -96,6 +97,7 @@ public class Trial
         Debug.Log(task);
         if (task == "search")
         {
+            teleport.tpToOther();
             teleport.isOtherSynced = false;
             teleport.moveMode = "sync";
         }
@@ -122,7 +124,7 @@ public class Trial
     public void checkConditions()
     {
         float dist = (teleport.centerBetweenPlayers - card.transform.position).magnitude;
-        if (dist < 4)
+        if (dist < 3)
         {
             cardArea.position = new Vector3(card.transform.position.x, 0, card.transform.position.z);
             cardArea.rotation = card.transform.rotation;
@@ -167,6 +169,13 @@ public class Trial
         Debug.Log("                                    incNbMoveWall");
         nbMoveWall += 1;
         kineWriter.WriteLine(Time.time - timer + "; MoveWall");
+        kineWriter.Flush();
+    }
+    public void incNbDragWallFloor()
+    {
+        Debug.Log("                                    incNbDragWallFloor");
+        nbDragWallFloor += 1;
+        kineWriter.WriteLine(Time.time - timer + "; DragWallFloor");
         kineWriter.Flush();
     }
     public void incNbRotate()

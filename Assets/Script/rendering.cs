@@ -39,6 +39,8 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
 
     //who to load
     public string participant = "";
+    public string group;
+    public int firstTrialNb;
 
     public GameObject m_Pointer;
 
@@ -183,7 +185,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
             participant = "p02";
         }
 
-        expe = new Expe(participant, cardList);
+        expe = new Expe(participant, group, firstTrialNb, cardList);
         
         if (expe.curentTrial.collabEnvironememnt == "C")
         {

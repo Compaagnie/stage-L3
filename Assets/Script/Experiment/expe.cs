@@ -9,8 +9,9 @@ using System.Threading;
 public class Expe
 {
     public string participant;
-    private string group = "g01";
+    private string group; // = "g01";
     public int startTrial = 1;
+    public int trialNb = 0;
 
     private Teleporter teleport;
 
@@ -21,7 +22,6 @@ public class Expe
     private List<Trial> theTrials;
     public List<GameObject> cardList;
     public Trial curentTrial;
-    public int trialNb = 0;
     private StreamWriter writer;
     private StreamWriter kineWriter;
     private readonly bool haveEyesCondition = false;
@@ -40,10 +40,12 @@ public class Expe
 
 
 
-    public Expe(string part, List<GameObject> cardL)
+    public Expe(string part, string grp, int startNb, List<GameObject> cardL)
     {
         expeRunning = true;
+        group = grp;
         participant = part;
+        trialNb = startNb;
         Debug.Log(part);
         cardList = cardL;
 

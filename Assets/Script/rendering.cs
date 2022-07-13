@@ -84,7 +84,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
             Cards();
             CardCreation();
             print("space key was pressed");
-            photonView.RPC("startExpe", Photon.Pun.RpcTarget.AllBuffered);
+            photonView.RPC("startExpe", Photon.Pun.RpcTarget.AllBuffered, group, firstTrialNb);
             
             expeEnCours = true;
         }
@@ -174,7 +174,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
     }
 
     [PunRPC]
-    void startExpe()
+    void startExpe(string grp, int nb)
     {
         if (PhotonNetwork.IsMasterClient)
         { 
@@ -185,7 +185,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
             participant = "p02";
         }
 
-        expe = new Expe(participant, group, firstTrialNb, cardList);
+        expe = new Expe(participant, grp, nb, cardList);
         
         if (expe.curentTrial.collabEnvironememnt == "C")
         {

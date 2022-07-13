@@ -441,14 +441,14 @@ public class Teleporter : MonoBehaviour
             {
                 if (m_TeleportAction.GetStateUp(m_pose.inputSource) && expe != null && expe.trialRunning)
                 {
-                    Debug.Log(oldHit.transform);
+                    //Debug.Log(oldHit.transform);
                     if (oldHit.transform != null)
                     {
-                        if ((oldHit.transform.tag == "TpLimit" || oldHit.transform.tag == "Tp"))
+                        if ((hit.transform.tag == "TpLimit" || hit.transform.tag == "Tp"))
                         {
                             expe.curentTrial.incNbMove();
                         }
-                        if ((oldHit.transform.tag == "Wall" || oldHit.transform.tag == "Card"))
+                        if ((hit.transform.tag == "Wall" || hit.transform.tag == "Card"))
                         {
                             expe.curentTrial.incNbMove();
                             expe.curentTrial.incNbMoveWall();
@@ -471,6 +471,7 @@ public class Teleporter : MonoBehaviour
 
                 if (m_TeleportAction.GetState(m_pose.inputSource))
                 {
+                    /*
                     if (expe != null && expe.trialRunning)
                     {
                         if (oldHit.transform != null)
@@ -494,7 +495,7 @@ public class Teleporter : MonoBehaviour
                             moveTimer = Time.time;
                         }
                     }
-
+                    */
                     Vector3 translateVect = new Vector3(0, 0, 0);
                     //Debug.Log(m_HasPosition + hit.transform.tag);
                     if (m_HasPosition && (hit.transform.tag == "TpLimit" || hit.transform.tag == "Tp"))

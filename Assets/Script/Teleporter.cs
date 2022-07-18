@@ -340,7 +340,7 @@ public class Teleporter : MonoBehaviour
                     Quaternion rotation = Quaternion.Euler(controllerRight.rotation.eulerAngles);
                     Matrix4x4 m = Matrix4x4.Rotate(rotation);
                     Vector3 translateVect = new Vector3(0, 0, 0);
-                    Debug.Log(FPS.GetCurrentFPS());
+                    //Debug.Log(FPS.GetCurrentFPS());
                     if (position.x < -0.5)
                     {
                         //translateVect = m.MultiplyPoint3x4(minusX);
@@ -507,7 +507,7 @@ public class Teleporter : MonoBehaviour
                         
                         float currentAngle = Vector3.SignedAngle(Vector3.down, controllerRight.forward, Vector3.Cross(Vector3.down,initialDragDirection).normalized);
                         float oldAngle = Vector3.SignedAngle(Vector3.down, oldControlerForward, Vector3.Cross(Vector3.down, initialDragDirection).normalized);
-                        Debug.Log(currentAngle + "      " + oldAngle);
+                        //Debug.Log(currentAngle + "      " + oldAngle);
                         float a = Mathf.Tan(oldAngle * Mathf.PI / 180);
                         float b = Mathf.Tan(currentAngle * Mathf.PI / 180);
                         //Debug.Log("b: " + b);
@@ -871,7 +871,7 @@ public class Teleporter : MonoBehaviour
         {
             expe.curentTrial.incDistTotal(translation.magnitude);
         }
-        Debug.Log("camera rig pos tp :" +cameraRig.position);
+        //Debug.Log("camera rig pos tp :" +cameraRig.position);
         
 
         SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen

@@ -11,8 +11,9 @@ wall = ""
 
 file = open("initialTrialFile.txt", "w")
 file.write("Group;Participant;CollabEnvironememn;trialNb;training;MoveMode;wall;CardToTag;\n");
-nb = 0;
+nb = 0
 for g in range(1, group+1):
+    nb = 0
     for n in range(0, lenght):
         if cardList[n] <20:
             wall = "L"

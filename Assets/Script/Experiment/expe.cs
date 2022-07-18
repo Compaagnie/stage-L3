@@ -165,7 +165,7 @@ public class Expe
             trialRunning = false;
             if (theTrials[trialNb].group == "#pause")
             {
-                render.photonView.RPC("resetPosition", Photon.Pun.RpcTarget.AllBuffered);
+                teleport.photonView.RPC("resetPosition", Photon.Pun.RpcTarget.AllBuffered);
                 setInfoLocation();
                 teleport.menu.SetActive(true);
                 teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Pause";
@@ -225,6 +225,7 @@ public class Expe
         if (trialNb - 2 >= 0 && theTrials[trialNb - 2].group != "#pause")
         {
             theTrials[trialNb - 2].card.transform.GetChild(1).gameObject.SetActive(false);
+            theTrials[trialNb - 2].card.transform.GetChild(1).GetComponent<Renderer>().material = player.red;
             theTrials[trialNb - 2].card.transform.GetChild(0).GetComponent<Renderer>().material = player.none;
         }
     }

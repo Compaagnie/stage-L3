@@ -445,8 +445,12 @@ public class Teleporter : MonoBehaviour
                     //Debug.Log(oldHit.transform);
                     if (hit.transform != null)
                     {
-                        if ((hit.transform.tag == "TpLimit" || hit.transform.tag == "Tp"))
+                        if (hit.transform.tag == "Tp")
                         {
+                            if (initialHit.transform != null && (initialHit.transform.tag == "Wall" || initialHit.transform.tag == "Card"))
+                            {
+                                expe.curentTrial.incNbDragWallFloor();
+                            }
                             expe.curentTrial.incNbMove();
                         }
                         if ((hit.transform.tag == "Wall" || hit.transform.tag == "Card"))
@@ -498,7 +502,7 @@ public class Teleporter : MonoBehaviour
                     */
                     Vector3 translateVect = new Vector3(0, 0, 0);
                     //Debug.Log(m_HasPosition + hit.transform.tag);
-                    if (m_HasPosition && (hit.transform.tag == "TpLimit" || hit.transform.tag == "Tp"))
+                    if (m_HasPosition && hit.transform.tag == "Tp")
                     {
                         
                         float currentAngle = Vector3.SignedAngle(Vector3.down, controllerRight.forward, Vector3.Cross(Vector3.down,initialDragDirection).normalized);
@@ -693,7 +697,7 @@ public class Teleporter : MonoBehaviour
 
         
         
-        else if (hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" )
+        else if (hit.transform.tag == "Tp")
         {
             if (posPointer.x < -3.5) { posPointer.x = -3.5f; }
             if (posPointer.x >  3.5) { posPointer.x =  3.5f; }
@@ -918,7 +922,7 @@ public class Teleporter : MonoBehaviour
         //check if there is a hit
         if(Physics.Raycast(ray , out hit) )
         {
-            if (hit.transform.tag == "Player" || hit.transform.tag == "MoveControlJoy" || hit.transform.tag == "MoveControlSync" || hit.transform.tag == "MoveControlDrag" || hit.transform.tag == "MoveControlTP" || hit.transform.tag == "Tp" || hit.transform.tag == "TpLimit" || hit.transform.tag == "Card" || hit.transform.tag == "Wall" || hit.transform.tag == "tag")
+            if (hit.transform.tag == "Player" || hit.transform.tag == "MoveControlJoy" || hit.transform.tag == "MoveControlSync" || hit.transform.tag == "MoveControlDrag" || hit.transform.tag == "MoveControlTP" || hit.transform.tag == "Tp" || hit.transform.tag == "Card" || hit.transform.tag == "Wall" || hit.transform.tag == "tag")
             {
                 m_Pointer.transform.position = hit.point;
                 return true;

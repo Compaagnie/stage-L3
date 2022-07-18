@@ -13,7 +13,7 @@ public class Expe
     public int startTrial = 1;
     public int trialNb = 0;
 
-    private Teleporter teleport;
+    public Teleporter teleport;
     private Network_Player player;
     private rendering render;
 

@@ -98,6 +98,10 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         {
             photonView.RPC("endExpe", Photon.Pun.RpcTarget.AllBuffered);
         }
+        if (Input.GetKeyDown(KeyCode.T) && expeEnCours)
+        {
+            expe.teleport.photonView.RPC("tpToOther", Photon.Pun.RpcTarget.Others);
+        }
     }
 
     // Start is called before the first frame update

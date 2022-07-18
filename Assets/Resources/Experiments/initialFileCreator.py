@@ -90,12 +90,12 @@ for g in range(1, group+1):
         else:
             training = "0"
             if n%2 == 0:
-                file.write("g0" + str(g) + ";p01;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][1] + ";" + "move;" + wall + ";" + str(cardList[n]) + ";\n")
-                file.write("g0" + str(g) + ";p02;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][1] + ";" + "search;" + wall + ";" + str(cardList[n]) + ";\n")
+                file.write("g0" + str(g) + ";p02;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][1] + ";" + "move;" + wall + ";" + str(cardList[n]) + ";\n")
+                file.write("g0" + str(g) + ";p01;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][1] + ";" + "search;" + wall + ";" + str(cardList[n]) + ";\n")
                 nb += 1
             else:
-                file.write("g0" + str(g) + ";p01;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][1] + ";" + "search;" + wall + ";" + str(cardList[n]) + ";\n")
-                file.write("g0" + str(g) + ";p02;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][1] + ";" + "move;" + wall + ";" + str(cardList[n]) + ";\n")
+                file.write("g0" + str(g) + ";p02;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][1] + ";" + "search;" + wall + ";" + str(cardList[n]) + ";\n")
+                file.write("g0" + str(g) + ";p01;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][1] + ";" + "move;" + wall + ";" + str(cardList[n]) + ";\n")
                 nb += 1
 
     file.write("#pause;\n")
@@ -132,12 +132,12 @@ for g in range(1, group+1):
         else:
             training = "0"
             if n%2 == 0:
-                file.write("g0" + str(g) + ";p01;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][2] + ";" + "move;" + wall + ";" + str(cardList[n]) + ";\n")
-                file.write("g0" + str(g) + ";p02;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][2] + ";" + "search;" + wall + ";" + str(cardList[n]) + ";\n")
+                file.write("g0" + str(g) + ";p02;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][2] + ";" + "move;" + wall + ";" + str(cardList[n]) + ";\n")
+                file.write("g0" + str(g) + ";p01;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][2] + ";" + "search;" + wall + ";" + str(cardList[n]) + ";\n")
                 nb += 1
             else:
-                file.write("g0" + str(g) + ";p01;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][2] + ";" + "search;" + wall + ";" + str(cardList[n]) + ";\n")
-                file.write("g0" + str(g) + ";p02;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][2] + ";" + "move;" + wall + ";" + str(cardList[n]) + ";\n")
+                file.write("g0" + str(g) + ";p02;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][2] + ";" + "search;" + wall + ";" + str(cardList[n]) + ";\n")
+                file.write("g0" + str(g) + ";p01;C;" + str(nb) + ";" + training + ";" + groupMove[g-1][2] + ";" + "move;" + wall + ";" + str(cardList[n]) + ";\n")
                 nb += 1
     
     if g != group:

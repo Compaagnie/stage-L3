@@ -28,6 +28,7 @@ public class Network_Player : MonoBehaviourPun
     public Material white;
     public Material red;
     public Material none;
+    public Material lightRed;
 
     //camera tracker
     private GameObject cameraRig;

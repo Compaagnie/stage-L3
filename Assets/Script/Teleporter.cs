@@ -665,9 +665,9 @@ public class Teleporter : MonoBehaviour
         {
             if (syncTeleportation || isOtherSynced)
             {
-                photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, new Vector3(0,0,0), 90);
-                cameraRig.RotateAround(cameraRig.position, Vector3.up, 90);
-                //photonView.RPC("RotationRigRPC", Photon.Pun.RpcTarget.All, "e");
+                //photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, new Vector3(0,0,0), 90);
+                //cameraRig.RotateAround(cameraRig.position, Vector3.up, 90);
+                photonView.RPC("RotationRigRPC", Photon.Pun.RpcTarget.All, "e");
             }
             else
             {
@@ -681,9 +681,9 @@ public class Teleporter : MonoBehaviour
         {
             if (syncTeleportation || isOtherSynced)
             {
-                photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, new Vector3(0,0,0), -90);
-                cameraRig.RotateAround(cameraRig.position, Vector3.up, -90);
-                //photonView.RPC("RotationRigRPC", Photon.Pun.RpcTarget.All, "w");
+                //photonView.RPC("MoveRigFromTransform", Photon.Pun.RpcTarget.Others, new Vector3(0,0,0), -90);
+                //cameraRig.RotateAround(cameraRig.position, Vector3.up, -90);
+                photonView.RPC("RotationRigRPC", Photon.Pun.RpcTarget.All, "w");
             }
             else
             {

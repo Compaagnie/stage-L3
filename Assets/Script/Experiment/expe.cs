@@ -181,13 +181,13 @@ public class Expe
             if (theTrials[trialNb].group == "#pause")
             {
                 teleport.photonView.RPC("resetPosition", Photon.Pun.RpcTarget.AllBuffered);
-                setInfoLocation();
-                teleport.menu.SetActive(true);
                 teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Pause";
                 writer.WriteLine("#pause;");
                 writer.Flush();
                 incTrialNb();
                 teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
+                setInfoLocation();
+                teleport.menu.SetActive(true);
             }
             else
             {

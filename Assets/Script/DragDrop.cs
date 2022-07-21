@@ -50,6 +50,7 @@ public class DragDrop : MonoBehaviourPun
     private Vector3 loalscaleEmpty;
     private string moveMode = "drag";
 
+    Teleporter teleport;
 
     Expe expe;
 
@@ -57,6 +58,7 @@ public class DragDrop : MonoBehaviourPun
     // Start is called before the first frame update
     void Awake()
     {
+        teleport = GameObject.Find("/[CameraRig]/ControllerRotator/Controller (right)").GetComponent<Teleporter>();
         m_pose = GetComponent<SteamVR_Behaviour_Pose>();
         expe = GameObject.Find("/Salle").GetComponent<rendering>().expe;
     }
@@ -112,7 +114,7 @@ public class DragDrop : MonoBehaviourPun
 
         if (interactWithUI.GetStateDown(m_pose.inputSource) && m_HasPosition)
         {
-            if (hit.transform.tag == "Card") {
+            if (hit.transform.tag == "Card" && teleport.moveMode == "sync") {
                 //request multi user
                 hit.transform.gameObject.GetComponent<PhotonView>().RequestOwnership();
                 //card

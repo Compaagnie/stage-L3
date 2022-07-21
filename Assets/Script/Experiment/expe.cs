@@ -185,7 +185,7 @@ public class Expe
                 writer.WriteLine("#pause;");
                 writer.Flush();
                 incTrialNb();
-                teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
+                teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = "Next move " + theTrials[trialNb].moveMode;
                 setInfoLocation();
                 teleport.menu.SetActive(true);
             }
@@ -193,8 +193,6 @@ public class Expe
             {
                 Debug.Log("update text info");
                 setInfoLocation();
-                teleport.menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = theTrials[trialNb].moveMode;
-                teleport.menu.SetActive(true);
                 if (theTrials[trialNb].task == "search")
                 {
                     if (theTrials[trialNb].training == "1")
@@ -219,6 +217,7 @@ public class Expe
                     }
                     teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "You are the one moving \n wait for the other to start \n let the other tell you where to go";
                 }
+                teleport.menu.SetActive(true);
                 theTrials[trialNb].startTrial();
                 curentTrial = theTrials[trialNb];
             }

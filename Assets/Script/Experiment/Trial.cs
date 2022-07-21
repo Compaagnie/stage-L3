@@ -31,6 +31,7 @@ public class Trial
 
     public bool trialEnded = false;
     public bool canTagCard = false;
+    public bool canStartTimer = false;
 
     // measures
     // public float size;
@@ -107,6 +108,7 @@ public class Trial
             teleport.moveMode = moveMode;
         }
         //player.palette.gameObject.SetActive(false);
+        canStartTimer = true;
         Debug.Log("Trial started, card to tag " + cardToTag + ";" + teleport.moveMode);
     }
 

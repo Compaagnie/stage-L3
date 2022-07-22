@@ -121,6 +121,7 @@ public class Trial
         {*/
             card.transform.GetChild(1).gameObject.SetActive(true);
         //}
+        canStartTimer = false;
     }
 
     public void checkConditions()

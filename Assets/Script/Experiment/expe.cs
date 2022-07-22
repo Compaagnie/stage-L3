@@ -58,8 +58,8 @@ public class Expe
         string mydate = System.DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
         //  Debug.Log("Goupe: " + trial.group + );
         // file name should look like  "class-PXX-2019-MM-DD-HH-MM-SS.csv"
-        // string path = "Assets/Resources/expeLogs/class-" +  group + "-" + participant + "-" + mydate + ".csv";
-        string path = "Assets/Resources/logs/class-" +  group + "-" + participant + "-" + mydate + ".csv";
+        string path = "Assets/Resources/expeLogs/class-" +  group + "-" + participant + "-" + mydate + ".csv";
+        //string path = "Assets/Resources/logs/class-" +  group + "-" + participant + "-" + mydate + ".csv";
         //string path = "Assets/Resources/logs/test.csv";
 
         //File.Create(path);

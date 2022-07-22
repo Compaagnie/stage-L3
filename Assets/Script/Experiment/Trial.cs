@@ -117,10 +117,10 @@ public class Trial
         Debug.Log("                                                             Trial Timer started");
         trialTime = Time.time;
         expe.trialRunning = true;
-        /*if (task == "search")
-        {*/
+        if (task == "search")
+        {
             card.transform.GetChild(1).gameObject.SetActive(true);
-        //}
+        }
         canStartTimer = false;
     }
 

@@ -114,7 +114,7 @@ public class Expe
 
     void setInfoLocation()
     {
-        teleport.menu.transform.position = teleport.cam.position + 1.5f*teleport.cam.forward;
+        teleport.menu.transform.position = teleport.cam.position + 1f*teleport.cam.forward;
         teleport.menu.transform.rotation = teleport.cam.rotation;
         //teleport.menu.transform.RotateAround(teleport.menu.transform.position, Vector3.up, teleport.cam.rotation.eulerAngles.y - teleport.menu.transform.rotation.eulerAngles.y);
     }

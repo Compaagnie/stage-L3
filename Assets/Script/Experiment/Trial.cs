@@ -115,7 +115,7 @@ public class Trial
 
     public void startTrialTimer()
     {
-        Debug.Log("                                                             Trial Timer started");
+        Debug.Log("                                                             Trial Timer started" + trialNb);
         trialTime = Time.time;
         if (task == "search")
         {

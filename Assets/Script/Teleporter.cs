@@ -107,7 +107,7 @@ public class Teleporter : MonoBehaviour
         m_pose = GetComponent<SteamVR_Behaviour_Pose>();
         photonView = GetComponent<PhotonView>();
         menu.SetActive(false);
-        menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = moveMode;
+        //menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = moveMode;
     }
 
     // Update is called once per frame
@@ -166,7 +166,7 @@ public class Teleporter : MonoBehaviour
                 photonView.RPC("toggleOtherSync", Photon.Pun.RpcTarget.Others);
                 tpToOther();
             }
-            menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = moveMode;
+            //menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = moveMode;
         }
         if (interactWithUI.GetLastStateDown(m_pose.inputSource)){
             if (expe != null && expe.trialRunning && expe.curentTrial.canStartTimer && moveMode == "sync")

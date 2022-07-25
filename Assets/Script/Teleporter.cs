@@ -169,7 +169,7 @@ public class Teleporter : MonoBehaviour
             menu.transform.Find("moveModeText").GetComponent<TextMesh>().text = moveMode;
         }
         if (interactWithUI.GetLastStateDown(m_pose.inputSource)){
-            if (expe != null && !expe.trialRunning && expe.curentTrial.canStartTimer && moveMode == "sync")
+            if (expe != null && expe.trialRunning && expe.curentTrial.canStartTimer && moveMode == "sync")
             {
                 photonView.RPC("trialStarted", Photon.Pun.RpcTarget.AllBuffered);
             }

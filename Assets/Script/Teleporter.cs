@@ -470,6 +470,7 @@ public class Teleporter : MonoBehaviour
 
                 if (m_TeleportAction.GetStateDown(m_pose.inputSource))
                 {
+                    moveTimer = Time.time;
                     initialDragDirection = (hit.point - new Vector3(controllerRight.position.x, 0, controllerRight.position.z)).normalized;
                 }
 

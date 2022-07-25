@@ -320,11 +320,11 @@ public class Teleporter : MonoBehaviour
                     oldFingerY = position.y;
                 }
 
-                if ((oldFingerX > 0.5 && (position.x < 0.5 || m_TeleportAction.GetStateUp(m_pose.inputSource))) || (oldFingerX < -0.5 && (position.x > -0.5 || m_TeleportAction.GetStateUp(m_pose.inputSource))) && expe != null && expe.trialRunning)
+                if ((oldFingerX > 0.5 && (position.x < 0.5 || m_TeleportAction.GetStateUp(m_pose.inputSource))) || (oldFingerX < -0.5 && (position.x > -0.5 || m_TeleportAction.GetStateUp(m_pose.inputSource))) && expe != null && expe.curentTrial.curentTrialIsRunning)
                 {
                     expe.curentTrial.incNbRotate();
                 }
-                if ((oldFingerY > 0.5 && (position.y < 0.5 || m_TeleportAction.GetStateUp(m_pose.inputSource))) || (oldFingerY < -0.5 && (position.y > -0.5 || m_TeleportAction.GetStateUp(m_pose.inputSource))) && expe != null && expe.trialRunning)
+                if ((oldFingerY > 0.5 && (position.y < 0.5 || m_TeleportAction.GetStateUp(m_pose.inputSource))) || (oldFingerY < -0.5 && (position.y > -0.5 || m_TeleportAction.GetStateUp(m_pose.inputSource))) && expe != null && expe.curentTrial.curentTrialIsRunning)
                 {
                     expe.curentTrial.incNbMove();
                     expe.curentTrial.incMoveTime(Time.time - moveTimer);
@@ -354,7 +354,7 @@ public class Teleporter : MonoBehaviour
                         {
                             cameraRig.RotateAround(cam.position, Vector3.up, -joystickRotation * Vector3.Cross(Vector3.up,controllerRight.forward).magnitude );
                         }
-                        if (expe != null && expe.trialRunning)
+                        if (expe != null && expe.curentTrial.curentTrialIsRunning)
                         {
                             expe.curentTrial.incRotateTotal(joystickRotation * Vector3.Cross(Vector3.up, controllerRight.forward).magnitude);
                         }
@@ -396,7 +396,7 @@ public class Teleporter : MonoBehaviour
                         {
                             cameraRig.RotateAround(cam.position, Vector3.up, joystickRotation * Vector3.Cross(Vector3.up, controllerRight.forward).magnitude);
                         }
-                        if (expe != null && expe.trialRunning)
+                        if (expe != null && expe.curentTrial.curentTrialIsRunning)
                         {
                             expe.curentTrial.incRotateTotal(joystickRotation * Vector3.Cross(Vector3.up, controllerRight.forward).magnitude);
                         }
@@ -407,7 +407,7 @@ public class Teleporter : MonoBehaviour
                     if (cam.position.z + translateVect.z < -3.5) { translateVect.z = -3.5f - cam.position.z; }
                     if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                     cameraRig.position += translateVect;
-                    if (expe != null && expe.trialRunning)
+                    if (expe != null && expe.curentTrial.curentTrialIsRunning)
                     {
                         expe.curentTrial.incDistTotal(translateVect.magnitude);
                     }
@@ -440,7 +440,7 @@ public class Teleporter : MonoBehaviour
             }
             else if (moveMode == "drag")
             {
-                if (m_TeleportAction.GetStateUp(m_pose.inputSource) && expe != null && expe.trialRunning)
+                if (m_TeleportAction.GetStateUp(m_pose.inputSource) && expe != null && expe.curentTrial.curentTrialIsRunning)
                 {
                     //Debug.Log(oldHit.transform);
                     if (hit.transform != null)
@@ -540,7 +540,7 @@ public class Teleporter : MonoBehaviour
 
                         cameraRig.position += translateVect;
 
-                        if (expe != null && expe.trialRunning)
+                        if (expe != null && expe.curentTrial.curentTrialIsRunning)
                         {
                             expe.curentTrial.incDistTotal(translateVect.magnitude);
                         }
@@ -612,7 +612,7 @@ public class Teleporter : MonoBehaviour
                         if (cam.position.z + translateVect.z > 3.5) { translateVect.z = 3.5f - cam.position.z; }
                         cameraRig.position += translateVect;
 
-                        if (expe != null && expe.trialRunning)
+                        if (expe != null && expe.curentTrial.curentTrialIsRunning)
                         {
                             expe.curentTrial.incDistTotal(translateVect.magnitude);
                         }
@@ -638,7 +638,7 @@ public class Teleporter : MonoBehaviour
                         {
                             cameraRig.RotateAround(cam.position, Vector3.up, angle);
                         }
-                        if (expe != null && expe.trialRunning)
+                        if (expe != null && expe.curentTrial.curentTrialIsRunning)
                         {
                             expe.curentTrial.incRotateTotal(angle);
                         }
@@ -852,7 +852,7 @@ public class Teleporter : MonoBehaviour
         if (wall != null)
         {
             cameraRig.rotation = wall.rotation;
-            if (expe != null && expe.trialRunning)
+            if (expe != null && expe.curentTrial.curentTrialIsRunning)
             {
                 expe.curentTrial.incRotateTotal(wall.rotation.eulerAngles.y - cameraRig.rotation.eulerAngles.y);
                 if (wall.rotation.eulerAngles.y - cameraRig.rotation.eulerAngles.y != 0)
@@ -867,7 +867,7 @@ public class Teleporter : MonoBehaviour
         if (cam.position.z + translation.z < -3.5) { translation.z = -3.5f - cam.position.z; }
         if (cam.position.z + translation.z > 3.5) { translation.z = 3.5f - cam.position.z; }
         cameraRig.position += translation;
-        if (expe != null && expe.trialRunning)
+        if (expe != null && expe.curentTrial.curentTrialIsRunning)
         {
             expe.curentTrial.incDistTotal(translation.magnitude);
         }
@@ -881,7 +881,7 @@ public class Teleporter : MonoBehaviour
             syncTeleportation = false;
         }
         m_IsTeleportoting = false;
-        if (expe != null && expe.trialRunning)
+        if (expe != null && expe.curentTrial.curentTrialIsRunning)
         {
             expe.curentTrial.incNbMove();
             expe.curentTrial.incMoveTime(Time.time - moveTimer);
@@ -904,7 +904,7 @@ public class Teleporter : MonoBehaviour
                                                      // Rotation
 
         cameraRig.RotateAround(cam.position, Vector3.up, rotat.y - cameraRig.rotation.eulerAngles.y);
-        if (expe != null && expe.trialRunning)
+        if (expe != null && expe.curentTrial.curentTrialIsRunning)
         {
             expe.curentTrial.incRotateTotal(rotat.y - cameraRig.rotation.eulerAngles.y);
             expe.curentTrial.incDistTotal((pos - cameraRig.position).magnitude);
@@ -913,7 +913,7 @@ public class Teleporter : MonoBehaviour
 
         SteamVR_Fade.Start(Color.clear, m_FadeTime, true); // normal screen
         m_IsTeleportoting = false;
-        if (expe != null && expe.trialRunning)
+        if (expe != null && expe.curentTrial.curentTrialIsRunning)
         {
             expe.curentTrial.incMoveTime(Time.time - moveTimer);
         }

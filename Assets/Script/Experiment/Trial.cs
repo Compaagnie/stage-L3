@@ -29,6 +29,7 @@ public class Trial
     public string wall;
     public string cardToTag;
 
+    public bool curentTrialIsRunning = false;
     public bool trialEnded = false;
     public bool canTagCard = false;
     public bool canStartTimer = false;
@@ -116,11 +117,11 @@ public class Trial
     {
         Debug.Log("                                                             Trial Timer started");
         trialTime = Time.time;
-        expe.trialRunning = true;
         if (task == "search")
         {
             card.transform.GetChild(1).gameObject.SetActive(true);
         }
+        curentTrialIsRunning = true;
         canStartTimer = false;
     }
 
@@ -156,6 +157,7 @@ public class Trial
         cardArea.gameObject.SetActive(false);
         card.transform.GetChild(1).GetComponent<Renderer>().material = player.green;
         trialEnded = true;
+        curentTrialIsRunning = false;
         render.nextTrial();
     }
 

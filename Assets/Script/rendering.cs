@@ -91,7 +91,6 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
         else if (Input.GetKeyDown(KeyCode.Space) && expeEnCours && !trialEnCours)
         {
             photonView.RPC("nextTrial", Photon.Pun.RpcTarget.AllBuffered);
-            trialEnCours = true;
         }
 
         if (Input.GetKeyDown(KeyCode.E) && expeEnCours)
@@ -158,7 +157,7 @@ public class rendering : MonoBehaviourPunCallbacks //, MonoBehaviourPun
                     mur = MurR;
                     pos = i - 2 * cardPerWall;
                 }
-                Debug.Log(i);
+                //Debug.Log(i);
                 MyCard c = new MyCard((Texture2D)textures[i], mur, i);
                 photonView.RPC("addListCard", Photon.Pun.RpcTarget.AllBuffered, c.pv.ViewID);
                 c.pv.RPC("LoadCard", Photon.Pun.RpcTarget.AllBuffered, c.pv.ViewID, mur.GetComponent<PhotonView>().ViewID, pos, i);

@@ -122,7 +122,6 @@ public class Expe
     public IEnumerator trialStarted()
     {
         curentTrial.startTrialTimer();
-        trialRunning = true;
         teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Trial started";
         yield return new WaitForSeconds(5);
         teleport.menu.SetActive(false);
@@ -134,6 +133,7 @@ public class Expe
         Debug.Log("Trial count" + theTrials.Count + " curent nb " + trialNb);
         if (!trialRunning)
         {
+            trialRunning = true;
             Debug.Log("update text info no trial running");
             setInfoLocation();
             teleport.menu.SetActive(true);
@@ -177,9 +177,9 @@ public class Expe
         {
             write();
             incTrialNb();
-            trialRunning = false;
             if (theTrials[trialNb].group == "#pause")
             {
+                trialRunning = false;
                 teleport.photonView.RPC("resetPosition", Photon.Pun.RpcTarget.AllBuffered);
                 teleport.menu.transform.Find("textInfo").GetComponent<TextMesh>().text = "Pause";
                 writer.WriteLine("#pause;");

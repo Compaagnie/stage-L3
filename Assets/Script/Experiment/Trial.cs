@@ -144,7 +144,7 @@ public class Trial
             canTagCard = false;
             cardArea.GetComponent<Renderer>().material = player.none;
         }
-        if (canTagCard && card.transform.GetChild(0).GetComponent<Renderer>().material != initialCardMaterial)
+        if (!trialEnded && canTagCard && card.transform.GetChild(0).GetComponent<Renderer>().material != initialCardMaterial)
         {
             Debug.Log("Card tagged with new color " + card);
             endTrial();

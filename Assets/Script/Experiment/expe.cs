@@ -177,6 +177,7 @@ public class Expe
         {
             write();
             incTrialNb();
+            Debug.Log(theTrials[trialNb].group);
             if (theTrials[trialNb].group == "#pause")
             {
                 trialRunning = false;

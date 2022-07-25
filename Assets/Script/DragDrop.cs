@@ -22,6 +22,7 @@ public class DragDrop : MonoBehaviourPun
     private bool isMoving = false;
     private bool wait = false;
     private bool longclic = false;
+    public bool trialStartContraint = false;
     private float timer = 0;
     public Vector3 coordClic;
     public Vector3 forwardClic;
@@ -118,6 +119,8 @@ public class DragDrop : MonoBehaviourPun
                 //request multi user
                 hit.transform.gameObject.GetComponent<PhotonView>().RequestOwnership();
                 //card
+                trialStartContraint = true;
+                StartCoroutine()
                 ob = hit.transform.gameObject;
                 
             }
@@ -228,6 +231,14 @@ public class DragDrop : MonoBehaviourPun
             Move();
         }*/
     }
+
+
+    public IEnumerator switchContraint()
+    {
+        yield return new WaitForSeconds(1);
+        trialStartContraint = false;
+    }
+
 
     [PunRPC]
     void Destroyempty(int OB)

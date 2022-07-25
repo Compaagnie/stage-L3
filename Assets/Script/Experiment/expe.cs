@@ -112,7 +112,7 @@ public class Expe
         kineWriter.Flush();
     }
 
-    void setInfoLocation()
+    public void setInfoLocation()
     {
         teleport.menu.transform.position = teleport.cam.position + 1f*teleport.cam.forward;
         teleport.menu.transform.rotation = teleport.cam.rotation;

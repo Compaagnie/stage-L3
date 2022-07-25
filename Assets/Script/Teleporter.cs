@@ -917,6 +917,7 @@ public class Teleporter : MonoBehaviour
         {
             expe.curentTrial.incMoveTime(Time.time - moveTimer);
         }
+        expe.setInfoLocation();
     }
 
     private bool UpdatePointer()

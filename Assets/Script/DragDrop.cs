@@ -120,7 +120,7 @@ public class DragDrop : MonoBehaviourPun
                 hit.transform.gameObject.GetComponent<PhotonView>().RequestOwnership();
                 //card
                 trialStartContraint = true;
-                StartCoroutine()
+                StartCoroutine(switchContraint());
                 ob = hit.transform.gameObject;
                 
             }
